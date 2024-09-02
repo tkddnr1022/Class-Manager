@@ -1,10 +1,12 @@
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
-import { useCallback, useState } from 'react';
-import { Button, StyleSheet, Text, View, Dimensions, Pressable } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Dimensions, Pressable } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import { useForegroundPermissions, getCurrentPositionAsync } from 'expo-location';
 
 export default function App() {
-    const [permission, requestPermission] = useCameraPermissions(); // 카메라 권한
+    const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
+    const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
     const [isScanning, setIsScanning] = useState(false); // 스캔 상태
 
     // state 초기화
@@ -13,6 +15,11 @@ export default function App() {
             setIsScanning(false);
         }, [])
     );
+
+    // 최초 권한 요청
+    useEffect(() => {
+        requestPermission();
+    }, []);
 
     // URL 검사
     function checkURL(url: string) {
@@ -23,18 +30,28 @@ export default function App() {
         }
     }
 
+    // 권한 요청
+    async function requestPermission() {
+        // Todo: 권한 거부 시 동작 구현
+        await requestCamPermission();
+        await requestLocPermission();
+    }
+
     // QR 데이터 처리
-    function scan(qr: BarcodeScanningResult) {
-        if (isScanning || !checkURL(qr.data)) {
+    async function scan(qr: BarcodeScanningResult) {
+        if (!locPermission?.granted || isScanning || !checkURL(qr.data)) {
             return;
         }
         setIsScanning(true);
-        console.log(qr.data);
-
+        const url = qr.data;
+        const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
+        console.log(`URL: ${url}, latitude: ${latitude}, longitude: ${longitude}`);
         router.navigate({
             pathname: '/scan',
             params: {
-                data: qr.data
+                url: url,
+                latitude: latitude,
+                longitude: longitude
             }
         });
     }
@@ -51,10 +68,10 @@ export default function App() {
                     <View style={styles.qrBox} />
                 </View>
                 <View style={styles.qrContainer}>
-                    {permission && permission.granted ?
+                    {camPermission?.granted && locPermission?.granted ?
                         (<Text style={styles.qrText}>QR코드를 중앙에 위치시켜주세요</Text>) :
                         (<View style={styles.qrPermission}>
-                            <Text style={styles.qrPermissionText}>카메라 권한이 필요합니다.</Text>
+                            <Text style={styles.qrPermissionText}>앱 권한이 필요합니다.</Text>
                             <Pressable onPress={requestPermission}>
                                 <Text style={styles.qrPermissionButton}>권한 허용</Text>
                             </Pressable>
@@ -64,6 +81,7 @@ export default function App() {
                 {isScanning && (
                     <View style={styles.qrContainer}>
                         <View style={styles.qrBlock} />
+                        <Text style={styles.qrScanningText}>불러오는 중..</Text>
                     </View>
                 )}
             </CameraView>
@@ -71,17 +89,13 @@ export default function App() {
     );
 }
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const boxSize = width * 0.6;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-    },
-    message: {
-        textAlign: 'center',
-        paddingBottom: 10,
     },
     camera: {
         flex: 1,
@@ -99,8 +113,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     qrBlock: {
-        width: boxSize,
-        height: boxSize,
+        ...StyleSheet.absoluteFillObject,
+        width: width,
+        height: height,
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         borderWidth: 2,
         borderRadius: 10,
@@ -130,5 +145,9 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 8,
         marginTop: 10,
+    },
+    qrScanningText: {
+        fontSize: 20,
+        color: 'white',
     }
 });
