@@ -1,8 +1,9 @@
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Pressable, Platform } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useForegroundPermissions, getCurrentPositionAsync } from 'expo-location';
+import * as Application from 'expo-application';
 
 export default function App() {
     const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
@@ -45,13 +46,23 @@ export default function App() {
         setIsScanning(true);
         const url = qr.data;
         const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
-        console.log(`URL: ${url}, latitude: ${latitude}, longitude: ${longitude}`);
+        let deviceId = null;
+
+        if (Platform.OS === 'android') {
+            deviceId = Application.getAndroidId();
+        } else if (Platform.OS === 'ios') {
+            deviceId = await Application.getIosIdForVendorAsync();
+        }
+
+        console.log(`URL: ${url}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
+
         router.navigate({
             pathname: '/scan',
             params: {
                 url: url,
                 latitude: latitude,
-                longitude: longitude
+                longitude: longitude,
+                deviceId: deviceId
             }
         });
     }
