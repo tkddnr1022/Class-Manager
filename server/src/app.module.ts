@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SwaggerModule } from '@nestjs/swagger';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -19,6 +20,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
   }),
     SwaggerModule,
   EventEmitterModule.forRoot(),
+  UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
