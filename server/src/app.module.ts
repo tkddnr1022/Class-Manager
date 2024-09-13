@@ -6,13 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SwaggerModule } from '@nestjs/swagger';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true
   }),
   MongooseModule.forRootAsync({
-    imports: [ConfigModule],
     useFactory: async (configService: ConfigService) => ({
       uri: `mongodb+srv://${encodeURIComponent(configService.get<string>('MONGO_USERNAME'))}:${encodeURIComponent(configService.get<string>('MONGO_PASSWORD'))}@${configService.get<string>('MONGO_URI')}`,
     }),
@@ -21,6 +21,7 @@ import { UserModule } from './user/user.module';
     SwaggerModule,
   EventEmitterModule.forRoot(),
   UserModule,
+  AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
