@@ -11,6 +11,8 @@ import { ListUsersHandler } from './queries/handlers/list-users.handler';
 import { UserCreatedHandler } from './events/handlers/user-created.handler';
 import { UserUpdatedHandler } from './events/handlers/user-updated.handler';
 import { UserController } from './user.controller';
+import { GetUserByEmailHandler } from './queries/handlers/get-user-by-email.handler';
+import { GetUserByStudentHandler } from './queries/handlers/get-user-by-student-id.handler';
 
 @Module({
     controllers: [
@@ -26,6 +28,8 @@ import { UserController } from './user.controller';
         CreateUserHandler,
         UpdateUserHandler,
         GetUserHandler,
+        GetUserByEmailHandler,
+        GetUserByStudentHandler,
         ListUsersHandler,
         UserCreatedHandler,
         UserUpdatedHandler,
