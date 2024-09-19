@@ -7,6 +7,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -22,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
   EventEmitterModule.forRoot(),
   UserModule,
   AuthModule,
+  CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
