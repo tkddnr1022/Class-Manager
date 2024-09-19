@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly configService: ConfigService,
-) {
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -19,10 +19,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // Guard 사용 시 호출됨
+  // Guard 사용 시 DB도 함께 검증
   async validate(payload: Payload) {
     const query = new GetUserQuery(payload.sub);
     const user = await this.queryBus.execute(query);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
     return user;
   }
 }

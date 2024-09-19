@@ -14,13 +14,13 @@ export class AuthController {
         if (!user) {
             throw new UnauthorizedException();
         }
-        return this.authService.signIn(user);
+        return await this.authService.signIn(user);
     }
 
-    // Todo: 굳이 필요한가?
+    @HttpCode(HttpStatus.OK)
     @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    getProfile(@Request() req) {
-        return req.user;
+    @Post('refresh')
+    async refresh(@Request() req) {
+        return await this.authService.signIn(req.user);
     }
 }
