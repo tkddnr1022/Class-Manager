@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import Coordinate from '../interfaces/coordinate.interface';
 
 export type CourseDocument = HydratedDocument<Course>;
 
@@ -18,7 +19,7 @@ export class Course {
     endAt: Date;
 
     @Prop({ required: true })
-    location: string;
+    location: Coordinate;
 
     @Prop([{
         student: { type: Types.ObjectId, ref: 'User' },
