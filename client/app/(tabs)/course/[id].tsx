@@ -14,7 +14,7 @@ interface Student {
 }
 
 const CourseDetails = () => {
-    const { id } = useLocalSearchParams(); // Get course id from URL params
+    const { id } = useLocalSearchParams();
     const courseId = id as string;
     const [course, setCourse] = useState<Course>();
     const [students, setStudents] = useState<Student[]>([]);
@@ -46,7 +46,7 @@ const CourseDetails = () => {
 
     const handleDelete = () => {
         // TODO: API call to delete the course
-        router.replace('(tabs)/course'); // Return to the course list after deletion
+        router.back(); // Return to the course list after deletion
     };
 
     const renderStudentItem = ({ item }: { item: Student }) => (

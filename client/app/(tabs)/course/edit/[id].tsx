@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Text, TextInput } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Coordinate } from '@/interfaces/course';
@@ -17,6 +17,7 @@ const EditCourse = () => {
     const [showStartTime, setShowStartTime] = useState(false);
     const [showEndTime, setShowEndTime] = useState(false);
     const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
+    const { id } = useLocalSearchParams();
 
     const handleStartDateChange = (event: any, selectedDate: Date | undefined) => {
         const currentDate = selectedDate || startAt;
@@ -60,7 +61,7 @@ const EditCourse = () => {
             text1: '로그인 실패',
             text2: '이메일 혹은 비밀번호가 올바르지 않습니다.'
         })
-        router.replace(`(tabs)/course/list`);
+        router.back();
     };
 
     const getCurrentLocation = async () => {

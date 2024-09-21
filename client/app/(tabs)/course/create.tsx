@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { Button, Text, TextInput } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Coordinate } from '@/interfaces/course';
@@ -16,8 +16,6 @@ const CreateCourse = () => {
     const [showStartTime, setShowStartTime] = useState(false);
     const [showEndTime, setShowEndTime] = useState(false);
     const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
-    const { id } = useLocalSearchParams();
-    const courseId = id as string;
 
     const handleStartDateChange = (event: any, selectedDate: Date | undefined) => {
         const currentDate = selectedDate || startAt;
@@ -56,7 +54,7 @@ const CreateCourse = () => {
             endAt,
             location,
         });
-        router.replace(`(tabs)/course/list`);
+        router.replace(`(tabs)/course`);
     };
 
     const getCurrentLocation = async () => {
