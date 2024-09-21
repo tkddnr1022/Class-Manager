@@ -5,7 +5,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useForegroundPermissions, getCurrentPositionAsync } from 'expo-location';
 import * as Application from 'expo-application';
 
-export default function App() {
+export default function Camera() {
     const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
     const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
     const [isScanning, setIsScanning] = useState(false); // 스캔 상태
