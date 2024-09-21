@@ -14,9 +14,9 @@ export default function Index() {
   const checkLoginStatus = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
     if (userToken) {
-      router.replace('/home');
+      router.replace('/(tabs)/home');
     }
-    else{
+    else {
       router.replace('/login');
     }
   };

@@ -18,7 +18,7 @@ export default function Login() {
         if (email === 'test@example.com' && password === 'password') {
             try {
                 await AsyncStorage.setItem('userToken', 'dummy-auth-token');
-                router.replace('/home'); // 로그인 성공 시 Home 화면으로 이동
+                router.replace('/(tabs)/home'); // 로그인 성공 시 Home 화면으로 이동
             } catch (e) {
                 console.error(e);
             }

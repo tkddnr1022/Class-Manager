@@ -56,7 +56,7 @@ export default function Camera() {
 
         console.log(`URL: ${url}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
 
-        router.navigate({
+        router.replace({
             pathname: '/scan',
             params: {
                 url: url,
