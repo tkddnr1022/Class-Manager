@@ -3,6 +3,7 @@ import { UserRepository } from './repositories/user.repository';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,7 @@ export class UserService {
         });
     }
 
-    async getUserById(userId: string) {
+    async getUserById(userId: Types.ObjectId) {
         return this.userRepository.findUserById(userId);
     }
 
@@ -36,11 +37,11 @@ export class UserService {
         return this.userRepository.findAllUsers();
     }
 
-    async updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    async updateUser(userId: Types.ObjectId, updateUserDto: UpdateUserDto) {
         return this.userRepository.updateUser(userId, updateUserDto);
     }
 
-    async deleteUser(userId: string) {
+    async deleteUser(userId: Types.ObjectId) {
         return this.userRepository.deleteUser(userId);
     }
 }

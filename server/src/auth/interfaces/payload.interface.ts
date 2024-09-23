@@ -1,4 +1,6 @@
+import { Types } from "mongoose";
+
 export class Payload{
-    sub: string;
+    sub: Types.ObjectId;
     username: string;
 }
