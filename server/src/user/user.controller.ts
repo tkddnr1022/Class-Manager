@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -7,6 +7,11 @@ import { UpdateUserCommand } from './commands/impl/update-user.command';
 import { GetUserQuery } from './queries/impl/get-user.query';
 import { ListUsersQuery } from './queries/impl/list-users.query';
 import { User } from './models/user.model';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/roles.enum';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { Types } from 'mongoose';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
 
 @Controller('user')
 export class UserController {
@@ -15,7 +20,6 @@ export class UserController {
         private readonly queryBus: QueryBus,
     ) { }
 
-    // 유저 생성 (Command)
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
         const { username, email, password, studentId } = createUserDto;
@@ -23,26 +27,28 @@ export class UserController {
         return await this.commandBus.execute(command);
     }
 
-    // 유저 정보 업데이트 (Command)
-    @Put(':id')
+    @Put(':userId')
+    @UseGuards(JwtAuthGuard, RolesGuard)
     async updateUser(
-        @Param('id') id: string,
+        @Param('userId') userId: Types.ObjectId,
         @Body() updateUserDto: UpdateUserDto,
     ): Promise<User> {
         const { username, email } = updateUserDto;
-        const command = new UpdateUserCommand(id, username, email);
+        const command = new UpdateUserCommand(userId, username, email);
         return await this.commandBus.execute(command);
     }
 
-    // 특정 유저 조회 (Query)
-    @Get(':id')
-    async getUser(@Param('id') id: string): Promise<User> {
-        const query = new GetUserQuery(id);
+    @Get(':userId')
+    @Roles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    async getUser(@Param('userId') userId: Types.ObjectId): Promise<User> {
+        const query = new GetUserQuery(userId);
         return await this.queryBus.execute(query);
     }
 
-    // 모든 유저 리스트 조회 (Query)
     @Get()
+    @Roles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     async listUsers(): Promise<User[]> {
         const query = new ListUsersQuery();
         return await this.queryBus.execute(query);
