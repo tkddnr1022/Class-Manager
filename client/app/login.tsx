@@ -18,6 +18,10 @@ export default function Login() {
         if (email === 'test@example.com' && password === 'password') {
             try {
                 await AsyncStorage.setItem('userToken', 'dummy-auth-token');
+                Toast.show({
+                    type: 'success',
+                    text1: '로그인 성공',
+                })
                 router.replace('/(tabs)/home'); // 로그인 성공 시 Home 화면으로 이동
             } catch (e) {
                 console.error(e);
@@ -63,7 +67,6 @@ export default function Login() {
             >
                 로그인
             </Button>
-            <Toast />
         </View>
     );
 };

@@ -5,6 +5,7 @@ import { Button, Text, TextInput } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Coordinate } from '@/interfaces/course';
 import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location';
+import Toast from 'react-native-toast-message';
 
 const CreateCourse = () => {
     const [title, setTitle] = useState('');
@@ -54,6 +55,11 @@ const CreateCourse = () => {
             endAt,
             location,
         });
+        Toast.show({
+            type: 'success',
+            text1: '생성 성공',
+            text2: '수업이 생성되었습니다.',
+        });
         router.replace(`(tabs)/course`);
     };
 
@@ -73,7 +79,7 @@ const CreateCourse = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>수업 개설하기</Text>
+            <Text style={styles.title}>수업 생성하기</Text>
             <View style={styles.row}>
                 <TextInput
                     style={{ flex: 1 }}
@@ -159,7 +165,7 @@ const CreateCourse = () => {
                 <Button mode="contained-tonal" icon="crosshairs-gps" onPress={getCurrentLocation} style={styles.locationButton}>위치</Button>
             </View>
 
-            <Button mode="contained-tonal" onPress={handleSubmit}>개설</Button>
+            <Button mode="contained-tonal" onPress={handleSubmit}>생성</Button>
         </View>
     );
 };

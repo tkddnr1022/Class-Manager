@@ -2,11 +2,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 export default function Mypage() {
 
     const logoutHandler = async () => {
         await AsyncStorage.clear();
+        Toast.show({
+            type: 'success',
+            text1: '로그아웃 되었습니다.'
+        });
         router.replace('/login');
     }
 
