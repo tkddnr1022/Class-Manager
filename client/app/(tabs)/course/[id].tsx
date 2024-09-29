@@ -18,6 +18,7 @@ const CourseDetails = () => {
     const courseId = id as string;
     const [course, setCourse] = useState<Course>();
     const [students, setStudents] = useState<Student[]>([]);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -44,13 +45,17 @@ const CourseDetails = () => {
         router.push(`(tabs)/course/edit/${id}`);
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        setLoading(true);
         // TODO: API call to delete the course
+        // for dev
+        await new Promise(resolve => setTimeout(resolve, 2000));
         Toast.show({
             type: 'success',
             text1: '삭제 성공',
             text2: '강의가 삭제되었습니다.'
         });
+        setLoading(false);
         router.back();
     };
 
@@ -89,7 +94,13 @@ const CourseDetails = () => {
                             <Button mode="contained-tonal" onPress={handleEdit} icon="pencil">
                                 수정
                             </Button>
-                            <Button mode="contained-tonal" onPress={handleDelete} icon="delete">
+                            <Button
+                                mode="contained-tonal"
+                                onPress={handleDelete}
+                                icon="delete"
+                                loading={loading}
+                                disabled={loading}
+                            >
                                 삭제
                             </Button>
                             <Button mode="contained-tonal" onPress={() => router.push(`(tabs)/course/qrcode/${id}`)} icon="qrcode-scan">
