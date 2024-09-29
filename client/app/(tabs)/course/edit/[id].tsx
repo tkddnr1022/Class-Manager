@@ -57,9 +57,9 @@ const EditCourse = () => {
             location,
         });
         Toast.show({
-            type: 'error',
-            text1: '로그인 실패',
-            text2: '이메일 혹은 비밀번호가 올바르지 않습니다.'
+            type: 'success',
+            text1: '수정 완료',
+            text2: '수업 정보가 수정되었습니다.'
         })
         router.back();
     };
@@ -167,7 +167,6 @@ const EditCourse = () => {
             </View>
 
             <Button mode="contained-tonal" onPress={handleSubmit}>수정</Button>
-            <Toast />
         </View>
     );
 };

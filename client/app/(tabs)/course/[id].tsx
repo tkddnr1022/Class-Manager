@@ -46,7 +46,12 @@ const CourseDetails = () => {
 
     const handleDelete = () => {
         // TODO: API call to delete the course
-        router.back(); // Return to the course list after deletion
+        Toast.show({
+            type: 'success',
+            text1: '삭제 성공',
+            text2: '강의가 삭제되었습니다.'
+        });
+        router.back();
     };
 
     const renderStudentItem = ({ item }: { item: Student }) => (
@@ -64,21 +69,21 @@ const CourseDetails = () => {
                 <>
                     <Card style={styles.card}>
                         <Card.Content>
-                                <View style={styles.row}>
-                                    <Text style={styles.title}>{course.title}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <MaterialIcons name="access-time" size={20} color="black" />
-                                    <Text style={styles.detail}>시작 시간: {course.startAt.toLocaleString('ko-KR')}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <MaterialIcons name="access-time" size={20} color="black" />
-                                    <Text style={styles.detail}>종료 시간: {course.endAt.toLocaleString('ko-KR')}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <MaterialIcons name="location-on" size={20} color="black" />
-                                    <Text style={styles.detail}>위치: 위도 {course.location.lat}, 경도 {course.location.lon}</Text>
-                                </View>
+                            <View style={styles.row}>
+                                <Text style={styles.title}>{course.title}</Text>
+                            </View>
+                            <View style={styles.row}>
+                                <MaterialIcons name="access-time" size={20} color="black" />
+                                <Text style={styles.detail}>시작 시간: {course.startAt.toLocaleString('ko-KR')}</Text>
+                            </View>
+                            <View style={styles.row}>
+                                <MaterialIcons name="access-time" size={20} color="black" />
+                                <Text style={styles.detail}>종료 시간: {course.endAt.toLocaleString('ko-KR')}</Text>
+                            </View>
+                            <View style={styles.row}>
+                                <MaterialIcons name="location-on" size={20} color="black" />
+                                <Text style={styles.detail}>위치: 위도 {course.location.lat}, 경도 {course.location.lon}</Text>
+                            </View>
                         </Card.Content>
                         <Card.Actions>
                             <Button mode="contained-tonal" onPress={handleEdit} icon="pencil">
@@ -104,7 +109,6 @@ const CourseDetails = () => {
             ) : (
                 <Text>로딩 중...</Text>
             )}
-            <Toast />
         </View>
     );
 };
