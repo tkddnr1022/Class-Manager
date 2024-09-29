@@ -15,7 +15,7 @@ export default function Login() {
         // Todo: 실제 로그인 API 호출
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
-        if (email === 'test@example.com' && password === 'password') {
+        if (email === 'test@test.com' && password === 'testpw') {
             try {
                 await AsyncStorage.setItem('userToken', 'dummy-auth-token');
                 Toast.show({
