@@ -36,6 +36,10 @@ export default function Login() {
         }
     };
 
+    const handleSignUp = () => {
+        router.push('/signup');
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>로그인</Text>
@@ -66,6 +70,16 @@ export default function Login() {
                 contentStyle={styles.buttonContent}
             >
                 로그인
+            </Button>
+            <Button
+                mode="contained"
+                disabled={loading}
+                loading={loading}
+                onPress={handleSignUp}
+                style={styles.button}
+                contentStyle={styles.buttonContent}
+            >
+                회원가입
             </Button>
         </View>
     );
