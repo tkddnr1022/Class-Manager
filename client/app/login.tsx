@@ -12,7 +12,7 @@ export default function Login() {
 
     const handleLogin = async () => {
         setLoading(true);
-        // 여기서 실제 로그인 API 호출
+        // Todo: 실제 로그인 API 호출
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
         if (email === 'test@example.com' && password === 'password') {
