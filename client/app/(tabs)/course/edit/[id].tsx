@@ -8,6 +8,7 @@ import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location
 import Toast from 'react-native-toast-message';
 
 const EditCourse = () => {
+    const { id } = useLocalSearchParams();
     const [title, setTitle] = useState('');
     const [startAt, setStartAt] = useState<Date>(new Date());
     const [endAt, setEndAt] = useState<Date>(new Date(Date.now() + 3600000));
@@ -17,7 +18,8 @@ const EditCourse = () => {
     const [showStartTime, setShowStartTime] = useState(false);
     const [showEndTime, setShowEndTime] = useState(false);
     const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
-    const { id } = useLocalSearchParams();
+    const [loading, setLoading] = useState(false);
+    const [locLoading, setLocLoading] = useState(false);
 
     const handleStartDateChange = (event: any, selectedDate: Date | undefined) => {
         const currentDate = selectedDate || startAt;
@@ -49,7 +51,10 @@ const EditCourse = () => {
         setShowEndTime(false);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        setLoading(true);
+        // for dev
+        await new Promise(resolve => setTimeout(resolve, 2000));
         console.log({
             title,
             startAt,
@@ -58,25 +63,29 @@ const EditCourse = () => {
         });
         Toast.show({
             type: 'success',
-            text1: '수정 완료',
-            text2: '수업 정보가 수정되었습니다.'
-        })
+            text1: '수정 성공',
+            text2: '수업이 수정되었습니다.',
+        });
+        setLoading(false);
         router.back();
     };
 
     const getCurrentLocation = async () => {
-        if (!locPermission?.granted) {
+        setLocLoading(true);
+        const { granted } = await requestLocPermission();
+        if (!granted) {
+            // Todo: 권한 거부 시 동작
+            setLocLoading(false);
             return;
         }
         const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
         setLocation({ lat: latitude, lon: longitude });
+        setLocLoading(false);
     };
 
     useEffect(() => {
-        requestLocPermission().then(() => {
-            getCurrentLocation();
-        });
-    }, [])
+        getCurrentLocation();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -87,10 +96,15 @@ const EditCourse = () => {
                     label="수업 이름"
                     value={title}
                     onChangeText={setTitle}
+                    disabled={loading}
                 />
             </View>
             <View style={styles.row}>
-                <TouchableOpacity onPress={() => setShowStartDate(true)} style={styles.datePicker}>
+                <TouchableOpacity
+                    onPress={() => setShowStartDate(true)}
+                    style={styles.datePicker}
+                    disabled={loading}
+                >
                     <TextInput
                         label="시작 날짜"
                         value={startAt.toLocaleDateString()}
@@ -105,7 +119,11 @@ const EditCourse = () => {
                         onChange={handleStartDateChange}
                     />
                 )}
-                <TouchableOpacity onPress={() => setShowStartTime(true)} style={styles.timePicker}>
+                <TouchableOpacity
+                    onPress={() => setShowStartTime(true)}
+                    style={styles.timePicker}
+                    disabled={loading}
+                >
                     <TextInput
                         label="시작 시간"
                         value={startAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -123,7 +141,11 @@ const EditCourse = () => {
             </View>
 
             <View style={styles.row}>
-                <TouchableOpacity onPress={() => setShowEndDate(true)} style={styles.datePicker}>
+                <TouchableOpacity
+                    onPress={() => setShowEndDate(true)}
+                    style={styles.datePicker}
+                    disabled={loading}
+                >
                     <TextInput
                         label="종료 날짜"
                         value={endAt.toLocaleDateString()}
@@ -139,7 +161,11 @@ const EditCourse = () => {
                         locale='ko-KR'
                     />
                 )}
-                <TouchableOpacity onPress={() => setShowEndTime(true)} style={styles.timePicker}>
+                <TouchableOpacity
+                    onPress={() => setShowEndTime(true)}
+                    style={styles.timePicker}
+                    disabled={loading}
+                >
                     <TextInput
                         label="종료 시간"
                         value={endAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -163,10 +189,26 @@ const EditCourse = () => {
                     value={`${location?.lat}, ${location?.lon}`}
                     editable={false}
                 />
-                <Button mode="contained-tonal" icon="crosshairs-gps" onPress={getCurrentLocation} style={styles.locationButton}>위치</Button>
+                <Button
+                    mode="contained-tonal"
+                    icon="crosshairs-gps"
+                    onPress={getCurrentLocation}
+                    style={styles.locationButton}
+                    disabled={loading || locLoading}
+                    loading={locLoading}
+                >
+                    위치
+                </Button>
             </View>
 
-            <Button mode="contained-tonal" onPress={handleSubmit}>수정</Button>
+            <Button
+                mode="contained-tonal"
+                onPress={handleSubmit}
+                disabled={loading}
+                loading={loading}
+            >
+                수정
+            </Button>
         </View>
     );
 };
