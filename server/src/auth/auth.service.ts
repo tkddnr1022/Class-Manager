@@ -19,6 +19,9 @@ export class AuthService {
     async validateUser(signInDto: SignInDto) {
         const query = new GetUserByEmailQuery(signInDto.email);
         const user = await this.queryBus.execute(query);
+        if(!user){
+            return null;
+        }
         const isMatch = await bcrypt.compare(signInDto.password, user?.password);
         if (isMatch) {
             return user;
