@@ -13,8 +13,6 @@ import { CourseRepository } from './repositories/course.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CourseSchema } from './models/course.model';
-import { CourseEnteredHandler } from './events/handlers/course-entered.handler';
-import { EnterCourseHandler } from './commands/handlers/enter-course.handler';
 
 @Module({
   imports: [
@@ -26,14 +24,12 @@ import { EnterCourseHandler } from './commands/handlers/enter-course.handler';
     CourseRepository,
     CreateCourseHandler,
     UpdateCourseHandler,
-    EnterCourseHandler,
     GetCourseHandler,
     GetCourseByUserHandler,
     GetCourseByTitleHandler,
     ListCoursesHandler,
     CourseCreatedHandler,
     CourseUpdatedHandler,
-    CourseEnteredHandler,
   ],
   controllers: [CourseController]
 })

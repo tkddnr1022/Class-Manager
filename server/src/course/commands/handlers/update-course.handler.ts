@@ -11,9 +11,8 @@ export class UpdateCourseHandler implements ICommandHandler<UpdateCourseCommand>
     ) {}
 
     async execute(command: UpdateCourseCommand): Promise<any> {
-        const { courseId, title, startAt, endAt, location, students } = command;
-        const courseData = await this.courseService.updateCourse(courseId, { title, startAt, endAt, location, students });
-        this.eventBus.publish(new CourseUpdatedEvent(courseData._id.toString(), courseData.title));
+        const courseData = await this.courseService.updateCourse(command);
+        this.eventBus.publish(new CourseUpdatedEvent(courseData._id, courseData.title));
         return courseData;
     }
 }

@@ -11,8 +11,7 @@ export class CreateCourseHandler implements ICommandHandler<CreateCourseCommand>
     ) {}
 
     async execute(command: CreateCourseCommand): Promise<any> {
-        const { createdBy, title, startAt, endAt, location } = command;
-        const courseData = await this.courseService.createCourse({ createdBy, title, startAt, endAt, location });
+        const courseData = await this.courseService.createCourse(command);
         this.eventBus.publish(new CourseCreatedEvent(courseData._id.toString(), courseData.title));
         return courseData;
     }

@@ -20,13 +20,6 @@ export class Course {
 
     @Prop({ required: true })
     location: Coordinate;
-
-    @Prop([{
-        student: { type: Types.ObjectId, ref: 'User' },
-        joinedAt: { type: Date, default: Date.now },
-        deviceId: { type: String }
-    }])
-    students?: { student: Types.ObjectId, joinedAt: Date, deviceId?: string }[];
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);
