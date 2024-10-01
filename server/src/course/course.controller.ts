@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateCourseDto } from './dtos/create-course';
+import { CreateCourseDto } from './dtos/create-course.dto';
 import { Course } from './models/course.model';
 import { CreateCourseCommand } from './commands/impl/create-course.command';
-import { UpdateCourseDto } from './dtos/update-course';
+import { UpdateCourseDto } from './dtos/update-course.dto';
 import { UpdateCourseCommand } from './commands/impl/update-course.command';
 import { GetCourseQuery } from './queries/impl/get-course.query';
 import { ListCoursesQuery } from './queries/impl/list-courses.query';
