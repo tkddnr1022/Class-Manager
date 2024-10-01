@@ -18,6 +18,7 @@ export default function Login() {
         if (email === 'test@test.com' && password === 'testpw') {
             try {
                 await AsyncStorage.setItem('userToken', 'dummy-auth-token');
+                await AsyncStorage.setItem('userRole', 'admin');
                 Toast.show({
                     type: 'success',
                     text1: '로그인 성공',
@@ -74,7 +75,6 @@ export default function Login() {
             <Button
                 mode="contained"
                 disabled={loading}
-                loading={loading}
                 onPress={handleSignUp}
                 style={styles.button}
                 contentStyle={styles.buttonContent}

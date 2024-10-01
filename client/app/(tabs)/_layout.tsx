@@ -1,11 +1,24 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableOpacity } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [userRole, setUserRole] = useState('');
+
+  const getUserRole = async () => {
+    const role = await AsyncStorage.getItem('userRole');
+    if (role) {
+      setUserRole(role);
+    }
+  }
+  useEffect(() => {
+    getUserRole();
+  }, []);
 
   return (
     <Tabs
@@ -37,6 +50,17 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
           ),
+          tabBarButton: (props) => (userRole === 'professor' || userRole === 'admin') ? <TouchableOpacity {...props} /> : null,
+        }}
+      />
+      <Tabs.Screen
+        name="entry"
+        options={{
+          title: '출석',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'checkmark' : 'checkmark-outline'} color={color} />
+          ),
+          tabBarButton: (props) => (userRole === 'student' || userRole === 'admin') ? <TouchableOpacity {...props} /> : null,
         }}
       />
     </Tabs>
