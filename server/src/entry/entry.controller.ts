@@ -8,7 +8,6 @@ import { UpdateEntryDto } from './dtos/update-entry.dto';
 import { UpdateEntryCommand } from './commands/impl/update-entry.command';
 import { GetEntryQuery } from './queries/impl/get-entry.query';
 import { ListEntriesQuery } from './queries/impl/list-entries.query';
-import { Types } from 'mongoose';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
@@ -34,7 +33,7 @@ export class EntryController {
     @Roles(Role.Admin, Role.Professor)
     @UseGuards(JwtAuthGuard, RolesGuard)
     async updateEntry(
-        @Param('entryId') entryId: Types.ObjectId,
+        @Param('entryId') entryId: string,
         @Body() updateEntryDto: UpdateEntryDto,
     ): Promise<Entry> {
         const { courseId, userId, location, deviceId, entryTime } = updateEntryDto;
@@ -44,14 +43,14 @@ export class EntryController {
 
     @Get(':entryId')
     @UseGuards(JwtAuthGuard)
-    async getEntry(@Param('entryId') entryId: Types.ObjectId): Promise<Entry> {
+    async getEntry(@Param('entryId') entryId: string): Promise<Entry> {
         const query = new GetEntryQuery(entryId);
         return await this.queryBus.execute(query);
     }
 
     @Get('course/:courseId')
     @UseGuards(JwtAuthGuard)
-    async getEntryByCourseId(@Param('courseId') courseId: Types.ObjectId): Promise<Entry[]>{
+    async getEntryByCourseId(@Param('courseId') courseId: string): Promise<Entry[]>{
         const query = new GetEntryByCourseIdQuery(courseId);
         return await this.queryBus.execute(query);
     }
@@ -59,7 +58,7 @@ export class EntryController {
     // Todo: null return 현상 해결
     @Get('user/:userId')
     @UseGuards(JwtAuthGuard)
-    async getEntryByUserId(@Param('userId') userId: Types.ObjectId): Promise<Entry[]>{
+    async getEntryByUserId(@Param('userId') userId: string): Promise<Entry[]>{
         const query = new GetEntryByUserIdQuery(userId);
         return await this.queryBus.execute(query);
     }

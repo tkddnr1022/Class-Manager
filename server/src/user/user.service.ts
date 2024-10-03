@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './repositories/user.repository';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
+import { CreateUserCommand } from './commands/impl/create-user.command';
+import { UpdateUserCommand } from './commands/impl/update-user.command';
 
 @Injectable()
 export class UserService {
     constructor(private readonly userRepository: UserRepository) { }
 
-    async createUser(createUserDto: CreateUserDto) {
-        const { username, email, password, studentId } = createUserDto;
+    async createUser(createUserCommand: CreateUserCommand) {
+        const { username, email, password, studentId } = createUserCommand;
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
         return this.userRepository.createUser({
@@ -21,8 +21,9 @@ export class UserService {
         });
     }
 
-    async getUserById(userId: Types.ObjectId) {
-        return this.userRepository.findUserById(userId);
+    async getUserById(userId: string) {
+        const userObjectId = new Types.ObjectId(userId);
+        return this.userRepository.findUserById(userObjectId);
     }
 
     async getUserByEmail(email: string) {
@@ -37,11 +38,15 @@ export class UserService {
         return this.userRepository.findAllUsers();
     }
 
-    async updateUser(userId: Types.ObjectId, updateUserDto: UpdateUserDto) {
-        return this.userRepository.updateUser(userId, updateUserDto);
+    async updateUser(updateUserCommand: UpdateUserCommand) {
+        const { userId, username, email, password, studentId } = updateUserCommand;
+
+        const userObjectId = new Types.ObjectId(userId);
+        return this.userRepository.updateUser(userObjectId, { username, email, password, studentId });
     }
 
-    async deleteUser(userId: Types.ObjectId) {
-        return this.userRepository.deleteUser(userId);
+    async deleteUser(userId: string) {
+        const userObjectId = new Types.ObjectId(userId);
+        return this.userRepository.deleteUser(userObjectId);
     }
 }

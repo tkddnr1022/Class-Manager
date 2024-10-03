@@ -11,9 +11,8 @@ export class CreateEntryHandler implements ICommandHandler<CreateEntryCommand> {
     ) { }
 
     async execute(command: CreateEntryCommand): Promise<any> {
-        const { userId, courseId, location, deviceId } = command;
-        const entryData = await this.entryService.createEntry({ userId, courseId, location, deviceId });
-        this.eventBus.publish(new EntryCreatedEvent(userId, courseId));
+        const entryData = await this.entryService.createEntry(command);
+        this.eventBus.publish(new EntryCreatedEvent(entryData.userId.toString(), entryData.courseId.toString()));
         return entryData;
     }
 }

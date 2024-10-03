@@ -12,7 +12,7 @@ export class UpdateEntryHandler implements ICommandHandler<UpdateEntryCommand> {
 
     async execute(command: UpdateEntryCommand): Promise<any> {
         const entryData = await this.entryService.updateEntry(command);
-        this.eventBus.publish(new EntryUpdatedEvent(entryData._id));
+        this.eventBus.publish(new EntryUpdatedEvent(entryData._id.toString()));
         return entryData;
     }
 }

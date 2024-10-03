@@ -11,8 +11,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand>{
     ) {}
 
     async execute(command: CreateUserCommand): Promise<any> {
-        const { username, email, password, studentId } = command;
-        const userData = await this.userService.createUser({username, email, password, studentId});
+        const userData = await this.userService.createUser(command);
         this.eventBus.publish(new UserCreatedEvent(userData._id.toString(), userData.username));
         return userData;
     }

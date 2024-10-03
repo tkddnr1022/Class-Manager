@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 export class GetEntryByCourseIdQuery {
-    constructor(public readonly courseId: Types.ObjectId) { }
+    constructor(public readonly courseId: string) { }
 }

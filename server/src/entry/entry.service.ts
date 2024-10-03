@@ -18,6 +18,10 @@ export class EntryService {
 
     async createEntry(createEntryCommand: CreateEntryCommand) {
         const { userId, courseId, deviceId, location: userLoc } = createEntryCommand;
+
+        const userObjectId = new Types.ObjectId(userId);
+        const courseObjectId = new Types.ObjectId(courseId);
+
         // 수업 ID
         const course = await this.queryBus.execute(new GetCourseQuery(courseId));
         if (!course) {
@@ -26,7 +30,7 @@ export class EntryService {
         const { startAt, endAt, location } = course;
 
         // 유저 ID
-        const isUserIdExist = (await this.entryRepository.findEntryByFilter({ courseId, userId })).length > 1;
+        const isUserIdExist = (await this.entryRepository.findEntryByFilter({ courseId: courseObjectId, userId: userObjectId })).length > 0;
         if (isUserIdExist) {
             throw new BadRequestException("ERROR_USER_ID");
         }
@@ -48,24 +52,31 @@ export class EntryService {
         }
 
         // 디바이스 ID
-        const isDeviceIdUsed = (await this.entryRepository.findEntryByFilter({ courseId, deviceId })).length > 1;
+        const isDeviceIdUsed = (await this.entryRepository.findEntryByFilter({ courseId: courseObjectId, deviceId })).length > 0;
         if (isDeviceIdUsed) {
             throw new BadRequestException("ERROR_DEVICE_ID");
         }
 
-        return await this.entryRepository.createEntry(createEntryCommand)
+        return await this.entryRepository.createEntry({
+            ...createEntryCommand,
+            userId: userObjectId,
+            courseId: courseObjectId,
+        });
     }
 
-    async getEntryById(entryId: Types.ObjectId) {
-        return await this.entryRepository.findEntryById(entryId);
+    async getEntryById(entryId: string) {
+        const entryObjectId = new Types.ObjectId(entryId);
+        return await this.entryRepository.findEntryById(entryObjectId);
     }
 
-    async getEntryByUserId(userId: Types.ObjectId) {
-        return await this.entryRepository.findEntryByUserId(userId);
+    async getEntryByUserId(userId: string) {
+        const userObjectId = new Types.ObjectId(userId);
+        return await this.entryRepository.findEntryByUserId(userObjectId);
     }
 
-    async getEntryByCourseId(courseId: Types.ObjectId) {
-        return await this.entryRepository.findEntryByCourseId(courseId);
+    async getEntryByCourseId(courseId: string) {
+        const courseObjectId = new Types.ObjectId(courseId);
+        return await this.entryRepository.findEntryByCourseId(courseObjectId);
     }
 
     async listEntries() {
@@ -74,10 +85,22 @@ export class EntryService {
 
     async updateEntry(updateEntryCommand: UpdateEntryCommand) {
         const { entryId, userId, courseId, deviceId, location, entryTime } = updateEntryCommand;
-        return await this.entryRepository.updateEntry(entryId, { userId, courseId, deviceId, location, entryTime });
+
+        const entryObjectId = new Types.ObjectId(entryId);
+        const userObjectId = new Types.ObjectId(userId);
+        const courseObjectId = new Types.ObjectId(courseId);
+
+        return await this.entryRepository.updateEntry(entryObjectId, {
+            userId: userObjectId,
+            courseId: courseObjectId,
+            deviceId,
+            location,
+            entryTime,
+        });
     }
 
-    async deleteEntry(entryId: Types.ObjectId) {
-        return await this.entryRepository.deleteEntry(entryId);
+    async deleteEntry(entryId: string) {
+        const entryObjectId = new Types.ObjectId(entryId);
+        return await this.entryRepository.deleteEntry(entryObjectId);
     }
 }

@@ -10,7 +10,6 @@ import { User } from './models/user.model';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
-import { Types } from 'mongoose';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 
 @Controller('user')
@@ -30,7 +29,7 @@ export class UserController {
     @Put(':userId')
     @UseGuards(JwtAuthGuard, RolesGuard)
     async updateUser(
-        @Param('userId') userId: Types.ObjectId,
+        @Param('userId') userId: string,
         @Body() updateUserDto: UpdateUserDto,
     ): Promise<User> {
         const { username, email } = updateUserDto;
@@ -41,7 +40,7 @@ export class UserController {
     @Get(':userId')
     @Roles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
-    async getUser(@Param('userId') userId: Types.ObjectId): Promise<User> {
+    async getUser(@Param('userId') userId: string): Promise<User> {
         const query = new GetUserQuery(userId);
         return await this.queryBus.execute(query);
     }

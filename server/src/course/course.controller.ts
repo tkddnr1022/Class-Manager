@@ -7,7 +7,6 @@ import { UpdateCourseDto } from './dtos/update-course.dto';
 import { UpdateCourseCommand } from './commands/impl/update-course.command';
 import { GetCourseQuery } from './queries/impl/get-course.query';
 import { ListCoursesQuery } from './queries/impl/list-courses.query';
-import { Types } from 'mongoose';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
@@ -33,7 +32,7 @@ export class CourseController {
     @Roles(Role.Admin, Role.Professor)
     @UseGuards(JwtAuthGuard, RolesGuard)
     async updateCourse(
-        @Param('courseId') courseId: Types.ObjectId,
+        @Param('courseId') courseId: string,
         @Body() updateCourseDto: UpdateCourseDto,
     ): Promise<Course> {
         const { title, startAt, endAt, location } = updateCourseDto;
@@ -43,7 +42,7 @@ export class CourseController {
 
     @Get(':courseId')
     @UseGuards(JwtAuthGuard)
-    async getCourse(@Param('courseId') courseId: Types.ObjectId): Promise<Course> {
+    async getCourse(@Param('courseId') courseId: string): Promise<Course> {
         const query = new GetCourseQuery(courseId);
         return await this.queryBus.execute(query);
     }

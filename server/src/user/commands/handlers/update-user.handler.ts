@@ -11,8 +11,7 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     ) { }
 
     async execute(command: UpdateUserCommand): Promise<any> {
-        const { userId, username, email, password, studentId } = command;
-        const userData = await this.userService.updateUser(userId, { username, email, password, studentId });
+        const userData = await this.userService.updateUser(command);
         this.eventBus.publish(new UserUpdatedEvent(userData._id.toString(), userData.username));
         return userData;
     }

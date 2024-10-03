@@ -1,11 +1,10 @@
 import { IsMongoId, IsNotEmpty, IsNotEmptyObject, IsString } from "class-validator";
-import { Types } from "mongoose";
 import Coordinate from "src/course/interfaces/coordinate.interface";
 
 export class CreateEntryDto {
     @IsMongoId()
     @IsNotEmpty()
-    readonly courseId: Types.ObjectId;
+    readonly courseId: string;
 
     @IsNotEmptyObject()
     readonly location: Coordinate;
