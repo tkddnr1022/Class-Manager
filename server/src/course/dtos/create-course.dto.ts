@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsNotEmptyObject, IsString } from "class-validator";
+import { IsDateString, IsNotEmpty, IsNotEmptyObject, IsString } from "class-validator";
 import Coordinate from "../interfaces/coordinate.interface";
 
 export class CreateCourseDto {
@@ -6,11 +6,11 @@ export class CreateCourseDto {
     @IsNotEmpty()
     readonly title: string;
 
-    @IsDate()
+    @IsDateString()
     @IsNotEmpty()
     readonly startAt: Date;
 
-    @IsDate()
+    @IsDateString()
     @IsNotEmpty()
     readonly endAt: Date;
 

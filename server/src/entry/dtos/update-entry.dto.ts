@@ -1,15 +1,14 @@
-import { IsDate, IsObject, IsString } from "class-validator";
-import { Types } from "mongoose";
+import { IsDateString, IsMongoId, IsObject, IsString } from "class-validator";
 import Coordinate from "src/course/interfaces/coordinate.interface";
 
 export class UpdateEntryDto {
-  @IsString()
-  readonly courseId?: Types.ObjectId;
+  @IsMongoId()
+  readonly courseId?: string;
 
-  @IsString()
-  readonly userId?: Types.ObjectId;
+  @IsMongoId()
+  readonly userId?: string;
 
-  @IsDate()
+  @IsDateString()
   readonly entryTime?: Date;
 
   @IsObject()

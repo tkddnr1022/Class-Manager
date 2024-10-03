@@ -1,14 +1,14 @@
-import { IsDate, IsObject, IsString } from "class-validator";
+import { IsDateString, IsObject, IsString } from "class-validator";
 import Coordinate from "../interfaces/coordinate.interface";
 
 export class UpdateCourseDto {
     @IsString()
     public readonly title?: string;
 
-    @IsDate()
+    @IsDateString()
     public readonly startAt?: Date;
 
-    @IsDate()
+    @IsDateString()
     public readonly endAt?: Date;
 
     @IsObject()
