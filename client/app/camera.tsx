@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, Dimensions, Pressable, Platform } from 'react-n
 import { router, useFocusEffect } from 'expo-router';
 import { useForegroundPermissions, getCurrentPositionAsync } from 'expo-location';
 import * as Application from 'expo-application';
+import { createEntry } from '@/scripts/api/entry';
+import Toast from 'react-native-toast-message';
 
 export default function Camera() {
     const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
@@ -40,11 +42,19 @@ export default function Camera() {
 
     // QR 데이터 처리
     async function scan(qr: BarcodeScanningResult) {
-        if (!locPermission?.granted || isScanning || !checkURL(qr.data)) {
+        if (!locPermission?.granted || isScanning) {
             return;
         }
+        if (!checkURL(qr.data)) {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '유효하지 않은 QR 코드입니다.',
+            });
+            return router.back();
+        }
         setIsScanning(true);
-        const url = qr.data;
+        const courseId = qr.data;
         const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
         let deviceId = null;
 
@@ -53,18 +63,62 @@ export default function Camera() {
         } else if (Platform.OS === 'ios') {
             deviceId = await Application.getIosIdForVendorAsync();
         }
+        if (!deviceId) {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '디바이스 ID를 가져올 수 없습니다.',
+            });
+            return router.back();
+        }
 
-        console.log(`URL: ${url}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
+        console.log(`courseId: ${courseId}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
 
-        router.replace({
-            pathname: '/scan',
-            params: {
-                url: url,
-                latitude: latitude,
-                longitude: longitude,
-                deviceId: deviceId
-            }
-        });
+        const result = await createEntry(courseId, { lat: latitude, lon: longitude }, deviceId);
+        if (result == 'success') {
+            Toast.show({
+                type: 'success',
+                text1: '출석 완료',
+                text2: '출석이 정상적으로 완료되었습니다.',
+            });
+            return router.replace('/(tabs)/entry');
+        }
+        else if (result == 'ERROR_USER_ID') {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '이미 출석한 수업입니다.',
+            });
+        }
+        else if (result == 'ERROR_DEVICE_ID') {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '디바이스 ID 중복 오류',
+            });
+        }
+        else if (result == 'ERROR_LOCATION_RANGE') {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '출석 위치 범위 밖입니다.',
+            });
+        }
+        else if (result == 'ERROR_START_TIME' || result == 'ERROR_END_TIME') {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '출석 가능한 시간이 아닙니다.',
+            });
+        }
+        else {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: result,
+            });
+        }
+        return router.back();
     }
 
     return (
