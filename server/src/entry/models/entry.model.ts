@@ -6,10 +6,10 @@ export type EntryDocument = HydratedDocument<Entry>;
 
 @Schema({ timestamps: true })
 export class Entry {
-    @Prop({ type: Types.ObjectId, required: true })
+    @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
     userId: Types.ObjectId;
 
-    @Prop({ type: Types.ObjectId, required: true })
+    @Prop({ type: Types.ObjectId, required: true, ref: 'Course' })
     courseId: Types.ObjectId;
 
     @Prop({ required: true})
