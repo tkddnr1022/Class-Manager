@@ -1,14 +1,39 @@
+import { getStorageProfile } from "@/scripts/utils/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function Mypage() {
     const [loading, setLoading] = useState(false);
-    const userName = "홍길동"; // 유저 이름
-    const userId = "20240001"; // 학번
+    const [username, setUsername] = useState('');
+    const [studentId, setStudentId] = useState('');
+    const [email, setEmail] = useState('');
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchProfile();
+        }, [])
+    );
+
+    const fetchProfile = async () => {
+        try {
+            const profile = await getStorageProfile();
+            if (profile) {
+                setUsername(profile.username);
+                setStudentId(profile.studentId);
+                setEmail(profile.email);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const logoutHandler = async () => {
         setLoading(true);
@@ -25,12 +50,9 @@ export default function Mypage() {
 
     return (
         <View style={styles.container}>
-            {/* 상단 유저 정보 */}
             <Avatar.Icon size={100} icon="account" style={styles.avatar} />
-            <Text variant="titleLarge" style={styles.userName}>{userName}</Text>
-            <Text variant="bodyMedium" style={styles.userId}>학번: {userId}</Text>
-
-            {/* 하단 버튼 그룹 */}
+            <Text variant="titleLarge" style={styles.userName}>{username}</Text>
+            <Text variant="bodyMedium" style={styles.userId}>학번: {studentId}</Text>
             <View style={styles.buttonGroup}>
                 <Button
                     mode="contained-tonal"
@@ -43,7 +65,14 @@ export default function Mypage() {
                 </Button>
                 <Button
                     mode="contained-tonal"
-                    onPress={() => router.push('/profile/edit')}
+                    onPress={() => router.push({
+                        pathname: '/profile/edit',
+                        params: {
+                            username,
+                            studentId,
+                            email,
+                        }
+                    })}
                     style={styles.button}
                 >
                     회원정보 수정
@@ -69,7 +98,7 @@ const styles = StyleSheet.create({
     },
     avatar: {
         marginBottom: 16,
-        backgroundColor: '#6200ee', // Material Design Primary 색상
+        backgroundColor: '#6200ee',
     },
     userName: {
         marginBottom: 4,
@@ -77,7 +106,7 @@ const styles = StyleSheet.create({
     },
     userId: {
         marginBottom: 24,
-        color: '#6b6b6b', // Material Design 중간 톤 색상
+        color: '#6b6b6b',
     },
     buttonGroup: {
         width: '100%',

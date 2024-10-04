@@ -1,4 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { signIn, getProfile } from '@/scripts/api/auth';
+import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -12,20 +13,25 @@ export default function Login() {
 
     const handleLogin = async () => {
         setLoading(true);
-        // Todo: 실제 로그인 API 호출
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
-        if (email === 'test@test.com' && password === 'testpw') {
+        const token = await signIn(email, password);
+        if (token) {
             try {
-                await AsyncStorage.setItem('userToken', 'dummy-auth-token');
-                await AsyncStorage.setItem('userRole', 'admin');
+                await setStorageToken(token);
+                const profile = await getProfile();
+                if (profile) {
+                    // Todo: roles 배열 or 문자열
+                    await setStorageProfile(profile);
+                }
                 Toast.show({
                     type: 'success',
                     text1: '로그인 성공',
                 })
-                router.replace('/(tabs)/home'); // 로그인 성공 시 Home 화면으로 이동
-            } catch (e) {
-                console.error(e);
+                router.replace('/(tabs)/home');
+            } catch (error) {
+                console.error(error);
+                setLoading(false);
             }
         } else {
             Toast.show({

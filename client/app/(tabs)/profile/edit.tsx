@@ -3,10 +3,14 @@ import { View, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { Button, Text, TextInput } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import { updateUser } from '@/scripts/api/user';
+import { getStorageProfile, setStorageProfile } from '@/scripts/utils/storage';
 
 const EditProfile = () => {
+    const [userId, setUserId] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [studentId, setStudentId] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -14,28 +18,41 @@ const EditProfile = () => {
         setLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log({
-            username, email, studentId
-        });
-        Toast.show({
-            type: 'success',
-            text1: '수정 성공',
-            text2: '회원정보가 수정되었습니다.',
-        });
+        try {
+            const update = await updateUser(userId, { username, email, password, studentId });
+            if (update) {
+                await setStorageProfile(update);
+                Toast.show({
+                    type: 'success',
+                    text1: '수정 성공',
+                    text2: '회원정보가 수정되었습니다.',
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
         setLoading(false);
         router.back();
     };
 
-    const getUser = async () => {
-        // Todo: API 요청 구현
-        setUsername('testuser');
-        setEmail('test@test.com');
-        setStudentId('201911858');
-    }
-
     useEffect(() => {
-        getUser();
+        fetchProfile();
     }, []);
+
+    const fetchProfile = async () => {
+        try {
+            const profile = await getStorageProfile();
+            if (profile) {
+                setUserId(profile._id);
+                setUsername(profile.username);
+                setStudentId(profile.studentId);
+                setEmail(profile.email);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -55,6 +72,17 @@ const EditProfile = () => {
                     label="이메일"
                     value={email}
                     onChangeText={setEmail}
+                    disabled={loading}
+                />
+            </View>
+            <View style={styles.row}>
+                <TextInput
+                    style={{ flex: 1 }}
+                    label="비밀번호"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    autoCapitalize="none"
                     disabled={loading}
                 />
             </View>
@@ -86,10 +114,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 16,
-    },
-    input: {
-        flex: 1,
-        marginRight: 8,
     },
     row: {
         flexDirection: 'row',

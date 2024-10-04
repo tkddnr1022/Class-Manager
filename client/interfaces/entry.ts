@@ -1,6 +1,11 @@
 export default interface Entry {
-    title: string;
-    attendanceTime: Date;
-    startAt: Date;
-    endAt: Date;
+    courseId: {
+        title: string,
+        createdBy: string,
+    },
+    userId: {
+        username: string,
+        studentId: string,
+    },
+    entryTime: Date,
 }

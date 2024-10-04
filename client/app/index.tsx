@@ -1,3 +1,5 @@
+import { getProfile } from '@/scripts/api/auth';
+import { getStorageToken } from '@/scripts/utils/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -12,11 +14,21 @@ export default function Index() {
   }, []);
 
   const checkLoginStatus = async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-    if (userToken) {
-      router.replace('/(tabs)/home');
-    }
-    else {
+    try {
+      const token = await getStorageToken();
+      if (!token) {
+        return router.replace('/login');
+      }
+
+      // Todo: validateToken 메소드 구현
+      const isTokenValid = await getProfile();
+      if (isTokenValid) {
+        return router.replace('/(tabs)/home');
+      }
+
+      router.replace('/login');
+    } catch (error) {
+      console.error(error);
       router.replace('/login');
     }
   };
