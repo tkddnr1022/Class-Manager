@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { EntryModule } from './entry/entry.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { EntryModule } from './entry/entry.module';
   AuthModule,
   CourseModule,
   EntryModule,
+  HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
