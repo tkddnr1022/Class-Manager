@@ -11,7 +11,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('사용자')
 @Controller('user')
 export class UserController {
     constructor(
@@ -19,6 +21,10 @@ export class UserController {
         private readonly queryBus: QueryBus,
     ) { }
 
+    @ApiOperation({ summary: '사용자 생성' })
+    @ApiBody({ type: CreateUserDto, description: '사용자 생성 데이터' })
+    @ApiResponse({ status: 201, description: '사용자 생성 성공', type: User })
+    @ApiResponse({ status: 400, description: '잘못된 요청' })
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
         const { username, email, password, studentId } = createUserDto;
@@ -26,8 +32,15 @@ export class UserController {
         return await this.commandBus.execute(command);
     }
 
-    @Put(':userId')
+    @ApiOperation({ summary: '사용자 정보 수정' })
+    @ApiBearerAuth()
+    @ApiParam({ name: 'userId', description: '수정할 사용자 ID' })
+    @ApiBody({ type: UpdateUserDto, description: '수정된 사용자 데이터' })
+    @ApiResponse({ status: 200, description: '사용자 수정 성공', type: User })
+    @ApiResponse({ status: 401, description: '인증 실패' })
+    @ApiResponse({ status: 404, description: '사용자 찾을 수 없음' })
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put(':userId')
     async updateUser(
         @Param('userId') userId: string,
         @Body() updateUserDto: UpdateUserDto,
@@ -37,17 +50,27 @@ export class UserController {
         return await this.commandBus.execute(command);
     }
 
-    @Get(':userId')
+    @ApiOperation({ summary: '특정 사용자 조회' })
+    @ApiBearerAuth()
+    @ApiParam({ name: 'userId', description: '조회할 사용자 ID' })
+    @ApiResponse({ status: 200, description: '사용자 조회 성공', type: User })
+    @ApiResponse({ status: 401, description: '인증 실패' })
+    @ApiResponse({ status: 404, description: '사용자 찾을 수 없음' })
     @Roles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get(':userId')
     async getUser(@Param('userId') userId: string): Promise<User> {
         const query = new GetUserQuery(userId);
         return await this.queryBus.execute(query);
     }
 
-    @Get()
+    @ApiOperation({ summary: '사용자 목록 조회' })
+    @ApiBearerAuth()
+    @ApiResponse({ status: 200, description: '사용자 목록 조회 성공', type: [User] })
+    @ApiResponse({ status: 401, description: '인증 실패' })
     @Roles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get()
     async listUsers(): Promise<User[]> {
         const query = new ListUsersQuery();
         return await this.queryBus.execute(query);
