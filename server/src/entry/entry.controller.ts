@@ -55,7 +55,6 @@ export class EntryController {
         return await this.queryBus.execute(query);
     }
 
-    // Todo: null return 현상 해결
     @Get('user/:userId')
     @UseGuards(JwtAuthGuard)
     async getEntryByUserId(@Param('userId') userId: string): Promise<Entry[]>{
