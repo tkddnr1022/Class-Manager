@@ -42,7 +42,8 @@ const EntryRecord = () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
             const entries = await getEntryByUserId(userId as string);
-            if (!entries) {
+            if (!entries || !entries.length) {
+                setLoading(false);
                 return;
             }
             // 날짜별로 출석 기록을 그룹화한 후 최신순으로 정렬
