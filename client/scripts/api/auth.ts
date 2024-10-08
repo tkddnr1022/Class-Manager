@@ -5,7 +5,7 @@ import User from "@/interfaces/user";
 
 export const signIn = async (email: string, password: string) => {
     try {
-        const response = await api.post<{ access_token: string, refresh_token: string }>(
+        const response = await axios.post<{ access_token: string, refresh_token: string }>(
             `${API_URL}/auth/signin`,
             { email: email, password: password }
         );
