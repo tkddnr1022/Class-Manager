@@ -42,7 +42,7 @@ const CourseDetails = () => {
     }, [id]);
 
     const handleEdit = () => {
-        router.push(`(tabs)/course/edit/${id}`);
+        router.push(`/(tabs)/course/edit/${id}`);
     };
 
     const handleDelete = async () => {
@@ -103,7 +103,7 @@ const CourseDetails = () => {
                             >
                                 삭제
                             </Button>
-                            <Button mode="contained-tonal" onPress={() => router.push(`(tabs)/course/qrcode/${id}`)} icon="qrcode-scan">
+                            <Button mode="contained-tonal" onPress={() => router.push(`/(tabs)/course/qrcode/${id}`)} icon="qrcode-scan">
                                 QR코드
                             </Button>
                         </Card.Actions>

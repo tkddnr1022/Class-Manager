@@ -66,7 +66,7 @@ const CreateCourse = () => {
             text2: '수업이 생성되었습니다.',
         });
         setLoading(false);
-        router.replace(`(tabs)/course`);
+        router.replace(`/(tabs)/course`);
     };
 
     const getCurrentLocation = async () => {
