@@ -1,6 +1,6 @@
 import axios from "axios";
 import api from "../utils/interceptors";
-import Course from "@/interfaces/course";
+import Course, { Coordinate } from "@/interfaces/course";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -16,6 +16,26 @@ export const getCourseByUserId = async (userId: string) => {
             console.error(error.status, error.message, error.response?.data);
         } else {
             console.error(error);
+        }
+    }
+}
+
+export const createCourse = async (course: { title: string, startAt: Date, endAt: Date, location: Coordinate }) => {
+    try {
+        const response = await api.post<Course>(`${API_URL}/course`, course);
+
+        if (response.status === 201) {
+            return "success";
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error(error.status, error.message, error.response?.data);
+            if (error.response) {
+                return error.response.data.message;
+            }
+        } else {
+            console.error(error);
+            return error;
         }
     }
 }

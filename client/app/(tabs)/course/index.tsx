@@ -5,6 +5,7 @@ import { Button, Text, FAB, Card, Divider, ActivityIndicator } from 'react-nativ
 import Course from '@/interfaces/course';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCourseByUserId } from '@/scripts/api/course';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const CourseList = () => {
     const [upcomingCourses, setUpcomingCourses] = useState<Course[]>([]);
@@ -13,7 +14,12 @@ const CourseList = () => {
     const router = useRouter();
 
     useEffect(() => {
+        eventEmitter.on('refresh_course', fetchCourse);
         fetchCourse();
+
+        return () => {
+            eventEmitter.off('refresh_course', fetchCourse);
+        }
     }, []);
 
     const fetchCourse = async () => {
@@ -33,12 +39,12 @@ const CourseList = () => {
             const now = new Date();
 
             // 현재 시간 이후의 수업은 진행 예정, 그 외는 종료된 수업
-            const upcoming = courses.filter(course => course.endAt > now);
-            const completed = courses.filter(course => course.endAt <= now);
+            const upcoming = courses.filter(course => new Date(course.endAt) > now);
+            const completed = courses.filter(course => new Date(course.endAt) <= now);
 
             // 종료된 수업을 날짜별로 그룹화
             const groupedCompletedCourses = completed.reduce((groups: { [key: string]: Course[] }, course) => {
-                const date = course.endAt.toLocaleDateString('ko-KR'); // 날짜만 추출
+                const date = new Date(course.endAt).toLocaleDateString('ko-KR'); // 날짜만 추출
                 if (!groups[date]) {
                     groups[date] = [];
                 }
@@ -48,10 +54,10 @@ const CourseList = () => {
 
             // 그룹화된 수업 데이터를 배열로 변환하고 날짜 최신순으로 정렬
             const completedCoursesArray = Object.keys(groupedCompletedCourses)
-                .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+                .sort((a, b) => new Date(a).getTime() - new Date(b).getTime()) // Todo: 날짜 최신순 정렬
                 .map(date => ({
                     date,
-                    courses: groupedCompletedCourses[date],
+                    courses: groupedCompletedCourses[date].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()) // 시작일 기준으로 최신순 정렬
                 }));
 
             setUpcomingCourses(upcoming);
@@ -71,12 +77,12 @@ const CourseList = () => {
     };
 
     const renderUpcomingItem = ({ item }: { item: Course }) => (
-        <Card style={styles.courseCard}>
+        <Card style={styles.courseCard} key={item.courseId}>
             <Card.Content>
                 <Text style={styles.courseTitle}>{item.title}</Text>
                 <Text style={styles.courseTime}>
-                    시작: {item.startAt.toLocaleString('ko-KR')}{"\n"}
-                    종료: {item.endAt.toLocaleString('ko-KR')}
+                    시작: {new Date(item.startAt).toLocaleString('ko-KR')}{"\n"}
+                    종료: {new Date(item.endAt).toLocaleString('ko-KR')}
                 </Text>
             </Card.Content>
             <Card.Actions>
@@ -88,12 +94,12 @@ const CourseList = () => {
     const renderCompletedItem = (courses: Course[]) => (
         <View>
             {courses.map(item => (
-                <Card style={styles.courseCard}>
+                <Card style={styles.courseCard} key={item.courseId}>
                     <Card.Content>
                         <Text style={styles.courseTitle}>{item.title}</Text>
                         <Text style={styles.courseTime}>
-                            시작: {item.startAt.toLocaleString('ko-KR')}{"\n"}
-                            종료: {item.endAt.toLocaleString('ko-KR')}
+                            시작: {new Date(item.startAt).toLocaleString('ko-KR')}{"\n"}
+                            종료: {new Date(item.endAt).toLocaleString('ko-KR')}
                         </Text>
                     </Card.Content>
                     <Card.Actions>

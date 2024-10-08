@@ -6,6 +6,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Coordinate } from '@/interfaces/course';
 import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location';
 import Toast from 'react-native-toast-message';
+import { createCourse } from '@/scripts/api/course';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const CreateCourse = () => {
     const [title, setTitle] = useState('');
@@ -51,22 +53,52 @@ const CreateCourse = () => {
     };
 
     const handleSubmit = async () => {
+        if (loading) {
+            return;
+        }
+        if (!location) {
+            Toast.show({
+                type: 'error',
+                text1: '생성 실패',
+                text2: '위치값이 유효하지 않습니다.',
+            });
+            return;
+        }
+        if (!title) {
+            Toast.show({
+                type: 'error',
+                text1: '생성 실패',
+                text2: '수업 이름을 입력해주세요.',
+            });
+            return;
+        }
         setLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log({
-            title,
-            startAt,
-            endAt,
-            location,
-        });
-        Toast.show({
-            type: 'success',
-            text1: '생성 성공',
-            text2: '수업이 생성되었습니다.',
-        });
+        try {
+            const result = await createCourse({ title, startAt, endAt, location });
+            if (result == 'success') {
+                Toast.show({
+                    type: 'success',
+                    text1: '생성 성공',
+                    text2: '수업이 생성되었습니다.',
+                });
+                eventEmitter.emit('refresh_course');
+                return router.back();
+            }
+            else {
+                throw new Error(result);
+            }
+        } catch (error: any) {
+            Toast.show({
+                type: 'error',
+                text1: '생성 실패',
+                text2: error.toString(),
+            });
+            console.error(error);
+        }
+
         setLoading(false);
-        router.replace(`/(tabs)/course`);
     };
 
     const getCurrentLocation = async () => {
