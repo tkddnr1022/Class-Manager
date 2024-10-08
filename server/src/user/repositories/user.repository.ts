@@ -19,7 +19,7 @@ export class UserRepository {
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    return await this.userModel.findOne({ email }, { password: 0 }).exec();
+    return await this.userModel.findOne({ email }).exec();
   }
 
   async findUserByStudentId(studentId: string): Promise<User | null> {
