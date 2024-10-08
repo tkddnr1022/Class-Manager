@@ -12,6 +12,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { GetCourseByUserQuery } from './queries/impl/get-course-by-user.query';
 
 @ApiTags('강의')
 @Controller('course')
@@ -64,6 +65,19 @@ export class CourseController {
     @Get(':courseId')
     async getCourse(@Param('courseId') courseId: string): Promise<Course> {
         const query = new GetCourseQuery(courseId);
+        return await this.queryBus.execute(query);
+    }
+
+    @ApiOperation({ summary: '특정 사용자의 강의 목록 조회' })
+    @ApiBearerAuth()
+    @ApiParam({ name: 'userId', description: '조회할 사용자 ID' })
+    @ApiResponse({ status: 200, description: '강의 목록 조회 성공', type: [Course] })
+    @ApiResponse({ status: 401, description: '인증 실패' })
+    @Roles(Role.Admin, Role.Professor)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get('user/:userId')
+    async getCourseByUserId(@Param('userId') userId: string): Promise<Course[]> {
+        const query = new GetCourseByUserQuery(userId);
         return await this.queryBus.execute(query);
     }
 
