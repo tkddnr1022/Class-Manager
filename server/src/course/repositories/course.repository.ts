@@ -20,8 +20,8 @@ export class CourseRepository {
       .exec();
   }
 
-  async findCourseByUser(userId: Types.ObjectId): Promise<Course | null> {
-    return await this.courseModel.findOne({ createdBy: userId })
+  async findCourseByUser(userId: Types.ObjectId): Promise<Course[] | null> {
+    return await this.courseModel.find({ createdBy: userId })
       .populate('createdBy', 'username')
       .exec();
   }
