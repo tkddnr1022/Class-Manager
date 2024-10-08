@@ -1,9 +1,10 @@
 // Todo: axios 인터셉터 이해하기
 import axios from 'axios';
-import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Token from '@/interfaces/token';
 import { setStorageToken } from './storage';
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 // Axios 인스턴스 생성
 const api = axios.create({

@@ -1,8 +1,9 @@
-import { API_URL } from "@env";
 import axios from "axios";
 import api from "../utils/interceptors";
 import Entry from "@/interfaces/entry";
 import { Coordinate } from "@/interfaces/course";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const getEntryByUserId = async (userId: string) => {
     try {

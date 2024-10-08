@@ -1,7 +1,8 @@
-import { API_URL } from "@env";
 import axios from "axios";
 import api from "../utils/interceptors";
 import User from "@/interfaces/user";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const signIn = async (email: string, password: string) => {
     try {
