@@ -8,12 +8,12 @@ import { TouchableOpacity } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const [userRole, setUserRole] = useState('');
+  const [userRole, setUserRole] = useState<string[]>();
 
   const getUserRole = async () => {
     const role = await AsyncStorage.getItem('userRole');
     if (role) {
-      setUserRole(role);
+      setUserRole(JSON.parse(role));
     }
   }
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
           ),
-          tabBarButton: (props) => (userRole === 'professor' || userRole === 'admin') ? <TouchableOpacity {...props} /> : null,
+          tabBarButton: (props) => (userRole?.includes('professor') || userRole?.includes('admin')) ? <TouchableOpacity {...props} /> : null,
         }}
       />
       <Tabs.Screen
@@ -60,7 +60,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'checkmark' : 'checkmark-outline'} color={color} />
           ),
-          tabBarButton: (props) => (userRole === 'student' || userRole === 'admin') ? <TouchableOpacity {...props} /> : null,
+          tabBarButton: (props) => (userRole?.includes('student') || userRole?.includes('admin')) ? <TouchableOpacity {...props} /> : null,
         }}
       />
     </Tabs>

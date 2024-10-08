@@ -21,7 +21,6 @@ export default function Login() {
                 await setStorageToken(token);
                 const profile = await getProfile();
                 if (profile) {
-                    // Todo: roles 배열 or 문자열
                     await setStorageProfile(profile);
                 }
                 Toast.show({

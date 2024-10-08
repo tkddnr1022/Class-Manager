@@ -18,7 +18,7 @@ export const getStorageProfile = async () => {
 }
 
 export const setStorageProfile = async (profile: User) => {
-    await AsyncStorage.setItem('userRole', profile.roles[0]);
+    await AsyncStorage.setItem('userRole', JSON.stringify(profile.roles));
     await AsyncStorage.setItem('userId', profile._id);
     await AsyncStorage.setItem('username', profile.username);
     await AsyncStorage.setItem('email', profile.email);
