@@ -21,11 +21,9 @@ export const getEntryByUserId = async (userId: string) => {
     }
 }
 
-export const createEntry = async (courseId: string, location: Coordinate, deviceId: string) => {
+export const createEntry = async (entry: { courseId: string, location: Coordinate, deviceId: string }) => {
     try {
-        const response = await api.post<Entry>(`${API_URL}/entry`, {
-            courseId, location, deviceId
-        });
+        const response = await api.post<Entry>(`${API_URL}/entry`, entry);
 
         if (response.status === 201) {
             return "success";
@@ -33,7 +31,7 @@ export const createEntry = async (courseId: string, location: Coordinate, device
     } catch (error) {
         if (axios.isAxiosError(error)) {
             console.error(error.status, error.message, error.response?.data);
-            if(error.response){
+            if (error.response) {
                 return error.response.data.message;
             }
         } else {

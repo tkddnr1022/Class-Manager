@@ -57,6 +57,7 @@ export default function Camera() {
         setIsScanning(true);
         const courseId = qr.data;
         const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
+        const location = { lat: latitude, lon: longitude };
         let deviceId = null;
 
         if (Platform.OS === 'android') {
@@ -75,7 +76,7 @@ export default function Camera() {
 
         console.log(`courseId: ${courseId}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
 
-        const result = await createEntry(courseId, { lat: latitude, lon: longitude }, deviceId);
+        const result = await createEntry({ courseId, location, deviceId });
         if (result == 'success') {
             Toast.show({
                 type: 'success',
