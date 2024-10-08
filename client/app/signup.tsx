@@ -5,9 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import debounce from 'lodash.debounce';
 import Toast from 'react-native-toast-message';
+import { checkEmail, signUp } from '@/scripts/api/user';
+import { getProfile, signIn } from '@/scripts/api/auth';
+import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
 
 export default function Signup() {
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [studentId, setStudentId] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,20 +19,17 @@ export default function Signup() {
     const [emailMessage, setEmailMessage] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [emailChecking, setEmailChecking] = useState(false);
 
     const checkEmailDuplicate = async (email: string) => {
-        setEmailChecking(true);
-        // Todo: 실제 이메일 중복 확인 API 호출
-        // for dev
-        if (email === 'test@test.com') {
+        const isEmailTaken = await checkEmail(email);
+        if (isEmailTaken == true) {
             setEmailValid(false);
-            setEmailMessage('중복된 이메일입니다.');
-        } else {
+            setEmailMessage('이미 사용중인 이메일입니다.');
+        }
+        else if (isEmailTaken == false) {
             setEmailValid(true);
             setEmailMessage('사용 가능한 이메일입니다.');
         }
-        setEmailChecking(false);
     };
 
     const validateEmailFormat = (email: string) => {
@@ -73,24 +73,39 @@ export default function Signup() {
         }
 
         setLoading(true);
-        // Todo: 실제 회원가입 API 호출
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
         try {
-            await AsyncStorage.setItem('userToken', 'dummy-auth-token');
-            Toast.show({
-                type: 'success',
-                text1: '가입 성공',
-                text2: '회원가입이 완료되었습니다.'
-            });
-            router.replace('/(tabs)/home');
-        } catch (e: any) {
+            const result = await signUp({ username, email, password, studentId });
+            if (result == "success") {
+                Toast.show({
+                    type: 'success',
+                    text1: '가입 성공',
+                    text2: '회원가입이 완료되었습니다.'
+                });
+                const token = await signIn(email, password);
+                if (token) {
+                    await setStorageToken(token);
+                }
+                const profile = await getProfile();
+                if (profile) {
+                    await setStorageProfile(profile);
+                    // Todo: 뒤로가기 시 히스토리 남아있는 문제 해결
+                    return router.replace('/(tabs)/home');
+                }
+                // 회원가입 성공했으나 로그인 실패 상황
+                return router.back();
+            }
+            else {
+                throw new Error(result);
+            }
+        } catch (error: any) {
             Toast.show({
                 type: 'error',
                 text1: '가입 실패',
-                text2: e.toString()
+                text2: error.toString(),
             });
-            console.error(e);
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -98,7 +113,7 @@ export default function Signup() {
 
     const isFormValid = () => {
         return (
-            name.length > 0 &&
+            username.length > 0 &&
             studentId.length > 0 &&
             emailValid &&
             email.length > 0 &&
@@ -113,8 +128,8 @@ export default function Signup() {
             <Text style={styles.title}>회원가입</Text>
             <TextInput
                 label="이름"
-                value={name}
-                onChangeText={setName}
+                value={username}
+                onChangeText={setUsername}
                 disabled={loading}
                 style={styles.input}
             />
@@ -137,6 +152,7 @@ export default function Signup() {
                 error={!emailValid && !!email}
             />
             {!emailValid && <Text style={styles.errorMessage}>{emailMessage}</Text>}
+            {emailValid && <Text style={styles.successMessage}>{emailMessage}</Text>}
             <TextInput
                 label="비밀번호"
                 value={password}
@@ -157,6 +173,7 @@ export default function Signup() {
                 error={!passwordMatch && !!confirmPassword}
             />
             {!passwordMatch && <Text style={styles.errorMessage}>비밀번호가 일치하지 않습니다.</Text>}
+            {passwordMatch && confirmPassword && <Text style={styles.successMessage}>비밀번호가 일치합니다.</Text>}
             <Button
                 mode="contained"
                 onPress={handleSignup}
@@ -196,6 +213,11 @@ const styles = StyleSheet.create({
     },
     errorMessage: {
         color: 'red',
+        marginBottom: 8,
+        textAlign: 'left',
+    },
+    successMessage: {
+        color: 'green',
         marginBottom: 8,
         textAlign: 'left',
     },
