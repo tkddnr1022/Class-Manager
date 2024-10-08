@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, UseGuards, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -11,7 +11,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { GetUserByEmailQuery } from './queries/impl/get-user-by-email.query';
+import { CheckEmailResponseDto } from './dtos/check-email-response.dto';
 
 @ApiTags('사용자')
 @Controller('user')
@@ -48,6 +50,16 @@ export class UserController {
         const { username, email } = updateUserDto;
         const command = new UpdateUserCommand(userId, username, email);
         return await this.commandBus.execute(command);
+    }
+
+    @Get('check-email')
+    @ApiOperation({ summary: '이메일 중복 검사' })
+    @ApiQuery({ name: 'email', description: '중복 체크할 이메일', required: true })
+    @ApiResponse({ status: 200, description: '이메일 사용 가능 여부 반환', type: CheckEmailResponseDto })
+    async checkEmail(@Query('email') email: string): Promise<CheckEmailResponseDto> {
+        const query = new GetUserByEmailQuery(email);
+        const user = await this.queryBus.execute(query);
+        return { isEmailTaken: !!user };
     }
 
     @ApiOperation({ summary: '특정 사용자 조회' })
