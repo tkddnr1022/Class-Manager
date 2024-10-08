@@ -1,23 +1,23 @@
 import Entry from '@/interfaces/entry';
 import { getEntryByUserId } from '@/scripts/api/entry';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SectionList } from 'react-native';
-import { Text, Card } from 'react-native-paper';
+import { Text, Card, ActivityIndicator, FAB } from 'react-native-paper';
 
 const EntryRecord = () => {
     const [groupedEntries, setGroupedEntries] = useState<{ title: string; data: Entry[] }[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        eventEmitter.on('refresh_entry', fetchEntry);
         fetchEntry();
-    }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchEntry();
-        }, [])
-    );
+        return () => {
+            eventEmitter.off('refresh_entry', fetchEntry);
+        }
+    }, []);
 
     const renderEntryItem = ({ item }: { item: Entry }) => (
         <Card style={styles.entryCard}>
@@ -33,6 +33,12 @@ const EntryRecord = () => {
     );
 
     const fetchEntry = async () => {
+        if (loading) {
+            return;
+        }
+        setLoading(true);
+        // for dev
+        await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const userId = await AsyncStorage.getItem('userId');
             const entries = await getEntryByUserId(userId as string);
@@ -61,11 +67,17 @@ const EntryRecord = () => {
         } catch (error) {
             console.error(error);
         }
+        setLoading(false);
     }
 
     return (
         <View style={styles.container}>
-            {groupedEntries.length > 0 ? (
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator animating={true} size={'large'} />
+                    <Text>불러오는 중..</Text>
+                </View>
+            ) : (groupedEntries.length > 0 ? (
                 <>
                     <Text style={styles.title}>내 출석 기록</Text>
                     <SectionList
@@ -76,10 +88,14 @@ const EntryRecord = () => {
                         style={styles.entryList}
                         contentContainerStyle={styles.entryListContainer}
                     />
-                </>
-            ) : (
-                <Text>로딩 중...</Text>
+                </>) : (<Text>출석 기록이 없습니다.</Text>)
             )}
+            <FAB
+                style={styles.fab}
+                icon="refresh"
+                onPress={fetchEntry}
+                disabled={loading}
+            />
         </View>
     );
 };
@@ -117,6 +133,17 @@ const styles = StyleSheet.create({
     entryTitle: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+    },
+    fab: {
+        position: 'absolute',
+        right: 16,
+        bottom: 16,
     },
 });
 

@@ -6,6 +6,7 @@ import { useForegroundPermissions, getCurrentPositionAsync } from 'expo-location
 import * as Application from 'expo-application';
 import { createEntry } from '@/scripts/api/entry';
 import Toast from 'react-native-toast-message';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 export default function Camera() {
     const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
@@ -81,6 +82,7 @@ export default function Camera() {
                 text1: '출석 완료',
                 text2: '출석이 정상적으로 완료되었습니다.',
             });
+            eventEmitter.emit('refresh_entry');
             return router.replace('/(tabs)/entry');
         }
         else if (result == 'ERROR_USER_ID') {
