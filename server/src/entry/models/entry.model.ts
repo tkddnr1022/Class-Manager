@@ -24,7 +24,7 @@ export class Entry {
     location: Coordinate;
 
     @ApiPropertyOptional()
-    @Prop({ default: Date.now() })
+    @Prop({ default: Date.now })
     entryTime?: Date;
 }
 
