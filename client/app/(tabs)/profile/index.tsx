@@ -1,7 +1,8 @@
+import eventEmitter from "@/scripts/utils/eventEmitter";
 import { getStorageProfile } from "@/scripts/utils/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -13,14 +14,13 @@ export default function Mypage() {
     const [email, setEmail] = useState('');
 
     useEffect(() => {
+        eventEmitter.on('refresh_profile', fetchProfile);
         fetchProfile();
-    }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchProfile();
-        }, [])
-    );
+        return () => {
+            eventEmitter.off('refresh_profile', fetchProfile);
+        }
+    }, []);
 
     const fetchProfile = async () => {
         try {

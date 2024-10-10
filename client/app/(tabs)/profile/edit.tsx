@@ -5,6 +5,7 @@ import { Button, Text, TextInput } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { updateUser } from '@/scripts/api/user';
 import { getStorageProfile, setStorageProfile } from '@/scripts/utils/storage';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const EditProfile = () => {
     const [userId, setUserId] = useState('');
@@ -33,6 +34,7 @@ const EditProfile = () => {
         }
 
         setLoading(false);
+        eventEmitter.emit('refresh_profile');
         router.back();
     };
 
@@ -41,6 +43,7 @@ const EditProfile = () => {
     }, []);
 
     const fetchProfile = async () => {
+        setLoading(true);
         try {
             const profile = await getStorageProfile();
             if (profile) {
@@ -52,6 +55,7 @@ const EditProfile = () => {
         } catch (error) {
             console.error(error);
         }
+        setLoading(false);
     }
 
     return (
