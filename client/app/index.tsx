@@ -1,6 +1,5 @@
 import { getProfile } from '@/scripts/api/auth';
 import { getStorageToken } from '@/scripts/utils/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -26,10 +25,10 @@ export default function Index() {
         return router.replace('/(tabs)/home');
       }
 
-      router.replace('/login');
+      return router.replace('/login');
     } catch (error) {
       console.error(error);
-      router.replace('/login');
+      return router.replace('/login');
     }
   };
 
