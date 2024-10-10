@@ -36,37 +36,40 @@ const CourseList = () => {
                 setLoading(false);
                 return;
             }
+    
             const now = new Date();
-
-            // 현재 시간 이후의 수업은 진행 예정, 그 외는 종료된 수업
-            const upcoming = courses.filter(course => new Date(course.endAt) > now);
-            const completed = courses.filter(course => new Date(course.endAt) <= now);
-
-            // 종료된 수업을 날짜별로 그룹화
-            const groupedCompletedCourses = completed.reduce((groups: { [key: string]: Course[] }, course) => {
-                const date = new Date(course.endAt).toLocaleDateString('ko-KR'); // 날짜만 추출
-                if (!groups[date]) {
-                    groups[date] = [];
+    
+            // 과거, 현재 이후로 나누기
+            const upcoming = courses
+                .filter(course => new Date(course.endAt) > now)
+                .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
+    
+            const completed = courses
+                .filter(course => new Date(course.endAt) <= now)
+                .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
+    
+            // 완료된 수업을 날짜별로 그룹화
+            const completedGrouped = completed.reduce<{ [key: string]: Course[] }>((acc, course) => {
+                const endDate = new Date(course.endAt).toLocaleDateString('ko-KR');
+                if (!acc[endDate]) {
+                    acc[endDate] = [];
                 }
-                groups[date].push(course);
-                return groups;
+                acc[endDate].push(course);
+                return acc;
             }, {});
-
-            // 그룹화된 수업 데이터를 배열로 변환하고 날짜 최신순으로 정렬
-            const completedCoursesArray = Object.keys(groupedCompletedCourses)
-                .sort((a, b) => new Date(a).getTime() - new Date(b).getTime()) // Todo: 날짜 최신순 정렬
-                .map(date => ({
-                    date,
-                    courses: groupedCompletedCourses[date].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()) // 시작일 기준으로 최신순 정렬
-                }));
-
+    
+            const completedList = Object.keys(completedGrouped).map(date => ({
+                date,
+                courses: completedGrouped[date],
+            }));
+    
             setUpcomingCourses(upcoming);
-            setCompletedCourses(completedCoursesArray);
+            setCompletedCourses(completedList);
         } catch (error) {
             console.error(error);
         }
         setLoading(false);
-    }
+    };
 
     const goToDetails = (courseId: string) => {
         router.push(`/(tabs)/course/${courseId}`);
