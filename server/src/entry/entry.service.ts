@@ -61,6 +61,7 @@ export class EntryService {
             ...createEntryCommand,
             userId: userObjectId,
             courseId: courseObjectId,
+            entryTime: new Date(),
         });
     }
 
