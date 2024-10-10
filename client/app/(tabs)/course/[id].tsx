@@ -1,45 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import Course from '@/interfaces/course';
-import { Button, Text, Card } from 'react-native-paper';
+import { Button, Text, Card, ActivityIndicator } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons'; // MaterialIcons import
 import Toast from 'react-native-toast-message';
-
-interface Student {
-    name: string;
-    studentId: string;
-    deviceId: string;
-    attendanceTime: Date;
-}
+import { getCourse } from '@/scripts/api/course';
+import { getEntryByCourseId } from '@/scripts/api/entry';
+import Entry from '@/interfaces/entry';
 
 const CourseDetails = () => {
     const { id } = useLocalSearchParams();
-    const courseId = id as string;
     const [course, setCourse] = useState<Course>();
-    const [students, setStudents] = useState<Student[]>([]);
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
+    const [entries, setEntries] = useState<Entry[]>();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // TODO: Fetch the course details and student list based on the id
-        setCourse({
-            courseId: "1",
-            title: 'Math 101',
-            startAt: new Date('2023-09-20T09:00:00'),
-            endAt: new Date('2023-09-20T10:00:00'),
-            location: { lat: 37.7749, lon: -122.4194 }
-        });
-        setStudents([
-            { name: '홍길동', studentId: 'S001', deviceId: 'DEVICE001', attendanceTime: new Date('2023-09-20T09:05:00') },
-            { name: '김철수', studentId: 'S002', deviceId: 'DEVICE002', attendanceTime: new Date('2023-09-20T09:10:05') },
-            { name: '김철수', studentId: 'S002', deviceId: 'DEVICE002', attendanceTime: new Date('2023-09-20T09:10:10') },
-            { name: '김철수', studentId: 'S002', deviceId: 'DEVICE002', attendanceTime: new Date('2023-09-20T09:10:15') },
-            { name: '김철수', studentId: 'S002', deviceId: 'DEVICE002', attendanceTime: new Date('2023-09-20T09:10:18') },
-            { name: '김철수', studentId: 'S002', deviceId: 'DEVICE002', attendanceTime: new Date('2023-09-20T09:10:23') },
-            { name: '김철수', studentId: 'S002', deviceId: 'DEVICE002', attendanceTime: new Date('2023-09-20T09:10:45') },
-        ]);
+        fetchCoruse();
     }, [id]);
+
+    const fetchCoruse = async () => {
+        setLoading(true);
+        if (!id) {
+            setLoading(false);
+            return;
+        }
+        const courseId = id as string;
+        const course = await getCourse(courseId);
+        const entries = await getEntryByCourseId(courseId);
+        setCourse(course);
+        setEntries(entries);
+        setLoading(false);
+    }
 
     const handleEdit = () => {
         router.push(`/(tabs)/course/edit/${id}`);
@@ -59,66 +51,72 @@ const CourseDetails = () => {
         router.back();
     };
 
-    const renderStudentItem = ({ item }: { item: Student }) => (
-        <Card style={styles.studentCard}>
+    const renderStudentItem = ({ item }: { item: Entry }) => (
+        <Card style={styles.entryCard}>
             <Card.Content>
-                <Text style={styles.studentName}>{item.name}{` (${item.studentId})`}</Text>
-                <Text>출석 시간: {item.attendanceTime.toLocaleString('ko-KR')}</Text>
+                <Text style={styles.entryUsername}>{item.userId.username}{` (${item.userId.studentId})`}</Text>
+                <Text>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
             </Card.Content>
         </Card>
     );
 
     return (
         <View style={styles.container}>
-            {course ? (
-                <>
-                    <Card style={styles.card}>
-                        <Card.Content>
-                            <View style={styles.row}>
-                                <Text style={styles.title}>{course.title}</Text>
-                            </View>
-                            <View style={styles.row}>
-                                <MaterialIcons name="access-time" size={20} color="black" />
-                                <Text style={styles.detail}>시작 시간: {course.startAt.toLocaleString('ko-KR')}</Text>
-                            </View>
-                            <View style={styles.row}>
-                                <MaterialIcons name="access-time" size={20} color="black" />
-                                <Text style={styles.detail}>종료 시간: {course.endAt.toLocaleString('ko-KR')}</Text>
-                            </View>
-                            <View style={styles.row}>
-                                <MaterialIcons name="location-on" size={20} color="black" />
-                                <Text style={styles.detail}>위치: 위도 {course.location.lat}, 경도 {course.location.lon}</Text>
-                            </View>
-                        </Card.Content>
-                        <Card.Actions>
-                            <Button mode="contained-tonal" onPress={handleEdit} icon="pencil">
-                                수정
-                            </Button>
-                            <Button
-                                mode="contained-tonal"
-                                onPress={handleDelete}
-                                icon="delete"
-                                loading={loading}
-                                disabled={loading}
-                            >
-                                삭제
-                            </Button>
-                            <Button mode="contained-tonal" onPress={() => router.push(`/(tabs)/course/qrcode/${id}`)} icon="qrcode-scan">
-                                QR코드
-                            </Button>
-                        </Card.Actions>
-                    </Card>
-                    <Text style={styles.studentListTitle}>출석 학생 목록</Text>
-                    <FlatList
-                        data={students}
-                        renderItem={renderStudentItem}
-                        keyExtractor={(item) => item.attendanceTime.toISOString()}
-                        style={styles.studentList}
-                        contentContainerStyle={styles.studentListContainer}
-                    />
-                </>
-            ) : (
-                <Text>로딩 중...</Text>
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator animating={true} size={'large'} />
+                    <Text>불러오는 중..</Text>
+                </View>
+            ) : (<>
+                {course ? (
+                    <>
+                        <Card style={styles.card}>
+                            <Card.Content>
+                                <View style={styles.row}>
+                                    <Text style={styles.title}>{course.title}</Text>
+                                </View>
+                                <View style={styles.row}>
+                                    <MaterialIcons name="access-time" size={20} color="black" />
+                                    <Text style={styles.detail}>시작 시간: {new Date(course.startAt).toLocaleString('ko-KR')}</Text>
+                                </View>
+                                <View style={styles.row}>
+                                    <MaterialIcons name="access-time" size={20} color="black" />
+                                    <Text style={styles.detail}>종료 시간: {new Date(course.endAt).toLocaleString('ko-KR')}</Text>
+                                </View>
+                                <View style={styles.row}>
+                                    <MaterialIcons name="location-on" size={20} color="black" />
+                                    <Text style={styles.detail}>위치: {course.location.lat}, {course.location.lon}</Text>
+                                </View>
+                            </Card.Content>
+                            <Card.Actions>
+                                <Button mode="contained-tonal" onPress={handleEdit} icon="pencil">
+                                    수정
+                                </Button>
+                                <Button
+                                    mode="contained-tonal"
+                                    onPress={handleDelete}
+                                    icon="delete"
+                                >
+                                    삭제
+                                </Button>
+                                <Button mode="contained-tonal" onPress={() => router.push(`/(tabs)/course/qrcode/${id}`)} icon="qrcode-scan">
+                                    QR코드
+                                </Button>
+                            </Card.Actions>
+                        </Card>
+                        <Text style={styles.entryListTitle}>출석 학생 목록</Text>
+                        <FlatList
+                            data={entries}
+                            renderItem={renderStudentItem}
+                            keyExtractor={(item) => new Date(item.entryTime).toISOString()}
+                            style={styles.entryList}
+                            contentContainerStyle={styles.entryListContainer}
+                        />
+                    </>
+                ) : (
+                    <Text>수업 정보를 불러올 수 없습니다.</Text>
+                )}
+            </>
             )}
         </View>
     );
@@ -144,29 +142,35 @@ const styles = StyleSheet.create({
         marginVertical: 4,
         marginLeft: 4,
     },
-    studentListTitle: {
+    entryListTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         marginVertical: 16,
     },
-    studentList: {
+    entryList: {
         marginTop: 16,
     },
-    studentListContainer: {
+    entryListContainer: {
         paddingBottom: 16,
     },
-    studentCard: {
+    entryCard: {
         marginBottom: 12,
         borderRadius: 8,
         elevation: 2,
     },
-    studentName: {
+    entryUsername: {
         fontSize: 16,
         fontWeight: 'bold',
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
     },
 });
 

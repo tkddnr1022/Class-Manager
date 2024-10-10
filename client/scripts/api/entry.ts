@@ -21,6 +21,22 @@ export const getEntryByUserId = async (userId: string) => {
     }
 }
 
+export const getEntryByCourseId = async (courseId: string) => {
+    try {
+        const response = await api.get<Entry[]>(`${API_URL}/entry/course/${courseId}`);
+
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error(error.status, error.message, error.response?.data);
+        } else {
+            console.error(error);
+        }
+    }
+}
+
 export const createEntry = async (entry: { courseId: string, location: Coordinate, deviceId: string }) => {
     try {
         const response = await api.post<Entry>(`${API_URL}/entry`, entry);

@@ -80,7 +80,7 @@ const CourseList = () => {
     };
 
     const renderUpcomingItem = ({ item }: { item: Course }) => (
-        <Card style={styles.courseCard} key={item.courseId}>
+        <Card style={styles.courseCard} key={item._id}>
             <Card.Content>
                 <Text style={styles.courseTitle}>{item.title}</Text>
                 <Text style={styles.courseTime}>
@@ -89,7 +89,7 @@ const CourseList = () => {
                 </Text>
             </Card.Content>
             <Card.Actions>
-                <Button onPress={() => goToDetails(item.courseId)}>상세 보기</Button>
+                <Button onPress={() => {goToDetails(item._id)}}>상세 보기</Button>
             </Card.Actions>
         </Card>
     );
@@ -97,7 +97,7 @@ const CourseList = () => {
     const renderCompletedItem = (courses: Course[]) => (
         <View>
             {courses.map(item => (
-                <Card style={styles.courseCard} key={item.courseId}>
+                <Card style={styles.courseCard} key={item._id}>
                     <Card.Content>
                         <Text style={styles.courseTitle}>{item.title}</Text>
                         <Text style={styles.courseTime}>
@@ -106,7 +106,7 @@ const CourseList = () => {
                         </Text>
                     </Card.Content>
                     <Card.Actions>
-                        <Button onPress={() => goToDetails(item.courseId)}>상세 보기</Button>
+                        <Button onPress={() => goToDetails(item._id)}>상세 보기</Button>
                     </Card.Actions>
                 </Card>
             ))}
