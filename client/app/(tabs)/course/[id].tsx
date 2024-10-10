@@ -108,7 +108,7 @@ const CourseDetails = () => {
                         <FlatList
                             data={entries}
                             renderItem={renderStudentItem}
-                            keyExtractor={(item) => new Date(item.entryTime).toISOString()}
+                            keyExtractor={(item) => item.userId.studentId}
                             style={styles.entryList}
                             contentContainerStyle={styles.entryListContainer}
                         />
