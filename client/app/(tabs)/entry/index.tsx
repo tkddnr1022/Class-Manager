@@ -8,7 +8,7 @@ import { Text, Card, ActivityIndicator, FAB } from 'react-native-paper';
 
 const EntryRecord = () => {
     const [groupedEntries, setGroupedEntries] = useState<{ title: string; data: Entry[] }[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         eventEmitter.on('refresh_entry', fetchEntry);
@@ -33,9 +33,6 @@ const EntryRecord = () => {
     );
 
     const fetchEntry = async () => {
-        if (loading) {
-            return;
-        }
         setLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));

@@ -10,7 +10,7 @@ import eventEmitter from '@/scripts/utils/eventEmitter';
 const CourseList = () => {
     const [upcomingCourses, setUpcomingCourses] = useState<Course[]>([]);
     const [completedCourses, setCompletedCourses] = useState<{ date: string; courses: Course[] }[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
@@ -23,9 +23,6 @@ const CourseList = () => {
     }, []);
 
     const fetchCourse = async () => {
-        if (loading) {
-            return;
-        }
         setLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
