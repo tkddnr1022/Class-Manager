@@ -36,33 +36,37 @@ const CourseList = () => {
                 setLoading(false);
                 return;
             }
-    
+
             const now = new Date();
-    
+
             // 과거, 현재 이후로 나누기
             const upcoming = courses
                 .filter(course => new Date(course.endAt) > now)
                 .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
-    
+
             const completed = courses
                 .filter(course => new Date(course.endAt) <= now)
                 .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
-    
+
             // 완료된 수업을 날짜별로 그룹화
             const completedGrouped = completed.reduce<{ [key: string]: Course[] }>((acc, course) => {
-                const endDate = new Date(course.endAt).toLocaleDateString('ko-KR');
+                const endDate = new Date(course.endAt).toDateString();
                 if (!acc[endDate]) {
                     acc[endDate] = [];
                 }
                 acc[endDate].push(course);
                 return acc;
             }, {});
-    
-            const completedList = Object.keys(completedGrouped).map(date => ({
-                date,
-                courses: completedGrouped[date],
-            }));
-    
+
+            // 날짜별로 그룹화된 데이터를 최신순으로 정렬
+            const completedList = Object.keys(completedGrouped)
+                // 날짜 정렬
+                .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+                .map(date => ({
+                    date,
+                    courses: completedGrouped[date]
+                }));
+
             setUpcomingCourses(upcoming);
             setCompletedCourses(completedList);
         } catch (error) {
@@ -89,7 +93,7 @@ const CourseList = () => {
                 </Text>
             </Card.Content>
             <Card.Actions>
-                <Button onPress={() => {goToDetails(item._id)}}>상세 보기</Button>
+                <Button onPress={() => { goToDetails(item._id) }}>상세 보기</Button>
             </Card.Actions>
         </Card>
     );
@@ -135,7 +139,7 @@ const CourseList = () => {
                     {completedCourses.length > 0 ? (
                         completedCourses.map(({ date, courses }) => (
                             <View key={date}>
-                                <Text style={styles.completedSectionTitle}>{date}</Text>
+                                <Text style={styles.completedSectionTitle}>{new Date(date).toLocaleDateString('ko-KR')}</Text>
                                 {renderCompletedItem(courses)}
                             </View>
                         ))

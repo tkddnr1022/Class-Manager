@@ -29,7 +29,7 @@ const EntryRecord = () => {
     );
 
     const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
-        <Text style={styles.sectionHeader}>{title}</Text>
+        <Text style={styles.sectionHeader}>{new Date(title).toLocaleDateString('ko-KR')}</Text>
     );
 
     const fetchEntry = async () => {
@@ -46,9 +46,10 @@ const EntryRecord = () => {
                 setLoading(false);
                 return;
             }
-            // 날짜별로 출석 기록을 그룹화한 후 최신순으로 정렬
+
+            // 날짜별로 출석 기록을 그룹화
             const grouped = entries.reduce((groups: { [key: string]: Entry[] }, entry) => {
-                const date = new Date(entry.entryTime).toLocaleDateString('ko-KR'); // 날짜만 추출
+                const date = new Date(entry.entryTime).toDateString();
                 if (!groups[date]) {
                     groups[date] = [];
                 }
@@ -58,10 +59,12 @@ const EntryRecord = () => {
 
             // 날짜별로 그룹화된 데이터를 최신순으로 정렬
             const groupedData = Object.keys(grouped)
-                .sort((a, b) => new Date(b).getTime() - new Date(a).getTime()) // 날짜를 최신순으로 정렬
+            // 날짜 정렬
+                .sort((a, b) => new Date(b).getTime() - new Date(a).getTime()) 
                 .map(date => ({
                     title: date,
-                    data: grouped[date].sort((a, b) => b.entryTime.getTime() - a.entryTime.getTime()), // 날짜 내 출석 기록도 최신순으로 정렬
+                    // 출석 시간 정렬
+                    data: grouped[date].sort((a, b) => new Date(b.entryTime).getTime() - new Date(a.entryTime).getTime()), 
                 }));
 
             setGroupedEntries(groupedData);
@@ -70,6 +73,7 @@ const EntryRecord = () => {
         }
         setLoading(false);
     }
+
 
     return (
         <View style={styles.container}>
