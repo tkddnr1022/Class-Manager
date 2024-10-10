@@ -47,8 +47,8 @@ export class UserController {
         @Param('userId') userId: string,
         @Body() updateUserDto: UpdateUserDto,
     ): Promise<User> {
-        const { username, email } = updateUserDto;
-        const command = new UpdateUserCommand(userId, username, email);
+        const { username, email, password, studentId } = updateUserDto;
+        const command = new UpdateUserCommand(userId, username, email, password, studentId);
         return await this.commandBus.execute(command);
     }
 
