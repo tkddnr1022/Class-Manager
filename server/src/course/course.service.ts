@@ -1,3 +1,4 @@
+import { DeleteCourseCommand } from './commands/impl/delete-course.command';
 import { UpdateCourseCommand } from './commands/impl/update-course.command';
 import { Injectable } from '@nestjs/common';
 import { CourseRepository } from './repositories/course.repository';
@@ -39,8 +40,8 @@ export class CourseService {
         return await this.courseRepository.updateCourse(courseObjectId, { title, startAt, endAt, location });
     }
 
-    async deleteCourse(courseId: string) {
-        const courseObjectId = new Types.ObjectId(courseId);
+    async deleteCourse(deleteCourseCommand: DeleteCourseCommand) {
+        const courseObjectId = new Types.ObjectId(deleteCourseCommand.courseId);
         return await this.courseRepository.deleteCourse(courseObjectId);
     }
 }

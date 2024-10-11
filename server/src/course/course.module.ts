@@ -13,6 +13,8 @@ import { CourseRepository } from './repositories/course.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CourseSchema } from './models/course.model';
+import { DeleteCourseHandler } from './commands/handlers/delete-course-handler';
+import { CourseDeletedHandler } from './events/handlers/course-deleted.handler';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { CourseSchema } from './models/course.model';
     ListCoursesHandler,
     CourseCreatedHandler,
     CourseUpdatedHandler,
+    DeleteCourseHandler,
+    CourseDeletedHandler,
   ],
   controllers: [CourseController]
 })

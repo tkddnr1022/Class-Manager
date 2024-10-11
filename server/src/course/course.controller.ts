@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCourseDto } from './dtos/create-course.dto';
 import { Course } from './models/course.model';
@@ -14,6 +14,7 @@ import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { GetCourseByUserQuery } from './queries/impl/get-course-by-user.query';
 import { OwnerGuard } from 'src/auth/guard/owner.guard';
+import { DeleteCourseCommand } from './commands/impl/delete-course.command';
 
 @ApiTags('강의')
 @Controller('course')
@@ -94,5 +95,18 @@ export class CourseController {
         return await this.queryBus.execute(query);
     }
 
-    
+    @ApiOperation({ summary: '강의 삭제' })
+    @ApiBearerAuth()
+    @ApiParam({ name: 'courseId', description: '삭제할 강의 ID' })
+    @ApiResponse({ status: 200, description: '강의 삭제 성공' })
+    @ApiResponse({ status: 401, description: '인증 실패' })
+    @ApiResponse({ status: 404, description: '강의 찾을 수 없음' })
+    @Roles(Role.Admin, Role.Professor)
+    @UseGuards(JwtAuthGuard, RolesGuard, OwnerGuard)
+    @Delete(':courseId')
+    async deleteCourse(@Param('courseId') courseId: string): Promise<void> {
+        const command = new DeleteCourseCommand(courseId);
+        return await this.commandBus.execute(command);
+    }
+
 }
