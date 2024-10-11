@@ -60,14 +60,21 @@ const CourseDetails = () => {
             eventEmitter.emit('refresh_course');
             return router.back();
         }
+        else if(result == "ERROR_ENTRY_EXIST"){
+            Toast.show({
+                type: 'error',
+                text1: '삭제 실패',
+                text2: '출석 기록이 존재하여 삭제할 수 없습니다.',
+            });
+        }
         else {
             Toast.show({
                 type: 'error',
                 text1: '삭제 실패',
                 text2: result.toString()
             });
-            setDeleteLoading(false);
         }
+        setDeleteLoading(false);
     };
 
     const renderStudentItem = ({ item }: { item: Entry }) => (
