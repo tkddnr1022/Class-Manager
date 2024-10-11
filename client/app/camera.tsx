@@ -1,16 +1,11 @@
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Pressable, Platform } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Pressable } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
-import { useForegroundPermissions, getCurrentPositionAsync } from 'expo-location';
-import * as Application from 'expo-application';
-import { createEntry } from '@/scripts/api/entry';
 import Toast from 'react-native-toast-message';
-import eventEmitter from '@/scripts/utils/eventEmitter';
 
 export default function Camera() {
     const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
-    const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
     const [isScanning, setIsScanning] = useState(false); // 스캔 상태
 
     // state 초기화
@@ -22,7 +17,7 @@ export default function Camera() {
 
     // 최초 권한 요청
     useEffect(() => {
-        requestPermission();
+        requestCamPermission();
     }, []);
 
     // URL 검사
@@ -34,16 +29,9 @@ export default function Camera() {
         }
     }
 
-    // 권한 요청
-    async function requestPermission() {
-        // Todo: 권한 거부 시 동작 구현
-        await requestCamPermission();
-        await requestLocPermission();
-    }
-
     // QR 데이터 처리
     async function scan(qr: BarcodeScanningResult) {
-        if (!locPermission?.granted || isScanning) {
+        if (isScanning) {
             return;
         }
         if (!checkURL(qr.data)) {
@@ -56,72 +44,8 @@ export default function Camera() {
         }
         setIsScanning(true);
         const courseId = qr.data;
-        const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
-        const location = { lat: latitude, lon: longitude };
-        let deviceId = null;
-
-        if (Platform.OS === 'android') {
-            deviceId = Application.getAndroidId();
-        } else if (Platform.OS === 'ios') {
-            deviceId = await Application.getIosIdForVendorAsync();
-        }
-        if (!deviceId) {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: '디바이스 ID를 가져올 수 없습니다.',
-            });
-            return router.back();
-        }
-
-        console.log(`courseId: ${courseId}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
-
-        const result = await createEntry({ courseId, location, deviceId });
-        if (result == 'success') {
-            Toast.show({
-                type: 'success',
-                text1: '출석 완료',
-                text2: '출석이 정상적으로 완료되었습니다.',
-            });
-            eventEmitter.emit('refresh_entry');
-            return router.replace('/(tabs)/entry');
-        }
-        else if (result == 'ERROR_USER_ID') {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: '이미 출석한 수업입니다.',
-            });
-        }
-        else if (result == 'ERROR_DEVICE_ID') {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: '디바이스 ID 중복 오류',
-            });
-        }
-        else if (result == 'ERROR_LOCATION_RANGE') {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: '출석 위치 범위 밖입니다.',
-            });
-        }
-        else if (result == 'ERROR_START_TIME' || result == 'ERROR_END_TIME') {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: '출석 가능한 시간이 아닙니다.',
-            });
-        }
-        else {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: result,
-            });
-        }
-        return router.back();
+        
+        return router.replace(`/(tabs)/entry/${courseId}`);
     }
 
     return (
@@ -136,11 +60,11 @@ export default function Camera() {
                     <View style={styles.qrBox} />
                 </View>
                 <View style={styles.qrContainer}>
-                    {camPermission?.granted && locPermission?.granted ?
+                    {camPermission?.granted ?
                         (<Text style={styles.qrText}>QR코드를 중앙에 위치시켜주세요</Text>) :
                         (<View style={styles.qrPermission}>
-                            <Text style={styles.qrPermissionText}>앱 권한이 필요합니다.</Text>
-                            <Pressable onPress={requestPermission}>
+                            <Text style={styles.qrPermissionText}>카메라 권한이 필요합니다.</Text>
+                            <Pressable onPress={requestCamPermission}>
                                 <Text style={styles.qrPermissionButton}>권한 허용</Text>
                             </Pressable>
                         </View>)
