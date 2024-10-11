@@ -22,7 +22,7 @@ const EntryRecord = () => {
     const renderEntryItem = ({ item }: { item: Entry }) => (
         <Card style={styles.entryCard}>
             <Card.Content>
-                <Text style={styles.entryTitle}>{item.courseId.title}</Text>
+                <Text style={styles.entryTitle}>{item.courseId ? item.courseId.title : "삭제된 수업"}</Text>
                 <Text>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
             </Card.Content>
         </Card>

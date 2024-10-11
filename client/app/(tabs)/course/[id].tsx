@@ -60,7 +60,7 @@ const CourseDetails = () => {
             eventEmitter.emit('refresh_course');
             return router.back();
         }
-        else if(result == "ERROR_ENTRY_EXIST"){
+        else if (result == "ERROR_ENTRY_EXIST") {
             Toast.show({
                 type: 'error',
                 text1: '삭제 실패',
@@ -80,7 +80,10 @@ const CourseDetails = () => {
     const renderStudentItem = ({ item }: { item: Entry }) => (
         <Card style={styles.entryCard}>
             <Card.Content>
-                <Text style={styles.entryUsername}>{item.userId.username}{` (${item.userId.studentId})`}</Text>
+                <Text style={styles.entryUsername}>
+                    {item.userId ? item.userId.username : "탈퇴한 유저"}
+                    {item.userId && ` (${item.userId.username})`}
+                </Text>
                 <Text>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
             </Card.Content>
         </Card>
@@ -137,7 +140,7 @@ const CourseDetails = () => {
                             <FlatList
                                 data={entries}
                                 renderItem={renderStudentItem}
-                                keyExtractor={(item) => item.userId.studentId}
+                                keyExtractor={(item) => item.userId ? item.userId.studentId : ''}
                                 style={styles.entryList}
                                 contentContainerStyle={styles.entryListContainer}
                             />
