@@ -56,6 +56,26 @@ export const createCourse = async (course: { title: string, startAt: Date, endAt
     }
 }
 
+export const updateCourse = async (courseId: string, course: { title: string, startAt: Date, endAt: Date, location: Coordinate }) => {
+    try {
+        const response = await api.put<Course>(`${API_URL}/course/${courseId}`, course);
+
+        if (response.status === 200) {
+            return "success";
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error(error.status, error.message, error.response?.data);
+            if (error.response) {
+                return error.response.data.message;
+            }
+        } else {
+            console.error(error);
+            return error;
+        }
+    }
+}
+
 export const deleteCourse = async (courseId: string) => {
     try {
         const response = await api.delete<Course>(`${API_URL}/course/${courseId}`);

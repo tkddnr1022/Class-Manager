@@ -18,10 +18,15 @@ const CourseDetails = () => {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     useEffect(() => {
-        fetchCoruse();
+        eventEmitter.on('refresh_courseDetail', fetchCourse);
+        fetchCourse();
+
+        return () => {
+            eventEmitter.off('refresh_courseDetail', fetchCourse);
+        }
     }, [id]);
 
-    const fetchCoruse = async () => {
+    const fetchCourse = async () => {
         setLoading(true);
         if (!id) {
             setLoading(false);
