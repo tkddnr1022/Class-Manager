@@ -1,19 +1,22 @@
 import { DeleteCourseCommand } from './commands/impl/delete-course.command';
 import { UpdateCourseCommand } from './commands/impl/update-course.command';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CourseRepository } from './repositories/course.repository';
 import { Types } from 'mongoose';
 import { CreateCourseCommand } from './commands/impl/create-course.command';
+import { QueryBus } from '@nestjs/cqrs';
+import { GetEntryByCourseIdQuery } from 'src/entry/queries/impl/get-entry-by-course-id.query';
 
 @Injectable()
 export class CourseService {
     constructor(
         private readonly courseRepository: CourseRepository,
+        private readonly queryBus: QueryBus
     ) { }
 
     async createCourse(createCourseCommand: CreateCourseCommand) {
         const createdByObjectId = new Types.ObjectId(createCourseCommand.createdBy);
-        return await this.courseRepository.createCourse({...createCourseCommand, createdBy: createdByObjectId});
+        return await this.courseRepository.createCourse({ ...createCourseCommand, createdBy: createdByObjectId });
     }
 
     async getCourseById(courseId: string) {
@@ -41,7 +44,13 @@ export class CourseService {
     }
 
     async deleteCourse(deleteCourseCommand: DeleteCourseCommand) {
-        const courseObjectId = new Types.ObjectId(deleteCourseCommand.courseId);
+        const { courseId } = deleteCourseCommand;
+        const query = new GetEntryByCourseIdQuery(courseId);
+        const entry = await this.queryBus.execute(query);
+        if (entry.length > 0) {
+            throw new BadRequestException("ERROR_ENTRY_EXIST");
+        }
+        const courseObjectId = new Types.ObjectId(courseId);
         return await this.courseRepository.deleteCourse(courseObjectId);
     }
 }
