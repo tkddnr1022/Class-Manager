@@ -126,13 +126,17 @@ const CourseDetails = () => {
                             </Card.Actions>
                         </Card>
                         <Text style={styles.entryListTitle}>출석 학생 목록</Text>
-                        <FlatList
-                            data={entries}
-                            renderItem={renderStudentItem}
-                            keyExtractor={(item) => item.userId.studentId}
-                            style={styles.entryList}
-                            contentContainerStyle={styles.entryListContainer}
-                        />
+                        {entries && entries.length ? (
+                            <FlatList
+                                data={entries}
+                                renderItem={renderStudentItem}
+                                keyExtractor={(item) => item.userId.studentId}
+                                style={styles.entryList}
+                                contentContainerStyle={styles.entryListContainer}
+                            />
+                        ) : (
+                            <Text>출석한 학생이 없습니다.</Text>
+                        )}
                     </>
                 ) : (
                     <Text>수업 정보를 불러올 수 없습니다.</Text>
