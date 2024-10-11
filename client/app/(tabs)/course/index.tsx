@@ -23,6 +23,8 @@ const CourseList = () => {
     }, []);
 
     const fetchCourse = async () => {
+        setUpcomingCourses([]);
+        setCompletedCourses([]);
         setLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));

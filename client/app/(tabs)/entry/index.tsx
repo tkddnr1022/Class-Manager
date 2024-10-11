@@ -33,6 +33,7 @@ const EntryRecord = () => {
     );
 
     const fetchEntry = async () => {
+        setGroupedEntries([]);
         setLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
