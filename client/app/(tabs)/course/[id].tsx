@@ -5,15 +5,17 @@ import Course from '@/interfaces/course';
 import { Button, Text, Card, ActivityIndicator } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons'; // MaterialIcons import
 import Toast from 'react-native-toast-message';
-import { getCourse } from '@/scripts/api/course';
+import { deleteCourse, getCourse } from '@/scripts/api/course';
 import { getEntryByCourseId } from '@/scripts/api/entry';
 import Entry from '@/interfaces/entry';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const CourseDetails = () => {
     const { id } = useLocalSearchParams();
     const [course, setCourse] = useState<Course>();
     const [entries, setEntries] = useState<Entry[]>();
     const [loading, setLoading] = useState(true);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     useEffect(() => {
         fetchCoruse();
@@ -38,17 +40,29 @@ const CourseDetails = () => {
     };
 
     const handleDelete = async () => {
-        setLoading(true);
-        // TODO: API call to delete the course
+        setDeleteLoading(true);
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
-        Toast.show({
-            type: 'success',
-            text1: '삭제 성공',
-            text2: '강의가 삭제되었습니다.'
-        });
-        setLoading(false);
-        router.back();
+        const courseId = id as string;
+        const result = await deleteCourse(courseId);
+        if (result == "success") {
+            Toast.show({
+                type: 'success',
+                text1: '삭제 성공',
+                text2: '강의가 삭제되었습니다.'
+            });
+            setDeleteLoading(false);
+            eventEmitter.emit('refresh_course');
+            return router.back();
+        }
+        else {
+            Toast.show({
+                type: 'error',
+                text1: '삭제 실패',
+                text2: result.toString()
+            });
+            setDeleteLoading(false);
+        }
     };
 
     const renderStudentItem = ({ item }: { item: Entry }) => (
@@ -96,6 +110,8 @@ const CourseDetails = () => {
                                     mode="contained-tonal"
                                     onPress={handleDelete}
                                     icon="delete"
+                                    loading={deleteLoading}
+                                    disabled={deleteLoading}
                                 >
                                     삭제
                                 </Button>
