@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 import { updateUser } from '@/scripts/api/user';
 import { getStorageProfile, setStorageProfile } from '@/scripts/utils/storage';
 import eventEmitter from '@/scripts/utils/eventEmitter';
+import { Colors } from '@/constants/Colors';
 
 const EditProfile = () => {
     const [userId, setUserId] = useState('');
@@ -63,7 +64,7 @@ const EditProfile = () => {
             <Text style={styles.title}>회원정보 수정하기</Text>
             <View style={styles.row}>
                 <TextInput
-                    style={{ flex: 1 }}
+                    style={styles.input}
                     label="이름"
                     value={username}
                     onChangeText={setUsername}
@@ -72,7 +73,7 @@ const EditProfile = () => {
             </View>
             <View style={styles.row}>
                 <TextInput
-                    style={{ flex: 1 }}
+                    style={styles.input}
                     label="이메일"
                     value={email}
                     onChangeText={setEmail}
@@ -81,7 +82,7 @@ const EditProfile = () => {
             </View>
             <View style={styles.row}>
                 <TextInput
-                    style={{ flex: 1 }}
+                    style={styles.input}
                     label="비밀번호"
                     value={password}
                     onChangeText={setPassword}
@@ -92,7 +93,7 @@ const EditProfile = () => {
             </View>
             <View style={styles.row}>
                 <TextInput
-                    style={{ flex: 1 }}
+                    style={styles.input}
                     label="학번"
                     value={studentId}
                     onChangeText={setStudentId}
@@ -100,10 +101,12 @@ const EditProfile = () => {
                 />
             </View>
             <Button
-                mode="contained-tonal"
+                mode="contained"
                 onPress={handleSubmit}
+                icon={'check'}
                 disabled={loading}
                 loading={loading}
+                style={styles.button}
             >
                 수정
             </Button>
@@ -113,17 +116,32 @@ const EditProfile = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 48,
+        backgroundColor: Colors.light.background,
     },
     title: {
         fontSize: 24,
-        marginBottom: 16,
+        marginBottom: 24,
+        fontWeight: 'bold',
+        color: '#333',
     },
     row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        width: '100%',
         marginBottom: 8,
+    },
+    input: {
+        backgroundColor: '#fff',
+        fontSize: 16,
+    },
+    button: {
+        width: '100%',
+        marginTop: 16,
+        paddingVertical: 6,
+        backgroundColor: Colors.light.tint,
+        borderRadius: 12,
     },
 });
 

@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { signIn, getProfile } from '@/scripts/api/auth';
 import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
 import { router } from 'expo-router';
@@ -94,21 +95,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 16,
-        backgroundColor: '#f5f5f5',
+        padding: 36,
+        backgroundColor: Colors.light.background,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 32,
-        color: '#6200ee',
     },
     input: {
         marginBottom: 16,
+        backgroundColor: 'white',
     },
     button: {
         marginTop: 16,
+        backgroundColor: Colors.light.tint,
+        borderRadius: 12,
     },
     buttonContent: {
         paddingVertical: 8,

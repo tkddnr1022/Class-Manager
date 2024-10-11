@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import User from "@/interfaces/user";
 import eventEmitter from "@/scripts/utils/eventEmitter";
 import { getStorageProfile } from "@/scripts/utils/storage";
@@ -60,17 +61,16 @@ export default function Mypage() {
             ) : (<>
                 {profile ? (
                     <>
-                        <Avatar.Icon size={100} icon="account" style={styles.avatar} />
+                        <Avatar.Icon size={120} icon="account" style={styles.avatar} />
                         <Text variant="titleLarge" style={styles.userName}>{profile.username}</Text>
                         <Text variant="bodyMedium" style={styles.userId}>학번: {profile.studentId}</Text>
                     </>
                 ) : (
                     <Text>프로필을 불러올 수 없습니다.</Text>
-                )
-                }
+                )}
                 <View style={styles.buttonGroup}>
                     <Button
-                        mode="contained-tonal"
+                        mode="contained"
                         onPress={logoutHandler}
                         loading={logoutLoading}
                         disabled={logoutLoading}
@@ -79,7 +79,7 @@ export default function Mypage() {
                         로그아웃
                     </Button>
                     <Button
-                        mode="contained-tonal"
+                        mode="contained"
                         onPress={() => router.push({
                             pathname: '/profile/edit',
                         })}
@@ -88,7 +88,7 @@ export default function Mypage() {
                         회원정보 수정
                     </Button>
                     <Button
-                        mode="contained-tonal"
+                        mode="contained"
                         onPress={() => router.push('/profile/settings')}
                         style={styles.button}
                     >
@@ -106,26 +106,35 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
+        padding: 32,
+        backgroundColor: Colors.light.background,
     },
     avatar: {
-        marginBottom: 16,
+        marginBottom: 24,
         backgroundColor: '#6200ee',
     },
     userName: {
+        fontSize: 24,
         marginBottom: 4,
         fontWeight: 'bold',
+        color: '#333',
     },
     userId: {
+        fontSize: 16,
         marginBottom: 24,
         color: '#6b6b6b',
     },
     buttonGroup: {
         width: '100%',
         marginTop: 32,
+        alignItems: 'center',
     },
     button: {
+        width: '100%',
         marginBottom: 12,
+        paddingVertical: 6,
+        backgroundColor: Colors.light.tint,
+        borderRadius: 12,
     },
     loadingContainer: {
         flex: 1,

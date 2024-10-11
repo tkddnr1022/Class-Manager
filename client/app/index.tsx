@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { getProfile } from '@/scripts/api/auth';
 import { healthCheck } from '@/scripts/api/health';
 import { getStorageToken } from '@/scripts/utils/storage';
@@ -101,6 +102,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.light.background,
   },
 });

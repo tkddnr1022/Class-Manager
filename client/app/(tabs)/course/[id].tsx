@@ -9,6 +9,7 @@ import { deleteCourse, getCourse } from '@/scripts/api/course';
 import { getEntryByCourseId } from '@/scripts/api/entry';
 import Entry from '@/interfaces/entry';
 import eventEmitter from '@/scripts/utils/eventEmitter';
+import { Colors } from '@/constants/Colors';
 
 const CourseDetails = () => {
     const { id } = useLocalSearchParams();
@@ -118,20 +119,30 @@ const CourseDetails = () => {
                                 </View>
                             </Card.Content>
                             <Card.Actions>
-                                <Button mode="contained-tonal" onPress={handleEdit} icon="pencil">
+                                <Button
+                                    mode="contained"
+                                    onPress={handleEdit}
+                                    icon="pencil"
+                                    style={styles.actionButton}>
                                     수정
                                 </Button>
                                 <Button
-                                    mode="contained-tonal"
+                                    mode="contained"
                                     onPress={handleDelete}
                                     icon="delete"
                                     loading={deleteLoading}
                                     disabled={deleteLoading}
+                                    style={styles.actionButton}
                                 >
                                     삭제
                                 </Button>
-                                <Button mode="contained-tonal" onPress={() => router.push(`/(tabs)/course/qrcode/${id}`)} icon="qrcode-scan">
-                                    QR코드
+                                <Button
+                                    mode="contained"
+                                    onPress={() => router.push(`/(tabs)/course/qrcode/${id}`)}
+                                    icon="qrcode-scan"
+                                    style={styles.actionButton}
+                                >
+                                    코드
                                 </Button>
                             </Card.Actions>
                         </Card>
@@ -141,7 +152,6 @@ const CourseDetails = () => {
                                 data={entries}
                                 renderItem={renderStudentItem}
                                 keyExtractor={(item) => item.userId ? item.userId.studentId : ''}
-                                style={styles.entryList}
                                 contentContainerStyle={styles.entryListContainer}
                             />
                         ) : (
@@ -160,53 +170,62 @@ const CourseDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        padding: 24,
+        backgroundColor: Colors.light.background,
     },
     card: {
-        borderRadius: 8,
+        borderRadius: 12,
         elevation: 4,
-        marginBottom: 16,
+        marginBottom: 12,
+        backgroundColor: '#ffffff',
+        marginHorizontal: 4,
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginLeft: 4,
+        color: '#333',
+        marginBottom: 8,
     },
     detail: {
         fontSize: 16,
-        marginVertical: 4,
-        marginLeft: 4,
+        color: '#6b6b6b',
+        marginVertical: 2,
     },
     entryListTitle: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#333',
         marginVertical: 16,
-    },
-    entryList: {
-        marginTop: 16,
+        marginHorizontal: 4,
     },
     entryListContainer: {
         paddingBottom: 16,
     },
     entryCard: {
         marginBottom: 12,
-        borderRadius: 8,
+        borderRadius: 12,
         elevation: 2,
+        backgroundColor: '#ffffff',
+        marginHorizontal: 4,
     },
     entryUsername: {
         fontSize: 16,
         fontWeight: 'bold',
+        color: '#333',
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 8,
     },
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
     },
+    actionButton: {
+        backgroundColor: Colors.light.tint,
+    }
 });
 
 export default CourseDetails;

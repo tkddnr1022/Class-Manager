@@ -8,6 +8,7 @@ import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location
 import Toast from 'react-native-toast-message';
 import { createCourse } from '@/scripts/api/course';
 import eventEmitter from '@/scripts/utils/eventEmitter';
+import { Colors } from '@/constants/Colors';
 
 const CreateCourse = () => {
     const [title, setTitle] = useState('');
@@ -18,7 +19,7 @@ const CreateCourse = () => {
     const [showEndDate, setShowEndDate] = useState(false);
     const [showStartTime, setShowStartTime] = useState(false);
     const [showEndTime, setShowEndTime] = useState(false);
-    const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
+    const [locPermission, requestLocPermission] = useForegroundPermissions();
     const [loading, setLoading] = useState(false);
     const [locLoading, setLocLoading] = useState(false);
 
@@ -73,7 +74,6 @@ const CreateCourse = () => {
             return;
         }
         setLoading(true);
-        // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const result = await createCourse({ title, startAt, endAt, location });
@@ -85,8 +85,7 @@ const CreateCourse = () => {
                 });
                 eventEmitter.emit('refresh_course');
                 return router.back();
-            }
-            else {
+            } else {
                 throw new Error(result);
             }
         } catch (error: any) {
@@ -105,7 +104,6 @@ const CreateCourse = () => {
         setLocLoading(true);
         const { granted } = await requestLocPermission();
         if (!granted) {
-            // Todo: 권한 거부 시 동작
             setLocLoading(false);
             return;
         }
@@ -123,7 +121,7 @@ const CreateCourse = () => {
             <Text style={styles.title}>수업 생성하기</Text>
             <View style={styles.row}>
                 <TextInput
-                    style={{ flex: 1 }}
+                    style={styles.input}
                     label="수업 이름"
                     value={title}
                     onChangeText={setTitle}
@@ -140,6 +138,7 @@ const CreateCourse = () => {
                         label="시작 날짜"
                         value={startAt.toLocaleDateString()}
                         editable={false}
+                        style={styles.dateTimeInput}
                     />
                 </TouchableOpacity>
                 {showStartDate && (
@@ -159,6 +158,7 @@ const CreateCourse = () => {
                         label="시작 시간"
                         value={startAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         editable={false}
+                        style={styles.dateTimeInput}
                     />
                 </TouchableOpacity>
                 {showStartTime && (
@@ -181,6 +181,7 @@ const CreateCourse = () => {
                         label="종료 날짜"
                         value={endAt.toLocaleDateString()}
                         editable={false}
+                        style={styles.dateTimeInput}
                     />
                 </TouchableOpacity>
                 {showEndDate && (
@@ -189,7 +190,6 @@ const CreateCourse = () => {
                         mode="date"
                         display="default"
                         onChange={handleEndDateChange}
-                        locale='ko-KR'
                     />
                 )}
                 <TouchableOpacity
@@ -201,6 +201,7 @@ const CreateCourse = () => {
                         label="종료 시간"
                         value={endAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         editable={false}
+                        style={styles.dateTimeInput}
                     />
                 </TouchableOpacity>
                 {showEndTime && (
@@ -221,7 +222,7 @@ const CreateCourse = () => {
                     editable={false}
                 />
                 <Button
-                    mode="contained-tonal"
+                    mode="contained"
                     icon="crosshairs-gps"
                     onPress={getCurrentLocation}
                     style={styles.locationButton}
@@ -233,10 +234,12 @@ const CreateCourse = () => {
             </View>
 
             <Button
-                mode="contained-tonal"
+                mode="contained"
                 onPress={handleSubmit}
                 disabled={loading}
                 loading={loading}
+                style={styles.button}
+                icon={'plus'}
             >
                 생성
             </Button>
@@ -246,34 +249,51 @@ const CreateCourse = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        flex: 1,
+        padding: 32,
+        backgroundColor: Colors.light.background,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     title: {
-        fontSize: 24,
-        marginBottom: 16,
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 24,
+        color: '#333',
     },
     input: {
         flex: 1,
-        marginRight: 8,
+        backgroundColor: '#fff',
     },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 10,
     },
     datePicker: {
         flex: 1,
-        marginRight: 4,
+        marginRight: 8,
     },
     timePicker: {
         flex: 1,
-        marginLeft: 4,
+        marginLeft: 8,
+    },
+    dateTimeInput: {
+        backgroundColor: '#fff',
     },
     locationButton: {
-        justifyContent: 'center',
-        alignItems: 'center',
         marginLeft: 8,
+        height: 48,
+        justifyContent: 'center',
+        backgroundColor: Colors.light.tint,
+    },
+    button: {
+        width: '100%',
+        marginTop: 20,
+        paddingVertical: 6,
+        borderRadius: 12,
+        backgroundColor: Colors.light.tint,
     },
 });
 

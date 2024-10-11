@@ -8,6 +8,7 @@ import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location
 import Toast from 'react-native-toast-message';
 import { getCourse, updateCourse } from '@/scripts/api/course';
 import eventEmitter from '@/scripts/utils/eventEmitter';
+import { Colors } from '@/constants/Colors';
 
 const EditCourse = () => {
     const { id } = useLocalSearchParams();
@@ -153,7 +154,7 @@ const EditCourse = () => {
                             <Text style={styles.title}>수업 수정하기</Text>
                             <View style={styles.row}>
                                 <TextInput
-                                    style={{ flex: 1 }}
+                                    style={styles.inputFlex}
                                     label="수업 이름"
                                     value={title}
                                     onChangeText={setTitle}
@@ -170,6 +171,7 @@ const EditCourse = () => {
                                         label="시작 날짜"
                                         value={new Date(startAt).toLocaleDateString()}
                                         editable={false}
+                                        style={styles.input}
                                     />
                                 </TouchableOpacity>
                                 {showStartDate && (
@@ -189,6 +191,7 @@ const EditCourse = () => {
                                         label="시작 시간"
                                         value={new Date(startAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         editable={false}
+                                        style={styles.input}
                                     />
                                 </TouchableOpacity>
                                 {showStartTime && (
@@ -211,6 +214,7 @@ const EditCourse = () => {
                                         label="종료 날짜"
                                         value={new Date(endAt).toLocaleDateString()}
                                         editable={false}
+                                        style={styles.input}
                                     />
                                 </TouchableOpacity>
                                 {showEndDate && (
@@ -231,6 +235,7 @@ const EditCourse = () => {
                                         label="종료 시간"
                                         value={new Date(endAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         editable={false}
+                                        style={styles.input}
                                     />
                                 </TouchableOpacity>
                                 {showEndTime && (
@@ -245,13 +250,13 @@ const EditCourse = () => {
 
                             <View style={styles.row}>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.inputFlex}
                                     label="위치"
                                     value={`${location?.lat}, ${location?.lon}`}
                                     editable={false}
                                 />
                                 <Button
-                                    mode="contained-tonal"
+                                    mode="contained"
                                     icon="crosshairs-gps"
                                     onPress={getCurrentLocation}
                                     style={styles.locationButton}
@@ -263,10 +268,12 @@ const EditCourse = () => {
                             </View>
 
                             <Button
-                                mode="contained-tonal"
+                                mode="contained"
                                 onPress={handleSubmit}
                                 disabled={submitLoading}
                                 loading={submitLoading}
+                                style={styles.button}
+                                icon={'check'}
                             >
                                 수정
                             </Button>
@@ -283,40 +290,58 @@ const EditCourse = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        padding: 32,
+        backgroundColor: Colors.light.background,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     title: {
-        fontSize: 24,
-        marginBottom: 16,
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 24,
+        color: '#333',
     },
     input: {
+        backgroundColor: '#fff',
+    },
+    inputFlex: {
         flex: 1,
-        marginRight: 8,
+        backgroundColor: '#fff',
     },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 10,
     },
     datePicker: {
         flex: 1,
-        marginRight: 4,
+        marginRight: 8,
     },
     timePicker: {
         flex: 1,
-        marginLeft: 4,
+        marginLeft: 8,
+    },
+    dateTimeInput: {
+        backgroundColor: '#fff',
     },
     locationButton: {
-        justifyContent: 'center',
-        alignItems: 'center',
         marginLeft: 8,
+        height: 48,
+        justifyContent: 'center',
+        backgroundColor: Colors.light.tint,
+    },
+    button: {
+        width: '100%',
+        marginTop: 20,
+        paddingVertical: 6,
+        borderRadius: 12,
+        backgroundColor: Colors.light.tint,
     },
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
     },
 });
 

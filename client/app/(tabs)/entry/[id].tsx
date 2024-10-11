@@ -10,6 +10,7 @@ import eventEmitter from '@/scripts/utils/eventEmitter';
 import { createEntry } from '@/scripts/api/entry';
 import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location';
 import * as Application from 'expo-application';
+import { Colors } from '@/constants/Colors';
 
 const EntryDetails = () => {
     const { id } = useLocalSearchParams();
@@ -184,7 +185,7 @@ const EntryDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f7fa',
+        backgroundColor: Colors.light.background,
         padding: 24,
         justifyContent: 'center',
         alignItems: 'center',
@@ -223,12 +224,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
     },
     submitButton: {
         width: '100%',
         paddingVertical: 6,
-        backgroundColor: '#6200ea',
+        backgroundColor: Colors.light.tint,
         borderRadius: 12,
     },
 });
