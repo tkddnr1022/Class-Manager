@@ -16,25 +16,28 @@ export default function Camera() {
     );
 
     // 최초 권한 요청
+    // Todo: 권한 거부 시 동작
     useEffect(() => {
         requestCamPermission();
     }, []);
 
     // URL 검사
     function checkURL(url: string) {
-        console.log("check");
-        return true;
-        if (url != "test") {
+        if (url.startsWith('class-manager://')) {
+            return true;
+        }
+        else{
             return false;
         }
     }
 
     // QR 데이터 처리
     async function scan(qr: BarcodeScanningResult) {
-        if (isScanning) {
+        if (isScanning || !qr.data) {
             return;
         }
-        if (!checkURL(qr.data)) {
+        const match = qr.data.match(/class-manager:\/\/entry\/(.+)/);
+        if (!checkURL(qr.data) || !match) {
             Toast.show({
                 type: 'error',
                 text1: '출석 실패',
@@ -43,7 +46,7 @@ export default function Camera() {
             return router.back();
         }
         setIsScanning(true);
-        const courseId = qr.data;
+        const courseId = match[1];
         
         return router.replace(`/(tabs)/entry/${courseId}`);
     }
