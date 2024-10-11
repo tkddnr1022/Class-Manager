@@ -13,6 +13,7 @@ import { Role } from 'src/auth/enums/roles.enum';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { GetCourseByUserQuery } from './queries/impl/get-course-by-user.query';
+import { OwnerGuard } from 'src/auth/guard/owner.guard';
 
 @ApiTags('강의')
 @Controller('course')
@@ -44,7 +45,7 @@ export class CourseController {
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '강의 찾을 수 없음' })
     @Roles(Role.Admin, Role.Professor)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, OwnerGuard)
     @Put(':courseId')
     async updateCourse(
         @Param('courseId') courseId: string,
@@ -92,4 +93,6 @@ export class CourseController {
         const query = new ListCoursesQuery();
         return await this.queryBus.execute(query);
     }
+
+    
 }

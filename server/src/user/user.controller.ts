@@ -14,6 +14,7 @@ import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { GetUserByEmailQuery } from './queries/impl/get-user-by-email.query';
 import { CheckEmailResponseDto } from './dtos/check-email-response.dto';
+import { OwnerGuard } from 'src/auth/guard/owner.guard';
 
 @ApiTags('사용자')
 @Controller('user')
@@ -41,7 +42,7 @@ export class UserController {
     @ApiResponse({ status: 200, description: '사용자 수정 성공', type: User })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '사용자 찾을 수 없음' })
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, OwnerGuard)
     @Put(':userId')
     async updateUser(
         @Param('userId') userId: string,
