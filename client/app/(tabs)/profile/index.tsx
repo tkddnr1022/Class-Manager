@@ -1,17 +1,17 @@
+import User from "@/interfaces/user";
 import eventEmitter from "@/scripts/utils/eventEmitter";
 import { getStorageProfile } from "@/scripts/utils/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Avatar, Button, Text } from "react-native-paper";
+import { ActivityIndicator, Avatar, Button, Text } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function Mypage() {
-    const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState('');
-    const [studentId, setStudentId] = useState('');
-    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [logoutLoading, setLogoutLoading] = useState(false);
+    const [profile, setProfile] = useState<User>();
 
     useEffect(() => {
         eventEmitter.on('refresh_profile', fetchProfile);
@@ -23,20 +23,22 @@ export default function Mypage() {
     }, []);
 
     const fetchProfile = async () => {
+        setLoading(true);
+        // for dev
+        await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const profile = await getStorageProfile();
             if (profile) {
-                setUsername(profile.username);
-                setStudentId(profile.studentId);
-                setEmail(profile.email);
+                setProfile(profile);
             }
         } catch (error) {
             console.error(error);
         }
+        setLoading(false);
     }
 
     const logoutHandler = async () => {
-        setLoading(true);
+        setLogoutLoading(true);
         await AsyncStorage.clear();
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -44,47 +46,57 @@ export default function Mypage() {
             type: 'success',
             text1: '로그아웃 되었습니다.'
         });
-        setLoading(false);
+        setLogoutLoading(false);
         router.replace('/login');
     }
 
     return (
         <View style={styles.container}>
-            <Avatar.Icon size={100} icon="account" style={styles.avatar} />
-            <Text variant="titleLarge" style={styles.userName}>{username}</Text>
-            <Text variant="bodyMedium" style={styles.userId}>학번: {studentId}</Text>
-            <View style={styles.buttonGroup}>
-                <Button
-                    mode="contained-tonal"
-                    onPress={logoutHandler}
-                    loading={loading}
-                    disabled={loading}
-                    style={styles.button}
-                >
-                    로그아웃
-                </Button>
-                <Button
-                    mode="contained-tonal"
-                    onPress={() => router.push({
-                        pathname: '/profile/edit',
-                        params: {
-                            username,
-                            studentId,
-                            email,
-                        }
-                    })}
-                    style={styles.button}
-                >
-                    회원정보 수정
-                </Button>
-                <Button
-                    mode="contained-tonal"
-                    onPress={() => router.push('/profile/settings')}
-                    style={styles.button}
-                >
-                    앱 설정
-                </Button>
-            </View>
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator animating={true} size={'large'} />
+                    <Text>불러오는 중..</Text>
+                </View>
+            ) : (<>
+                {profile ? (
+                    <>
+                        <Avatar.Icon size={100} icon="account" style={styles.avatar} />
+                        <Text variant="titleLarge" style={styles.userName}>{profile.username}</Text>
+                        <Text variant="bodyMedium" style={styles.userId}>학번: {profile.studentId}</Text>
+                    </>
+                ) : (
+                    <Text>프로필을 불러올 수 없습니다.</Text>
+                )
+                }
+                <View style={styles.buttonGroup}>
+                    <Button
+                        mode="contained-tonal"
+                        onPress={logoutHandler}
+                        loading={logoutLoading}
+                        disabled={logoutLoading}
+                        style={styles.button}
+                    >
+                        로그아웃
+                    </Button>
+                    <Button
+                        mode="contained-tonal"
+                        onPress={() => router.push({
+                            pathname: '/profile/edit',
+                        })}
+                        style={styles.button}
+                    >
+                        회원정보 수정
+                    </Button>
+                    <Button
+                        mode="contained-tonal"
+                        onPress={() => router.push('/profile/settings')}
+                        style={styles.button}
+                    >
+                        앱 설정
+                    </Button>
+                </View>
+            </>
+            )}
         </View>
     );
 }
@@ -114,5 +126,10 @@ const styles = StyleSheet.create({
     },
     button: {
         marginBottom: 12,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
