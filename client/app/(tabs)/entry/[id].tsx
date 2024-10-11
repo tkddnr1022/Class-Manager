@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import Course from '@/interfaces/course';
 import { Button, Text, Card, ActivityIndicator } from 'react-native-paper';
@@ -18,6 +18,7 @@ const EntryDetails = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
 
+    // Todo: 권한 거부 시 동작
     useEffect(() => {
         fetchCourse();
         requestLocPermission();
@@ -40,10 +41,28 @@ const EntryDetails = () => {
         // for dev
         await new Promise(resolve => setTimeout(resolve, 2000));
         const courseId = id as string;
+
+        if(!locPermission?.granted){
+            Toast.show({
+                type: 'info',
+                text1: '권한 요청',
+                text2: '위치 정보 권한을 허용해주세요.',
+            });
+            requestLocPermission();
+            return setSubmitLoading(false);
+        }
         const { latitude, longitude } = (await getCurrentPositionAsync()).coords;
         const location = { lat: latitude, lon: longitude };
-        let deviceId = null;
+        if (!location) {
+            Toast.show({
+                type: 'error',
+                text1: '출석 실패',
+                text2: '위치 정보를 불러올 수 없습니다.',
+            });
+            return setSubmitLoading(false);
+        }
 
+        let deviceId = null;
         if (Platform.OS === 'android') {
             deviceId = Application.getAndroidId();
         } else if (Platform.OS === 'ios') {
@@ -55,18 +74,8 @@ const EntryDetails = () => {
                 text1: '출석 실패',
                 text2: '디바이스 ID를 가져올 수 없습니다.',
             });
-            return;
+            return setSubmitLoading(false);
         }
-        if (!location) {
-            Toast.show({
-                type: 'error',
-                text1: '출석 실패',
-                text2: '위치 정보를 불러올 수 없습니다.',
-            });
-            return;
-        }
-
-        console.log(`courseId: ${courseId}, latitude: ${latitude}, longitude: ${longitude}, deviceId: ${deviceId}`);
 
         const result = await createEntry({ courseId, location, deviceId });
         if (result == 'success') {
@@ -127,6 +136,12 @@ const EntryDetails = () => {
                 {course ? (
                     <>
                         <Card style={styles.card}>
+                            <TouchableOpacity
+                                style={styles.closeIcon}
+                                onPress={() => router.replace('/(tabs)/entry')}
+                            >
+                                <MaterialIcons name="close" size={24} color="black" />
+                            </TouchableOpacity>
                             <Card.Content>
                                 <View style={styles.row}>
                                     <Text style={styles.title}>{course.title}</Text>
@@ -178,9 +193,15 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         width: '100%',
         marginBottom: 16,
-        paddingBottom: 8,
+        paddingVertical: 8,
         backgroundColor: '#fff',
         elevation: 5,
+    },
+    closeIcon: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        zIndex: 1,
     },
     title: {
         fontSize: 22,
