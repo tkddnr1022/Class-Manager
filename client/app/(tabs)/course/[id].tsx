@@ -83,7 +83,7 @@ const CourseDetails = () => {
             <Card.Content>
                 <Text style={styles.entryUsername}>
                     {item.userId ? item.userId.username : "탈퇴한 유저"}
-                    {item.userId && ` (${item.userId.username})`}
+                    {item.userId && ` (${item.userId.studentId})`}
                 </Text>
                 <Text>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
             </Card.Content>
