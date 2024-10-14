@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { ActivityIndicator, Avatar, Button, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Avatar, Button, Card, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function Mypage() {
@@ -55,15 +55,19 @@ export default function Mypage() {
                     <Text>불러오는 중..</Text>
                 </View>
             ) : (<>
-                {profile ? (
-                    <>
-                        <Avatar.Icon size={120} icon="account" style={styles.avatar} />
-                        <Text variant="titleLarge" style={styles.userName}>{profile.username}</Text>
-                        <Text variant="bodyMedium" style={[styles.userId, { color: colors.secondary }]}>학번: {profile.studentId}</Text>
-                    </>
-                ) : (
-                    <Text>프로필을 불러올 수 없습니다.</Text>
-                )}
+                <Card style={styles.card}>
+                    <Card.Content style={styles.cardContent}>
+                        {profile ? (
+                            <>
+                                <Avatar.Icon size={120} icon="account" style={styles.avatar} />
+                                <Text variant="titleLarge" style={styles.userName}>{profile.username}</Text>
+                                <Text variant="bodyMedium" style={[styles.userId, { color: colors.secondary }]}>학번: {profile.studentId}</Text>
+                            </>
+                        ) : (
+                            <Text>프로필을 불러올 수 없습니다.</Text>
+                        )}
+                    </Card.Content>
+                </Card>
                 <View style={styles.buttonGroup}>
                     <Button
                         mode="contained"
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
         padding: 32,
     },
     avatar: {
-        marginBottom: 24,
+        marginBottom: 20,
     },
     userName: {
         fontSize: 24,
@@ -114,12 +118,10 @@ const styles = StyleSheet.create({
     },
     userId: {
         fontSize: 16,
-        marginBottom: 24,
     },
     buttonGroup: {
         width: '100%',
-        marginTop: 32,
-        alignItems: 'center',
+        marginTop: 24,
     },
     button: {
         width: '100%',
@@ -130,6 +132,13 @@ const styles = StyleSheet.create({
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    card: {
+        width: "100%",
+        paddingVertical: 6,
+    },
+    cardContent: {
         alignItems: 'center',
     },
 });
