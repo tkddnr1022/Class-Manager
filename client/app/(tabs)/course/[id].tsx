@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import Course from '@/interfaces/course';
-import { Button, Text, Card, ActivityIndicator } from 'react-native-paper';
+import { Button, Text, Card, ActivityIndicator, useTheme } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons'; // MaterialIcons import
 import Toast from 'react-native-toast-message';
 import { deleteCourse, getCourse } from '@/scripts/api/course';
 import { getEntryByCourseId } from '@/scripts/api/entry';
 import Entry from '@/interfaces/entry';
 import eventEmitter from '@/scripts/utils/eventEmitter';
-import { Colors } from '@/constants/Colors';
 
 const CourseDetails = () => {
     const { id } = useLocalSearchParams();
@@ -17,6 +16,7 @@ const CourseDetails = () => {
     const [entries, setEntries] = useState<Entry[]>();
     const [loading, setLoading] = useState(true);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const { colors } = useTheme();
 
     useEffect(() => {
         eventEmitter.on('refresh_courseDetail', fetchCourse);
@@ -85,7 +85,7 @@ const CourseDetails = () => {
                     {item.userId ? item.userId.username : "탈퇴한 유저"}
                     {item.userId && ` (${item.userId.studentId})`}
                 </Text>
-                <Text>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
+                <Text style={{ color: colors.secondary }}>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
             </Card.Content>
         </Card>
     );
@@ -171,30 +171,25 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 24,
-        backgroundColor: Colors.light.background,
     },
     card: {
         borderRadius: 12,
         elevation: 4,
         marginBottom: 12,
-        backgroundColor: '#ffffff',
         marginHorizontal: 4,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
         marginBottom: 8,
     },
     detail: {
         fontSize: 16,
-        color: '#6b6b6b',
         marginVertical: 2,
     },
     entryListTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
         marginVertical: 16,
         marginHorizontal: 4,
     },
@@ -205,13 +200,11 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderRadius: 12,
         elevation: 2,
-        backgroundColor: '#ffffff',
         marginHorizontal: 4,
     },
     entryUsername: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#333',
     },
     row: {
         flexDirection: 'row',
@@ -224,7 +217,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     actionButton: {
-        backgroundColor: Colors.light.tint,
     }
 });
 

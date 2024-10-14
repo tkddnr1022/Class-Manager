@@ -5,13 +5,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { ActivityIndicator, Avatar, Button, Text } from "react-native-paper";
+import { ActivityIndicator, Avatar, Button, Text, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function Mypage() {
     const [loading, setLoading] = useState(true);
     const [logoutLoading, setLogoutLoading] = useState(false);
     const [profile, setProfile] = useState<User>();
+    const { colors } = useTheme();
 
     useEffect(() => {
         eventEmitter.on('refresh_profile', fetchProfile);
@@ -62,7 +63,7 @@ export default function Mypage() {
                     <>
                         <Avatar.Icon size={120} icon="account" style={styles.avatar} />
                         <Text variant="titleLarge" style={styles.userName}>{profile.username}</Text>
-                        <Text variant="bodyMedium" style={styles.userId}>학번: {profile.studentId}</Text>
+                        <Text variant="bodyMedium" style={[styles.userId, { color: colors.secondary }]}>학번: {profile.studentId}</Text>
                     </>
                 ) : (
                     <Text>프로필을 불러올 수 없습니다.</Text>
@@ -109,18 +110,15 @@ const styles = StyleSheet.create({
     },
     avatar: {
         marginBottom: 24,
-        backgroundColor: '#6200ee',
     },
     userName: {
         fontSize: 24,
         marginBottom: 4,
         fontWeight: 'bold',
-        color: '#333',
     },
     userId: {
         fontSize: 16,
         marginBottom: 24,
-        color: '#6b6b6b',
     },
     buttonGroup: {
         width: '100%',

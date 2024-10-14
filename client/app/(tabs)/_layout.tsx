@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
-  const theme = useTheme();
+  const { colors } = useTheme();
   const [userRole, setUserRole] = useState<string[]>();
 
   const getUserRole = async () => {
@@ -21,8 +21,21 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={{ tabBarActiveTintColor: theme.colors.primary }}
-      sceneContainerStyle={{ backgroundColor: theme.colors.background }}>
+      screenOptions={{
+        tabBarActiveTintColor: colors.onSurface,
+        tabBarInactiveTintColor: colors.outline,
+        tabBarStyle: {
+          backgroundColor: colors.surfaceVariant,
+          borderColor: colors.outline,
+        },
+        headerStyle: {
+          backgroundColor: colors.surfaceVariant,
+        },
+        headerTintColor: colors.onSurfaceVariant,
+      }}
+      sceneContainerStyle={{
+        backgroundColor: colors.background,
+      }}>
       <Tabs.Screen
         name="home"
         options={{

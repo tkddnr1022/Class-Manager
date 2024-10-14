@@ -124,14 +124,12 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 24,
         fontWeight: 'bold',
-        color: '#333',
     },
     row: {
         width: '100%',
         marginBottom: 8,
     },
     input: {
-        backgroundColor: '#fff',
         fontSize: 16,
     },
     button: {

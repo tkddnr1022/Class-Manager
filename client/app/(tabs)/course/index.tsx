@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Text, FAB, Card, Divider, ActivityIndicator } from 'react-native-paper';
+import { Text, FAB, Card, Divider, ActivityIndicator, useTheme } from 'react-native-paper';
 import Course from '@/interfaces/course';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCourseByUserId } from '@/scripts/api/course';
@@ -12,6 +12,7 @@ const CourseList = () => {
     const [upcomingCourses, setUpcomingCourses] = useState<Course[]>([]);
     const [completedCourses, setCompletedCourses] = useState<{ date: string; courses: Course[] }[]>([]);
     const [loading, setLoading] = useState(true);
+    const { colors } = useTheme();
     const router = useRouter();
 
     useEffect(() => {
@@ -77,11 +78,11 @@ const CourseList = () => {
                 style={styles.goIcon}
                 onPress={() => goToDetails(item._id)}
             >
-                <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+                <MaterialIcons name="keyboard-arrow-right" size={24} color={colors.secondary} />
             </TouchableOpacity>
             <Card.Content>
                 <Text style={styles.courseTitle}>{item.title}</Text>
-                <Text style={styles.courseTime}>
+                <Text style={[styles.courseTime, { color: colors.secondary }]}>
                     시작: {new Date(item.startAt).toLocaleString('ko-KR')}{"\n"}
                     종료: {new Date(item.endAt).toLocaleString('ko-KR')}
                 </Text>
@@ -97,11 +98,11 @@ const CourseList = () => {
                         style={styles.goIcon}
                         onPress={() => goToDetails(item._id)}
                     >
-                        <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+                        <MaterialIcons name="keyboard-arrow-right" size={24} color={colors.secondary} />
                     </TouchableOpacity>
                     <Card.Content>
                         <Text style={styles.courseTitle}>{item.title}</Text>
-                        <Text style={styles.courseTime}>
+                        <Text style={[styles.courseTime, { color: colors.secondary }]}>
                             시작: {new Date(item.startAt).toLocaleString('ko-KR')}{"\n"}
                             종료: {new Date(item.endAt).toLocaleString('ko-KR')}
                         </Text>
@@ -138,7 +139,7 @@ const CourseList = () => {
                             </View>
                         ))
                     ) : (
-                        <Text style={styles.noCourseText}>종료된 수업이 없습니다.</Text>
+                        <Text style={[styles.noCourseText, { color: colors.secondary }]}>종료된 수업이 없습니다.</Text>
                     )}
                     <Divider bold={true} style={styles.divider} />
                 </ScrollView>
@@ -171,14 +172,12 @@ const styles = StyleSheet.create({
         marginVertical: 16,
         marginHorizontal: 4,
         fontWeight: 'bold',
-        color: '#333',
     },
     sectionTitle: {
         fontSize: 20,
         marginVertical: 8,
         marginHorizontal: 4,
         fontWeight: 'bold',
-        color: '#333',
     },
     completedSectionTitle: {
         fontSize: 18,
@@ -186,25 +185,21 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         marginTop: 8,
         marginLeft: 8,
-        color: '#333',
     },
     courseCard: {
         marginBottom: 16,
         borderRadius: 12,
         elevation: 3,
-        backgroundColor: '#fff',
         paddingTop: 12,
         marginHorizontal: 4,
     },
     courseTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
         marginBottom: 4,
     },
     courseTime: {
         fontSize: 14,
-        color: '#4f4f4f',
     },
     fabPlus: {
         position: 'absolute',
@@ -227,7 +222,6 @@ const styles = StyleSheet.create({
     },
     noCourseText: {
         fontSize: 16,
-        color: '#888',
         textAlign: 'center',
         marginTop: 8,
     },

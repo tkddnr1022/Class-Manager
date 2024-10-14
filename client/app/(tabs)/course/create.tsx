@@ -257,11 +257,9 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 24,
-        color: '#333',
     },
     input: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     row: {
         flexDirection: 'row',
@@ -278,7 +276,6 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     dateTimeInput: {
-        backgroundColor: '#fff',
     },
     locationButton: {
         marginLeft: 8,

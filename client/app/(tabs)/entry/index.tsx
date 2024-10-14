@@ -4,11 +4,12 @@ import eventEmitter from '@/scripts/utils/eventEmitter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SectionList } from 'react-native';
-import { Text, Card, ActivityIndicator, FAB } from 'react-native-paper';
+import { Text, Card, ActivityIndicator, FAB, useTheme } from 'react-native-paper';
 
 const EntryRecord = () => {
     const [groupedEntries, setGroupedEntries] = useState<{ title: string; data: Entry[] }[]>([]);
     const [loading, setLoading] = useState(true);
+    const { colors } = useTheme();
 
     useEffect(() => {
         eventEmitter.on('refresh_entry', fetchEntry);
@@ -23,7 +24,7 @@ const EntryRecord = () => {
         <Card style={styles.entryCard}>
             <Card.Content>
                 <Text style={styles.entryTitle}>{item.courseId ? item.courseId.title : "삭제된 수업"}</Text>
-                <Text>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
+                <Text style={{ color: colors.secondary }}>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
             </Card.Content>
         </Card>
     );
@@ -126,13 +127,11 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderRadius: 12,
         elevation: 2,
-        backgroundColor: '#fff',
         marginHorizontal: 4,
     },
     entryTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#333',
     },
     loadingContainer: {
         flex: 1,
@@ -147,7 +146,6 @@ const styles = StyleSheet.create({
     },
     noEntryText: {
         fontSize: 16,
-        color: '#888',
         textAlign: 'center',
         marginTop: 8,
     }

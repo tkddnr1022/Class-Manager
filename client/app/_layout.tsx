@@ -1,58 +1,74 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState, createContext, useContext } from 'react';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
-import { useColorScheme } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+const ThemeContext = createContext({
+  isDark: false,
+  toggleTheme: () => {},
+});
+
+const LightTheme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: 'rgb(110, 37, 246)',
+    background: '#f5f7fa',
+    primaryContainer: 'rgb(110, 37, 246)',
+    elevation: {
+      level0: "transparent",
+      level1: "white",
+      level2: "white",
+      level3: "white",
+      level4: "white",
+      level5: "white",
+    },
+    surfaceVariant: "white",
+  },
+};
+
+export function useTheme() {
+  return useContext(ThemeContext);
+}
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [isDark, setIsDark] = useState(false); // 다크모드 상태 관리
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const LightTheme = {
-    ...MD3LightTheme,
-    colors: {
-      ...MD3LightTheme.colors,
-      primary: 'rgb(110, 37, 246)',
-      onPrimary: 'rgb(255, 255, 255)',
-      background: '#f5f7fa',
-      primaryContainer: 'rgb(110, 37, 246)',
-    },
-  }
+  const theme = useMemo(() => (isDark ? MD3DarkTheme : LightTheme), [isDark]);
+
+  const toggleTheme = () => setIsDark((prev) => !prev); // 테마 전환 함수
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
+    if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
-    <PaperProvider theme={colorScheme === 'dark' ? MD3DarkTheme : LightTheme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: colorScheme === 'dark'
-              ? MD3DarkTheme.colors.background
-              : LightTheme.colors.background,
-          },
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <Toast />
-    </PaperProvider>
+    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+      <PaperProvider theme={theme}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: theme.colors.background,
+            },
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <Toast />
+      </PaperProvider>
+    </ThemeContext.Provider>
   );
 }

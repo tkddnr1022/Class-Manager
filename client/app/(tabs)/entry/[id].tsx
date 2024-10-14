@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import Course from '@/interfaces/course';
-import { Button, Text, Card, ActivityIndicator } from 'react-native-paper';
+import { Button, Text, Card, ActivityIndicator, useTheme } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { getCourse } from '@/scripts/api/course';
@@ -17,6 +17,7 @@ const EntryDetails = () => {
     const [loading, setLoading] = useState(true);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [locPermission, requestLocPermission] = useForegroundPermissions(); // 위치 권한
+    const { colors } = useTheme();
 
     // Todo: 권한 거부 시 동작
     useEffect(() => {
@@ -140,7 +141,7 @@ const EntryDetails = () => {
                                 style={styles.closeIcon}
                                 onPress={() => router.replace('/(tabs)/entry')}
                             >
-                                <MaterialIcons name="close" size={24} color="black" />
+                                <MaterialIcons name="close" size={24} color={colors.secondary} />
                             </TouchableOpacity>
                             <Card.Content>
                                 <View style={styles.row}>
@@ -197,7 +198,6 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 16,
         paddingVertical: 8,
-        backgroundColor: '#fff',
         elevation: 5,
     },
     closeIcon: {
@@ -209,12 +209,10 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: '#333',
         marginBottom: 8,
     },
     detail: {
         fontSize: 16,
-        color: '#4f4f4f',
         marginLeft: 8,
         lineHeight: 20,
     },

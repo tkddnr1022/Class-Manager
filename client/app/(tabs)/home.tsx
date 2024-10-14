@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { View, StyleSheet } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, Card, Text } from "react-native-paper";
 
 export default function Home() {
 
@@ -11,6 +11,11 @@ export default function Home() {
     return (
         <View style={styles.container}>
             <Button mode="contained" onPress={cameraHandler}>카메라</Button>
+            <Card>
+                <Card.Content>
+                    <Text>test</Text>
+                </Card.Content>
+            </Card>
         </View>
     );
 }
