@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCourseByUserId } from '@/scripts/api/course';
 import eventEmitter from '@/scripts/utils/eventEmitter';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
 
 const CourseList = () => {
     const [upcomingCourses, setUpcomingCourses] = useState<Course[]>([]);
@@ -165,7 +164,6 @@ const CourseList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.light.background,
         paddingHorizontal: 20,
     },
     title: {
@@ -212,13 +210,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 16,
         bottom: 16,
-        backgroundColor: Colors.light.tint,
     },
     fabRefresh: {
         position: 'absolute',
         right: 16,
         bottom: 86,
-        backgroundColor: Colors.light.tint,
     },
     divider: {
         marginVertical: 16,

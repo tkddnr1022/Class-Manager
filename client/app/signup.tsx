@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import debounce from 'lodash.debounce';
 import Toast from 'react-native-toast-message';
 import { checkEmail, signUp } from '@/scripts/api/user';
 import { getProfile, signIn } from '@/scripts/api/auth';
 import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
-import { Colors } from '@/constants/Colors';
 
 export default function Signup() {
     const [username, setUsername] = useState('');
@@ -194,7 +192,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 36,
-        backgroundColor: Colors.light.background,
     },
     title: {
         fontSize: 24,
@@ -208,7 +205,6 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 16,
-        backgroundColor: Colors.light.tint,
         borderRadius: 12,
     },
     buttonContent: {

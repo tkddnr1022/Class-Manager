@@ -6,7 +6,6 @@ import Toast from 'react-native-toast-message';
 import { updateUser } from '@/scripts/api/user';
 import { getStorageProfile, setStorageProfile } from '@/scripts/utils/storage';
 import eventEmitter from '@/scripts/utils/eventEmitter';
-import { Colors } from '@/constants/Colors';
 
 const EditProfile = () => {
     const [userId, setUserId] = useState('');
@@ -120,7 +119,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 48,
-        backgroundColor: Colors.light.background,
     },
     title: {
         fontSize: 24,
@@ -140,7 +138,6 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop: 16,
         paddingVertical: 6,
-        backgroundColor: Colors.light.tint,
         borderRadius: 12,
     },
 });

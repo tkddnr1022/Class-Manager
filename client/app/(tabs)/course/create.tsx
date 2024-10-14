@@ -8,7 +8,6 @@ import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location
 import Toast from 'react-native-toast-message';
 import { createCourse } from '@/scripts/api/course';
 import eventEmitter from '@/scripts/utils/eventEmitter';
-import { Colors } from '@/constants/Colors';
 
 const CreateCourse = () => {
     const [title, setTitle] = useState('');
@@ -251,7 +250,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 32,
-        backgroundColor: Colors.light.background,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -286,14 +284,12 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         height: 48,
         justifyContent: 'center',
-        backgroundColor: Colors.light.tint,
     },
     button: {
         width: '100%',
         marginTop: 20,
         paddingVertical: 6,
         borderRadius: 12,
-        backgroundColor: Colors.light.tint,
     },
 });
 

@@ -1,4 +1,3 @@
-import { Colors } from "@/constants/Colors";
 import User from "@/interfaces/user";
 import eventEmitter from "@/scripts/utils/eventEmitter";
 import { getStorageProfile } from "@/scripts/utils/storage";
@@ -107,7 +106,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 32,
-        backgroundColor: Colors.light.background,
     },
     avatar: {
         marginBottom: 24,
@@ -133,7 +131,6 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 12,
         paddingVertical: 6,
-        backgroundColor: Colors.light.tint,
         borderRadius: 12,
     },
     loadingContainer: {

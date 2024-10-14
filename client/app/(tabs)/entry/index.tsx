@@ -1,11 +1,10 @@
-import { Colors } from '@/constants/Colors';
 import Entry from '@/interfaces/entry';
 import { getEntryByUserId } from '@/scripts/api/entry';
 import eventEmitter from '@/scripts/utils/eventEmitter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SectionList } from 'react-native';
-import { Text, Card, ActivityIndicator, FAB, Divider } from 'react-native-paper';
+import { Text, Card, ActivityIndicator, FAB } from 'react-native-paper';
 
 const EntryRecord = () => {
     const [groupedEntries, setGroupedEntries] = useState<{ title: string; data: Entry[] }[]>([]);
@@ -104,7 +103,6 @@ const EntryRecord = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.light.background,
         padding: 20,
     },
     title: {
@@ -145,7 +143,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 16,
         bottom: 16,
-        backgroundColor: Colors.light.tint,
         zIndex: 1,
     },
     noEntryText: {

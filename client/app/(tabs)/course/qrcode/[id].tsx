@@ -1,4 +1,3 @@
-import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -25,7 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.light.background,
   },
   title: {
     fontSize: 20,

@@ -1,4 +1,3 @@
-import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
@@ -21,6 +20,5 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.light.background,
     },
 });
