@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
-import { Button, Text, TextInput } from 'react-native-paper';
+import { Button, Card, Text, TextInput } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Coordinate } from '@/interfaces/course';
 import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location';
@@ -117,131 +117,137 @@ const CreateCourse = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>수업 생성하기</Text>
-            <View style={styles.row}>
-                <TextInput
-                    style={styles.input}
-                    label="수업 이름"
-                    value={title}
-                    onChangeText={setTitle}
-                    disabled={loading}
-                />
-            </View>
-            <View style={styles.row}>
-                <TouchableOpacity
-                    onPress={() => setShowStartDate(true)}
-                    style={styles.datePicker}
-                    disabled={loading}
-                >
-                    <TextInput
-                        label="시작 날짜"
-                        value={startAt.toLocaleDateString()}
-                        editable={false}
-                        style={styles.dateTimeInput}
-                    />
-                </TouchableOpacity>
-                {showStartDate && (
-                    <DateTimePicker
-                        value={startAt}
-                        mode="date"
-                        display="default"
-                        onChange={handleStartDateChange}
-                    />
-                )}
-                <TouchableOpacity
-                    onPress={() => setShowStartTime(true)}
-                    style={styles.timePicker}
-                    disabled={loading}
-                >
-                    <TextInput
-                        label="시작 시간"
-                        value={startAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        editable={false}
-                        style={styles.dateTimeInput}
-                    />
-                </TouchableOpacity>
-                {showStartTime && (
-                    <DateTimePicker
-                        value={startAt}
-                        mode="time"
-                        display="default"
-                        onChange={handleStartTimeChange}
-                    />
-                )}
-            </View>
+            <Card style={styles.card}>
+                <Card.Content style={styles.cardContent}>
+                    <Text style={styles.title}>수업 생성하기</Text>
+                    <View style={styles.row}>
+                        <TextInput
+                            style={styles.input}
+                            label="수업 이름"
+                            value={title}
+                            onChangeText={setTitle}
+                            disabled={loading}
+                        />
+                    </View>
+                    <View style={styles.row}>
+                        <TouchableOpacity
+                            onPress={() => setShowStartDate(true)}
+                            style={styles.datePicker}
+                            disabled={loading}
+                        >
+                            <TextInput
+                                label="시작 날짜"
+                                value={startAt.toLocaleDateString()}
+                                editable={false}
+                                style={styles.dateTimeInput}
+                            />
+                        </TouchableOpacity>
+                        {showStartDate && (
+                            <DateTimePicker
+                                value={startAt}
+                                mode="date"
+                                display="default"
+                                onChange={handleStartDateChange}
+                            />
+                        )}
+                        <TouchableOpacity
+                            onPress={() => setShowStartTime(true)}
+                            style={styles.timePicker}
+                            disabled={loading}
+                        >
+                            <TextInput
+                                label="시작 시간"
+                                value={startAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                editable={false}
+                                style={styles.dateTimeInput}
+                            />
+                        </TouchableOpacity>
+                        {showStartTime && (
+                            <DateTimePicker
+                                value={startAt}
+                                mode="time"
+                                display="default"
+                                onChange={handleStartTimeChange}
+                            />
+                        )}
+                    </View>
 
-            <View style={styles.row}>
-                <TouchableOpacity
-                    onPress={() => setShowEndDate(true)}
-                    style={styles.datePicker}
-                    disabled={loading}
-                >
-                    <TextInput
-                        label="종료 날짜"
-                        value={endAt.toLocaleDateString()}
-                        editable={false}
-                        style={styles.dateTimeInput}
-                    />
-                </TouchableOpacity>
-                {showEndDate && (
-                    <DateTimePicker
-                        value={endAt}
-                        mode="date"
-                        display="default"
-                        onChange={handleEndDateChange}
-                    />
-                )}
-                <TouchableOpacity
-                    onPress={() => setShowEndTime(true)}
-                    style={styles.timePicker}
-                    disabled={loading}
-                >
-                    <TextInput
-                        label="종료 시간"
-                        value={endAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        editable={false}
-                        style={styles.dateTimeInput}
-                    />
-                </TouchableOpacity>
-                {showEndTime && (
-                    <DateTimePicker
-                        value={endAt}
-                        mode="time"
-                        display="default"
-                        onChange={handleEndTimeChange}
-                    />
-                )}
-            </View>
+                    <View style={styles.row}>
+                        <TouchableOpacity
+                            onPress={() => setShowEndDate(true)}
+                            style={styles.datePicker}
+                            disabled={loading}
+                        >
+                            <TextInput
+                                label="종료 날짜"
+                                value={endAt.toLocaleDateString()}
+                                editable={false}
+                                style={styles.dateTimeInput}
+                            />
+                        </TouchableOpacity>
+                        {showEndDate && (
+                            <DateTimePicker
+                                value={endAt}
+                                mode="date"
+                                display="default"
+                                onChange={handleEndDateChange}
+                            />
+                        )}
+                        <TouchableOpacity
+                            onPress={() => setShowEndTime(true)}
+                            style={styles.timePicker}
+                            disabled={loading}
+                        >
+                            <TextInput
+                                label="종료 시간"
+                                value={endAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                editable={false}
+                                style={styles.dateTimeInput}
+                            />
+                        </TouchableOpacity>
+                        {showEndTime && (
+                            <DateTimePicker
+                                value={endAt}
+                                mode="time"
+                                display="default"
+                                onChange={handleEndTimeChange}
+                            />
+                        )}
+                    </View>
 
-            <View style={styles.row}>
-                <TextInput
-                    style={styles.input}
-                    label="위치"
-                    value={`${location?.lat}, ${location?.lon}`}
-                    editable={false}
-                />
-                <Button
-                    mode="contained"
-                    icon="crosshairs-gps"
-                    onPress={getCurrentLocation}
-                    style={styles.locationButton}
-                    disabled={loading || locLoading}
-                    loading={locLoading}
-                >
-                    위치
-                </Button>
-            </View>
+                    <View style={styles.row}>
+                        <TextInput
+                            style={styles.input}
+                            label="위치"
+                            value={`${location?.lat}, ${location?.lon}`}
+                            editable={false}
+                        />
+                        <Button
+                            mode="contained"
+                            icon="crosshairs-gps"
+                            onPress={getCurrentLocation}
+                            style={styles.locationButton}
+                            disabled={loading || locLoading}
+                            loading={locLoading}
+                            labelStyle={{ lineHeight: 18 }}
+                        >
+                            위치
+                        </Button>
+                    </View>
 
-            <Button
-                mode="contained"
-                onPress={handleSubmit}
-                disabled={loading}
-                loading={loading}
-                style={styles.button}
-                icon={'plus'}
-            >
-                생성
-            </Button>
+                    <Button
+                        mode="contained"
+                        onPress={handleSubmit}
+                        disabled={loading}
+                        loading={loading}
+                        style={styles.button}
+                        icon={'plus'}
+                        labelStyle={{ lineHeight: 18 }}
+                    >
+                        생성
+                    </Button>
+                </Card.Content>
+            </Card>
         </View>
     );
 };
@@ -249,7 +255,7 @@ const CreateCourse = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 32,
+        padding: 16,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -287,6 +293,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         paddingVertical: 6,
         borderRadius: 12,
+    },
+    card: {
+        width: '100%',
+        paddingVertical: 8,
+    },
+    cardContent: {
+        alignItems: 'center',
     },
 });
 

@@ -3,7 +3,7 @@ import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { TextInput, Button, Text, Card } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 
 export default function Login() {
@@ -46,44 +46,48 @@ export default function Login() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>로그인</Text>
-            <TextInput
-                label="이메일"
-                disabled={loading}
-                value={email}
-                onChangeText={text => setEmail(text)}
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-            <TextInput
-                label="비밀번호"
-                disabled={loading}
-                value={password}
-                onChangeText={text => setPassword(text)}
-                secureTextEntry
-                autoCapitalize="none"
-                style={styles.input}
-            />
-            <Button
-                mode="contained"
-                disabled={loading}
-                loading={loading}
-                onPress={handleLogin}
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-            >
-                로그인
-            </Button>
-            <Button
-                mode="contained"
-                disabled={loading}
-                onPress={handleSignUp}
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-            >
-                회원가입
-            </Button>
+            <Card style={styles.card}>
+                <Card.Content>
+                    <Text style={styles.title}>로그인</Text>
+                    <TextInput
+                        label="이메일"
+                        disabled={loading}
+                        value={email}
+                        onChangeText={text => setEmail(text)}
+                        style={styles.input}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    <TextInput
+                        label="비밀번호"
+                        disabled={loading}
+                        value={password}
+                        onChangeText={text => setPassword(text)}
+                        secureTextEntry
+                        autoCapitalize="none"
+                        style={styles.input}
+                    />
+                    <Button
+                        mode="contained"
+                        disabled={loading}
+                        loading={loading}
+                        onPress={handleLogin}
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                    >
+                        로그인
+                    </Button>
+                    <Button
+                        mode="contained"
+                        disabled={loading}
+                        onPress={handleSignUp}
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                    >
+                        회원가입
+                    </Button>
+                </Card.Content>
+            </Card>
         </View>
     );
 };
@@ -92,6 +96,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
         padding: 36,
     },
     title: {
@@ -117,5 +122,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(245, 245, 245, 0.8)',
         zIndex: 1,
+    },
+    card: {
+        width: '100%',
+        paddingHorizontal: 4,
+        paddingVertical: 8,
     },
 });

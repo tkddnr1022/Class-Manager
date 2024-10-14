@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { TextInput, Button, Text, Card } from 'react-native-paper';
 import { router } from 'expo-router';
 import debounce from 'lodash.debounce';
 import Toast from 'react-native-toast-message';
@@ -122,65 +122,69 @@ export default function Signup() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>회원가입</Text>
-            <TextInput
-                label="이름"
-                value={username}
-                onChangeText={setUsername}
-                disabled={loading}
-                style={styles.input}
-            />
-            <TextInput
-                label="학번"
-                value={studentId}
-                onChangeText={setStudentId}
-                disabled={loading}
-                style={styles.input}
-                keyboardType='numeric'
-            />
-            <TextInput
-                label="이메일"
-                value={email}
-                onChangeText={setEmail}
-                disabled={loading}
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                error={!emailValid && !!email}
-            />
-            {!emailValid && <Text style={styles.errorMessage}>{emailMessage}</Text>}
-            {emailValid && <Text style={styles.successMessage}>{emailMessage}</Text>}
-            <TextInput
-                label="비밀번호"
-                value={password}
-                onChangeText={setPassword}
-                disabled={loading}
-                secureTextEntry
-                style={styles.input}
-                autoCapitalize="none"
-            />
-            <TextInput
-                label="비밀번호 확인"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                disabled={loading}
-                secureTextEntry
-                style={styles.input}
-                autoCapitalize="none"
-                error={!passwordMatch && !!confirmPassword}
-            />
-            {!passwordMatch && <Text style={styles.errorMessage}>비밀번호가 일치하지 않습니다.</Text>}
-            {passwordMatch && confirmPassword && <Text style={styles.successMessage}>비밀번호가 일치합니다.</Text>}
-            <Button
-                mode="contained"
-                onPress={handleSignup}
-                disabled={loading || !isFormValid()}
-                loading={loading}
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-            >
-                회원가입
-            </Button>
+            <Card style={styles.card}>
+                <Card.Content>
+                    <Text style={styles.title}>회원가입</Text>
+                    <TextInput
+                        label="이름"
+                        value={username}
+                        onChangeText={setUsername}
+                        disabled={loading}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        label="학번"
+                        value={studentId}
+                        onChangeText={setStudentId}
+                        disabled={loading}
+                        style={styles.input}
+                        keyboardType='numeric'
+                    />
+                    <TextInput
+                        label="이메일"
+                        value={email}
+                        onChangeText={setEmail}
+                        disabled={loading}
+                        style={styles.input}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        error={!emailValid && !!email}
+                    />
+                    {!emailValid && <Text style={styles.errorMessage}>{emailMessage}</Text>}
+                    {emailValid && <Text style={styles.successMessage}>{emailMessage}</Text>}
+                    <TextInput
+                        label="비밀번호"
+                        value={password}
+                        onChangeText={setPassword}
+                        disabled={loading}
+                        secureTextEntry
+                        style={styles.input}
+                        autoCapitalize="none"
+                    />
+                    <TextInput
+                        label="비밀번호 확인"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        disabled={loading}
+                        secureTextEntry
+                        style={styles.input}
+                        autoCapitalize="none"
+                        error={!passwordMatch && !!confirmPassword}
+                    />
+                    {!passwordMatch && <Text style={styles.errorMessage}>비밀번호가 일치하지 않습니다.</Text>}
+                    {passwordMatch && password && confirmPassword && <Text style={styles.successMessage}>비밀번호가 일치합니다.</Text>}
+                    <Button
+                        mode="contained"
+                        onPress={handleSignup}
+                        disabled={loading || !isFormValid()}
+                        loading={loading}
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                    >
+                        회원가입
+                    </Button>
+                </Card.Content>
+            </Card>
         </View>
     );
 };
@@ -209,12 +213,15 @@ const styles = StyleSheet.create({
     },
     errorMessage: {
         color: 'red',
-        marginBottom: 8,
         textAlign: 'left',
     },
     successMessage: {
         color: 'green',
-        marginBottom: 8,
         textAlign: 'left',
+    },
+    card: {
+        width: '100%',
+        paddingHorizontal: 4,
+        paddingVertical: 8,
     },
 });
