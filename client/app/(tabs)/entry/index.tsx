@@ -2,6 +2,7 @@ import Entry from '@/interfaces/entry';
 import { getEntryByUserId } from '@/scripts/api/entry';
 import eventEmitter from '@/scripts/utils/eventEmitter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SectionList } from 'react-native';
 import { Text, Card, ActivityIndicator, FAB, useTheme } from 'react-native-paper';
@@ -71,6 +72,10 @@ const EntryRecord = () => {
         setLoading(false);
     }
 
+    const goToCamera = () => {
+        return router.push('/camera');
+    }
+
     return (
         <View style={styles.container}>
             {loading ? (
@@ -91,7 +96,14 @@ const EntryRecord = () => {
                 </>) : (<Text style={styles.noEntryText}>출석 기록이 없습니다.</Text>)
             )}
             <FAB
-                style={styles.fab}
+                style={styles.fabPlus}
+                icon="plus"
+                onPress={goToCamera}
+                disabled={loading}
+                color='white'
+            />
+            <FAB
+                style={styles.fabRefresh}
                 icon="refresh"
                 onPress={fetchEntry}
                 disabled={loading}
@@ -138,11 +150,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    fab: {
+    fabPlus: {
         position: 'absolute',
         right: 16,
         bottom: 16,
-        zIndex: 1,
+    },
+    fabRefresh: {
+        position: 'absolute',
+        right: 16,
+        bottom: 86,
     },
     noEntryText: {
         fontSize: 16,
