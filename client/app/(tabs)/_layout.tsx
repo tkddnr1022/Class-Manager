@@ -1,13 +1,12 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
   const [userRole, setUserRole] = useState<string[]>();
 
   const getUserRole = async () => {
@@ -22,9 +21,8 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
+      screenOptions={{ tabBarActiveTintColor: theme.colors.primary }}
+      sceneContainerStyle={{ backgroundColor: theme.colors.background }}>
       <Tabs.Screen
         name="home"
         options={{
