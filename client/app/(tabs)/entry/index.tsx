@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
     entryCard: {
         marginBottom: 12,
         borderRadius: 12,
-        elevation: 2,
         marginHorizontal: 4,
     },
     entryTitle: {
