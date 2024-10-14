@@ -25,8 +25,6 @@ export default function Mypage() {
 
     const fetchProfile = async () => {
         setLoading(true);
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const profile = await getStorageProfile();
             if (profile) {
@@ -41,8 +39,6 @@ export default function Mypage() {
     const logoutHandler = async () => {
         setLogoutLoading(true);
         await AsyncStorage.clear();
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         Toast.show({
             type: 'success',
             text1: '로그아웃 되었습니다.'

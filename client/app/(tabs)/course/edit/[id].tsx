@@ -98,8 +98,6 @@ const EditCourse = () => {
             });
             return;
         }
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         const courseId = id as string;
         const result = await updateCourse(courseId, { title, startAt, endAt, location });
         if (result == "success") {

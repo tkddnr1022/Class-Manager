@@ -39,8 +39,6 @@ const EntryDetails = () => {
 
     const handleSubmit = async () => {
         setSubmitLoading(true);
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         const courseId = id as string;
 
         if (!locPermission?.granted) {

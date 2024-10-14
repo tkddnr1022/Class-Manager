@@ -17,8 +17,6 @@ const EditProfile = () => {
 
     const handleSubmit = async () => {
         setLoading(true);
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const update = await updateUser(userId, { username, email, password, studentId });
             if (update) {

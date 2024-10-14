@@ -47,8 +47,6 @@ const CourseDetails = () => {
 
     const handleDelete = async () => {
         setDeleteLoading(true);
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         const courseId = id as string;
         const result = await deleteCourse(courseId);
         if (result == "success") {

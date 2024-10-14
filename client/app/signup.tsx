@@ -72,8 +72,6 @@ export default function Signup() {
         }
 
         setLoading(true);
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const result = await signUp({ username, email, password, studentId });
             if (result == "success") {

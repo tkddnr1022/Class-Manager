@@ -11,7 +11,6 @@ export default function Index() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    // for dev
     initClient(0);
   }, []);
 

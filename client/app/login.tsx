@@ -13,8 +13,6 @@ export default function Login() {
 
     const handleLogin = async () => {
         setLoading(true);
-        // for dev
-        await new Promise(resolve => setTimeout(resolve, 2000));
         const token = await signIn(email, password);
         if (token) {
             try {
