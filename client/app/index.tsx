@@ -1,6 +1,6 @@
 import { getProfile } from '@/scripts/api/auth';
 import { healthCheck } from '@/scripts/api/health';
-import { getStorageToken } from '@/scripts/utils/storage';
+import { getStorageToken, setStorageProfile } from '@/scripts/utils/storage';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -69,8 +69,9 @@ export default function Index() {
       }
 
       // Todo: validateToken 메소드 구현
-      const isTokenValid = await getProfile();
-      if (isTokenValid) {
+      const profile = await getProfile();
+      if (profile) {
+        await setStorageProfile(profile);
         return router.replace('/(tabs)/home');
       }
 
