@@ -23,6 +23,7 @@
     "eventemitter3": "^5.0.1",
     "expo": "~51.0.28",
     "expo-application": "~5.9.1",
+    "expo-build-properties": "~0.12.5",
     "expo-camera": "~15.0.15",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.25",
@@ -38,6 +39,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-barcode-mask": "^1.2.4",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-paper": "^5.12.5",
     "react-native-paper-dates": "^0.22.25",
@@ -47,8 +49,7 @@
     "react-native-screens": "3.31.1",
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-web": "~0.19.10",
-    "expo-build-properties": "~0.12.5"
+    "react-native-web": "~0.19.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,41 +1,53 @@
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import { ActivityIndicator, Button, Card, Text } from 'react-native-paper';
+import BarcodeMask from 'react-native-barcode-mask';
 
 export default function Camera() {
     const [camPermission, requestCamPermission] = useCameraPermissions(); // 카메라 권한
     const [isScanning, setIsScanning] = useState(false); // 스캔 상태
+    const [waiting, setWaiting] = useState(false);
 
-    // state 초기화
     useFocusEffect(
         useCallback(() => {
             setIsScanning(false);
         }, [])
     );
 
-    // 최초 권한 요청
-    // Todo: 권한 거부 시 동작
+    // 권한 요청
     useEffect(() => {
-        requestCamPermission();
-    }, []);
+        (async () => {
+            const { status } = await requestCamPermission();
+            if (status == 'denied') {
+                Toast.show({
+                    type: 'error',
+                    text1: '권한 필요',
+                    text2: '카메라 권한이 필요합니다. 설정에서 권한을 허용해 주세요.',
+                });
+            }
+        })();
+    }, [requestCamPermission]);
 
     // URL 검사
     function checkURL(url: string) {
         if (url.startsWith('class-manager://')) {
             return true;
         }
-        else{
+        else {
             return false;
         }
     }
 
     // QR 데이터 처리
-    async function scan(qr: BarcodeScanningResult) {
-        if (isScanning || !qr.data) {
+    const scan = async (qr: BarcodeScanningResult) => {
+        if (waiting || isScanning || !qr.data) {
             return;
         }
+        setIsScanning(true);
+        setWaiting(true);
         const match = qr.data.match(/class-manager:\/\/entry\/(.+)/);
         if (!checkURL(qr.data) || !match) {
             Toast.show({
@@ -43,11 +55,14 @@ export default function Camera() {
                 text1: '출석 실패',
                 text2: '유효하지 않은 QR 코드입니다.',
             });
-            return router.back();
+            setIsScanning(false);
+            // 불필요한 호출을 방지하기 위해 일정 시간 대기
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setWaiting(false);
+            return;
         }
-        setIsScanning(true);
         const courseId = match[1];
-        
+
         return router.replace(`/(tabs)/entry/${courseId}`);
     }
 
@@ -59,24 +74,36 @@ export default function Camera() {
                     barcodeTypes: ["qr"],
                 }}
                 onBarcodeScanned={scan}>
-                <View style={styles.qrContainer}>
-                    <View style={styles.qrBox} />
-                </View>
+                <BarcodeMask
+                    showAnimatedLine={false}
+                    width={boxSize}
+                    height={boxSize}
+                    edgeWidth={30}
+                    edgeHeight={30}
+                    edgeBorderWidth={6}
+                    edgeRadius={2}
+                    outerMaskOpacity={0.5}
+                />
                 <View style={styles.qrContainer}>
                     {camPermission?.granted ?
                         (<Text style={styles.qrText}>QR코드를 중앙에 위치시켜주세요</Text>) :
-                        (<View style={styles.qrPermission}>
-                            <Text style={styles.qrPermissionText}>카메라 권한이 필요합니다.</Text>
-                            <Pressable onPress={requestCamPermission}>
-                                <Text style={styles.qrPermissionButton}>권한 허용</Text>
-                            </Pressable>
-                        </View>)
+                        (<Card style={styles.permissionCard}>
+                            <Card.Title title="카메라 권한 필요" />
+                            <Card.Content>
+                                <Text>QR 코드를 스캔하려면 카메라 권한이 필요합니다.</Text>
+                            </Card.Content>
+                            <Card.Actions>
+                                <Button mode="contained" onPress={requestCamPermission}>
+                                    권한 허용
+                                </Button>
+                            </Card.Actions>
+                        </Card>)
                     }
                 </View>
                 {isScanning && (
                     <View style={styles.qrContainer}>
-                        <View style={styles.qrBlock} />
-                        <Text style={styles.qrScanningText}>불러오는 중..</Text>
+                        <ActivityIndicator size="large" />
+                        <Text>불러오는 중..</Text>
                     </View>
                 )}
             </CameraView>
@@ -100,49 +127,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    qrBox: {
-        width: boxSize,
-        height: boxSize,
-        borderColor: 'rgba(255, 255, 255, 0.8)',
-        borderWidth: 2,
-        borderRadius: 10,
-    },
-    qrBlock: {
-        ...StyleSheet.absoluteFillObject,
-        width: width,
-        height: height,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        borderWidth: 2,
-        borderRadius: 10,
-    },
     qrText: {
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         color: 'white',
         top: boxSize / 2 + 30,
         padding: 8,
         borderRadius: 8,
+        fontSize: 16,
     },
     qrPermission: {
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
         top: boxSize / 2 + 60,
         padding: 8,
         borderRadius: 8,
     },
-    qrPermissionText: {
-        color: 'white',
-    },
     qrPermissionButton: {
         textAlign: 'center',
         fontWeight: 'bold',
-        color: '#242424',
         lineHeight: 20,
-        backgroundColor: '#ABABAB',
         padding: 5,
         borderRadius: 8,
         marginTop: 10,
     },
-    qrScanningText: {
-        fontSize: 20,
-        color: 'white',
-    }
+    permissionCard: {
+        position: 'absolute',
+        bottom: 80,
+        width: '90%',
+        alignSelf: 'center',
+    },
 });
