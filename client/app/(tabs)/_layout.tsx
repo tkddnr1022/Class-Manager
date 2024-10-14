@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableOpacity } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
@@ -61,7 +60,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
           ),
-          tabBarButton: (props) => (userRole?.includes('professor') || userRole?.includes('admin')) ? <TouchableOpacity {...props} /> : null,
+          href: (userRole?.includes('professor') || userRole?.includes('admin')) ? '/(tabs)/course' : null,
         }}
       />
       <Tabs.Screen
@@ -71,7 +70,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'checkmark' : 'checkmark-outline'} color={color} />
           ),
-          tabBarButton: (props) => (userRole?.includes('student') || userRole?.includes('admin')) ? <TouchableOpacity {...props} /> : null,
+          href: (userRole?.includes('professor') || userRole?.includes('admin')) ? '/(tabs)/entry' : null,
         }}
       />
     </Tabs>
