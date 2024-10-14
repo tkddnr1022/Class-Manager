@@ -121,7 +121,9 @@ const CourseDetails = () => {
                                     mode="contained"
                                     onPress={handleEdit}
                                     icon="pencil"
-                                    style={styles.actionButton}>
+                                    style={styles.actionButton}
+                                    labelStyle={{ lineHeight: 18 }}
+                                    >
                                     수정
                                 </Button>
                                 <Button
@@ -131,6 +133,7 @@ const CourseDetails = () => {
                                     loading={deleteLoading}
                                     disabled={deleteLoading}
                                     style={styles.actionButton}
+                                    labelStyle={{ lineHeight: 18 }}
                                 >
                                     삭제
                                 </Button>
@@ -139,6 +142,7 @@ const CourseDetails = () => {
                                     onPress={() => router.push(`/(tabs)/course/qrcode/${id}`)}
                                     icon="qrcode-scan"
                                     style={styles.actionButton}
+                                    labelStyle={{ lineHeight: 18 }}
                                 >
                                     코드
                                 </Button>
