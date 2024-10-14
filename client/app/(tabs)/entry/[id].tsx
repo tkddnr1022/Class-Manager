@@ -42,7 +42,7 @@ const EntryDetails = () => {
         await new Promise(resolve => setTimeout(resolve, 2000));
         const courseId = id as string;
 
-        if(!locPermission?.granted){
+        if (!locPermission?.granted) {
             Toast.show({
                 type: 'info',
                 text1: '권한 요청',
@@ -147,6 +147,10 @@ const EntryDetails = () => {
                                     <Text style={styles.title}>{course.title}</Text>
                                 </View>
                                 <View style={styles.row}>
+                                    <MaterialIcons name="person" size={20} color="#4f4f4f" />
+                                    <Text style={styles.detail}>{course.createdBy ? course.createdBy.username : "탈퇴한 유저"}</Text>
+                                </View>
+                                <View style={styles.row}>
                                     <MaterialIcons name="access-time" size={20} color="#4f4f4f" />
                                     <Text style={styles.detail}>시작 시간: {new Date(course.startAt).toLocaleString('ko-KR')}</Text>
                                 </View>
@@ -184,7 +188,7 @@ const EntryDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
+        padding: 28,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -212,11 +216,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#4f4f4f',
         marginLeft: 8,
+        lineHeight: 20,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 4,
+        marginVertical: 5,
     },
     loadingContainer: {
         flex: 1,
