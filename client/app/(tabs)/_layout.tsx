@@ -74,7 +74,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'checkmark' : 'checkmark-outline'} color={color} />
           ),
-          href: (userRole?.includes('professor') || userRole?.includes('admin')) ? '/(tabs)/entry' : null,
+          href: (userRole?.includes('student') || userRole?.includes('admin')) ? '/(tabs)/entry' : null,
         }}
       />
     </Tabs>
