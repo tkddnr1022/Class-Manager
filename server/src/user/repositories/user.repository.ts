@@ -26,6 +26,10 @@ export class UserRepository {
     return await this.userModel.findOne({ studentId }, { password: 0 }).exec();
   }
 
+  async findUserByOId(oId: string): Promise<User | null> {
+    return await this.userModel.findOne({ oId }, { password: 0 }).exec();
+  }
+
   async findAllUsers(): Promise<User[]> {
     return await this.userModel.find({}, { password: 0 }).exec();
   }

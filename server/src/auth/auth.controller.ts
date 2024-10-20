@@ -1,10 +1,11 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/sign-in.dto';
 import { JwtAuthGuard } from './guard/jwt.guard';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Token } from './interfaces/token.interface';
 import { User } from 'src/user/models/user.model';
+import { KakaoAuthDto } from './dtos/kakao-auth.dto';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -44,5 +45,13 @@ export class AuthController {
     @Get('profile')
     async getProfile(@Request() req): Promise<User> {
         return req.user;
+    }
+
+    @Get('kakao')
+    async kakaoAuth(@Query() kakaoAuthDto: KakaoAuthDto): Promise<Token> {
+        if (!kakaoAuthDto.code) {
+            throw new BadRequestException(kakaoAuthDto.error);
+        }
+        return await this.authService.kakaoAuth(kakaoAuthDto.code);
     }
 }

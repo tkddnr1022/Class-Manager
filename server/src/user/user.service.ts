@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 import { CreateUserCommand } from './commands/impl/create-user.command';
 import { UpdateUserCommand } from './commands/impl/update-user.command';
+import { CreateOAuthCommand } from './commands/impl/create-oauth.command';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,19 @@ export class UserService {
         });
     }
 
+    async createOAuth(createOAuthCommand: CreateOAuthCommand) {
+        const { oId, email, auth } = createOAuthCommand;
+        const salt = await bcrypt.genSalt();
+        const rand = Math.random().toString(36).slice(-12);
+        const hashedPassword = await bcrypt.hash(rand, salt);
+        return this.userRepository.createUser({
+            email: email,
+            password: hashedPassword,
+            oId: oId,
+            auth: auth,
+        });
+    }
+
     async getUserById(userId: string) {
         const userObjectId = new Types.ObjectId(userId);
         return this.userRepository.findUserById(userObjectId);
@@ -32,6 +46,10 @@ export class UserService {
 
     async getUserByStudentId(studentId: string) {
         return this.userRepository.findUserByStudentId(studentId);
+    }
+
+    async getUserByOId(oId: string) {
+        return this.userRepository.findUserByOId(oId);
     }
 
     async listUsers() {
