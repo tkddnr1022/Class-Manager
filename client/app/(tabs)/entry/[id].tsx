@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 16,
         padding: 8,
+        paddingTop: 16,
     },
     closeIcon: {
         position: 'absolute',
