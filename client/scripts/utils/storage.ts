@@ -43,3 +43,8 @@ export const setStorageToken = async (token: Token) => {
     await AsyncStorage.setItem('accessToken', token.access_token);
     await AsyncStorage.setItem('refreshToken', token.refresh_token);
 }
+
+export const removeStorageToken = async () => {
+    await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('refreshToken');
+}
