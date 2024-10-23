@@ -93,7 +93,7 @@ export default function Index() {
     ) : (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6200ee" />
-        <Text>세션 확인중..</Text>
+        <Text>연결 시도중..</Text>
       </View>
     )
   );
