@@ -9,10 +9,10 @@ import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const EditProfile = () => {
     const [userId, setUserId] = useState('');
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState<string | undefined>();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [studentId, setStudentId] = useState('');
+    const [studentId, setStudentId] = useState<string | undefined>();
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
