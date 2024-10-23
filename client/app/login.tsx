@@ -21,9 +21,9 @@ export default function Login() {
                 handleRedirect(url);
             }
         });
-        Linking.addEventListener('url', (event) => handleRedirect(event.url));
+        const subscription = Linking.addEventListener('url', (event) => handleRedirect(event.url));
         return () => {
-            // Todo: RemoveEventListener
+            subscription.remove();
         };
     }, []);
 
