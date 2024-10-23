@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        paddingVertical: 8,
+        padding: 8,
     },
     cardContent: {
         alignItems: 'center',

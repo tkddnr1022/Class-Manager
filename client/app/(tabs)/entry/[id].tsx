@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     card: {
         width: '100%',
         marginBottom: 16,
-        paddingVertical: 8,
+        padding: 8,
     },
     closeIcon: {
         position: 'absolute',

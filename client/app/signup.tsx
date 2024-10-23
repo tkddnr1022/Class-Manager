@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        paddingHorizontal: 4,
-        paddingVertical: 8,
+        padding: 8,
     },
 });

@@ -80,9 +80,7 @@ export default function Mypage() {
                     </Button>
                     <Button
                         mode="contained"
-                        onPress={() => router.push({
-                            pathname: '/profile/edit',
-                        })}
+                        onPress={() => router.push('/profile/edit',)}
                         style={styles.button}
                     >
                         회원정보 수정
@@ -136,7 +134,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: "100%",
-        paddingVertical: 6,
+        padding: 8,
     },
     cardContent: {
         alignItems: 'center',

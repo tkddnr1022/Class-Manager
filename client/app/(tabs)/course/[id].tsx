@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     card: {
         marginBottom: 12,
         marginHorizontal: 4,
-        paddingBottom: 4,
+        padding: 8,
     },
     title: {
         fontSize: 24,
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     entryCard: {
         marginBottom: 12,
         marginHorizontal: 4,
+        padding: 8,
     },
     entryUsername: {
         fontSize: 16,

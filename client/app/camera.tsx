@@ -155,5 +155,6 @@ const styles = StyleSheet.create({
         bottom: 80,
         width: '90%',
         alignSelf: 'center',
+        padding: 4,
     },
 });

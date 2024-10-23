@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     card: {
         width: "100%",
         marginBottom: 24,
+        padding: 8,
     },
     button: {
         paddingVertical: 4,
