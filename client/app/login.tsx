@@ -6,6 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Card } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import * as Linking from 'expo-linking';
+import Token from '@/interfaces/token';
 
 const KAKAO_CLIENT_ID = process.env.EXPO_PUBLIC_KAKAO_CLIENT_ID;
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -79,10 +80,13 @@ export default function Login() {
     const handleRedirect = async (url: string) => {
         setLoading(true);
         const { queryParams } = Linking.parse(url);
-        console.log(queryParams);
-        const token = {
-            access_token: queryParams?.access_token as string,
-            refresh_token: queryParams?.refresh_token as string,
+        if(!queryParams || !queryParams.access_token || !queryParams.refresh_token){
+            setLoading(false);
+            return;
+        }
+        const token: Token = {
+            access_token: queryParams.access_token.toString(),
+            refresh_token: queryParams.refresh_token.toString(),
         };
         if (token) {
             try {
