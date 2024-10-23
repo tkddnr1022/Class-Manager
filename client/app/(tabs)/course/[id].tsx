@@ -175,7 +175,6 @@ const styles = StyleSheet.create({
         padding: 18,
     },
     card: {
-        borderRadius: 12,
         marginBottom: 12,
         marginHorizontal: 4,
         paddingBottom: 4,
@@ -200,7 +199,6 @@ const styles = StyleSheet.create({
     },
     entryCard: {
         marginBottom: 12,
-        borderRadius: 12,
         marginHorizontal: 4,
     },
     entryUsername: {

@@ -192,7 +192,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     card: {
-        borderRadius: 12,
         width: '100%',
         marginBottom: 16,
         paddingVertical: 8,

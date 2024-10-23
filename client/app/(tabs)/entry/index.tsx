@@ -129,7 +129,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingVertical: 8,
         paddingHorizontal: 16,
-        borderRadius: 4,
         marginTop: 8,
     },
     entryListContainer: {
@@ -137,7 +136,6 @@ const styles = StyleSheet.create({
     },
     entryCard: {
         marginBottom: 12,
-        borderRadius: 12,
         marginHorizontal: 4,
     },
     entryTitle: {

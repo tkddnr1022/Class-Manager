@@ -31,15 +31,7 @@ const LightTheme = {
     },
     surfaceVariant: "white",
   },
-  components: {
-    Card: {
-      style: {
-        borderRadius: 32,
-        elevation: 0,
-        shadowOpacity: 0,
-      }
-    }
-  }
+  roundness: 6,
 };
 
 export function useTheme() {

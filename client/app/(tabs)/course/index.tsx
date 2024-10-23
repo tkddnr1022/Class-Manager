@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
     },
     courseCard: {
         marginBottom: 16,
-        borderRadius: 12,
         paddingTop: 12,
         marginHorizontal: 4,
     },
