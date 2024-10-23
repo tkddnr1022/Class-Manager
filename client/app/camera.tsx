@@ -68,45 +68,46 @@ export default function Camera() {
 
     return (
         <View style={styles.container}>
-            <CameraView
-                style={styles.camera}
-                barcodeScannerSettings={{
-                    barcodeTypes: ["qr"],
-                }}
-                onBarcodeScanned={scan}>
-                <BarcodeMask
-                    showAnimatedLine={false}
-                    width={boxSize}
-                    height={boxSize}
-                    edgeWidth={30}
-                    edgeHeight={30}
-                    edgeBorderWidth={6}
-                    edgeRadius={2}
-                    outerMaskOpacity={0.5}
-                />
-                <View style={styles.qrContainer}>
-                    {camPermission?.granted ?
-                        (<Text style={styles.qrText}>QR코드를 중앙에 위치시켜주세요</Text>) :
-                        (<Card style={styles.permissionCard}>
-                            <Card.Title title="카메라 권한 필요" />
-                            <Card.Content>
-                                <Text>QR 코드를 스캔하려면 카메라 권한이 필요합니다.</Text>
-                            </Card.Content>
-                            <Card.Actions>
-                                <Button mode="contained" onPress={requestCamPermission}>
-                                    권한 허용
-                                </Button>
-                            </Card.Actions>
-                        </Card>)
-                    }
-                </View>
-                {isScanning && (
+            {camPermission?.granted ? (
+                <CameraView
+                    style={styles.camera}
+                    barcodeScannerSettings={{
+                        barcodeTypes: ['qr'],
+                    }}
+                    onBarcodeScanned={scan}>
+                    <BarcodeMask
+                        showAnimatedLine={false}
+                        width={boxSize}
+                        height={boxSize}
+                        edgeWidth={30}
+                        edgeHeight={30}
+                        edgeBorderWidth={6}
+                        edgeRadius={2}
+                        outerMaskOpacity={0.5}
+                    />
                     <View style={styles.qrContainer}>
-                        <ActivityIndicator size="large" />
-                        <Text>불러오는 중..</Text>
+                        <Text style={styles.qrText}>QR코드를 중앙에 위치시켜주세요</Text>
                     </View>
-                )}
-            </CameraView>
+                    {isScanning && (
+                        <View style={styles.qrContainer}>
+                            <ActivityIndicator size="large" />
+                            <Text>불러오는 중...</Text>
+                        </View>
+                    )}
+                </CameraView>
+            ) : (
+                <Card style={styles.permissionCard}>
+                    <Card.Title title="카메라 권한 필요" />
+                    <Card.Content>
+                        <Text>QR 코드를 스캔하려면 카메라 권한이 필요합니다.</Text>
+                    </Card.Content>
+                    <Card.Actions>
+                        <Button mode="contained" onPress={requestCamPermission}>
+                            권한 허용
+                        </Button>
+                    </Card.Actions>
+                </Card>
+            )}
         </View>
     );
 }
@@ -116,6 +117,7 @@ const boxSize = width * 0.6;
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'black',
         flex: 1,
         justifyContent: 'center',
     },
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 8,
         fontSize: 16,
+        zIndex: 50,
     },
     qrPermission: {
         top: boxSize / 2 + 60,
