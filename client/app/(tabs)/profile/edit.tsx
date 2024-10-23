@@ -58,7 +58,7 @@ const EditProfile = () => {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Content style={styles.cardContent}>
                     <Text style={styles.title}>회원정보 수정하기</Text>
                     <View style={styles.row}>

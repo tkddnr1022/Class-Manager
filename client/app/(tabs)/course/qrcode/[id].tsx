@@ -9,7 +9,7 @@ export default function Qrcode() {
 
   return (
     <View style={styles.container}>
-      <Card style={styles.card}>
+      <Card mode="contained" style={styles.card}>
         <Card.Content>
           <Text style={styles.title}>출석 QR코드</Text>
 

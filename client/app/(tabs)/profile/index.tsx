@@ -55,7 +55,7 @@ export default function Mypage() {
                     <Text>불러오는 중..</Text>
                 </View>
             ) : (<>
-                <Card style={styles.card}>
+                <Card mode="contained" style={styles.card}>
                     <Card.Content style={styles.cardContent}>
                         {profile ? (
                             <>

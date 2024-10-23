@@ -73,7 +73,7 @@ const CourseList = () => {
     };
 
     const renderUpcomingItem = ({ item }: { item: Course }) => (
-        <Card style={styles.courseCard} key={item._id}>
+        <Card mode="contained" style={styles.courseCard} key={item._id}>
             <TouchableOpacity
                 style={styles.goIcon}
                 onPress={() => goToDetails(item._id)}
@@ -93,7 +93,7 @@ const CourseList = () => {
     const renderCompletedItem = (courses: Course[]) => (
         <View>
             {courses.map(item => (
-                <Card style={styles.courseCard} key={item._id}>
+                <Card mode="contained" style={styles.courseCard} key={item._id}>
                     <TouchableOpacity
                         style={styles.goIcon}
                         onPress={() => goToDetails(item._id)}

@@ -96,7 +96,7 @@ export default function Camera() {
                     )}
                 </CameraView>
             ) : (
-                <Card style={styles.permissionCard}>
+                <Card mode="contained" style={styles.permissionCard}>
                     <Card.Title title="카메라 권한 필요" />
                     <Card.Content>
                         <Text>QR 코드를 스캔하려면 카메라 권한이 필요합니다.</Text>

@@ -122,7 +122,7 @@ export default function Signup() {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Content>
                     <Text style={styles.title}>회원가입</Text>
                     <TextInput

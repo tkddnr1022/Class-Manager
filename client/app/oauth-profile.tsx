@@ -65,7 +65,7 @@ export default function OAuthProfile() {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Content>
                     <Text style={styles.title}>소셜로그인 연동</Text>
                     <TextInput

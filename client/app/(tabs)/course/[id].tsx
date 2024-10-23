@@ -77,7 +77,7 @@ const CourseDetails = () => {
     };
 
     const renderStudentItem = ({ item }: { item: Entry }) => (
-        <Card style={styles.entryCard}>
+        <Card mode="contained" style={styles.entryCard}>
             <Card.Content>
                 <Text style={styles.entryUsername}>
                     {item.userId ? item.userId.username : "탈퇴한 유저"}
@@ -98,7 +98,7 @@ const CourseDetails = () => {
             ) : (<>
                 {course ? (
                     <>
-                        <Card style={styles.card}>
+                        <Card mode="contained" style={styles.card}>
                             <Card.Content>
                                 <View style={styles.row}>
                                     <Text style={styles.title}>{course.title}</Text>

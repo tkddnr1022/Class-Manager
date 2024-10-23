@@ -134,7 +134,7 @@ const EntryDetails = () => {
             ) : (<>
                 {course ? (
                     <>
-                        <Card style={styles.card}>
+                        <Card mode="contained" style={styles.card}>
                             <TouchableOpacity
                                 style={styles.closeIcon}
                                 onPress={() => router.replace('/(tabs)/entry')}
