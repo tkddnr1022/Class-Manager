@@ -4,4 +4,5 @@ export default interface User{
     roles: string[];
     studentId?: string;
     username?: string;
+    auth?: string;
 }
