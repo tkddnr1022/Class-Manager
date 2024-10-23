@@ -76,7 +76,6 @@ export default function Login() {
     }
 
     // Todo: 구글 로그인과 분리
-    // Todo: 이름, 학번 입력 페이지 이동 및 입력 여부 검사(home)
     const handleRedirect = async (url: string) => {
         setLoading(true);
         const { queryParams } = Linking.parse(url);
@@ -89,14 +88,18 @@ export default function Login() {
             try {
                 await setStorageToken(token);
                 const profile = await getProfile();
-                if (profile) {
-                    await setStorageProfile(profile);
+                if (!profile) {
+                    throw new Error('Failed to login');
                 }
+                await setStorageProfile(profile);
                 Toast.show({
                     type: 'success',
                     text1: '로그인 성공',
                 })
-                router.replace('/(tabs)/home');
+                if(!profile.username || !profile.studentId){
+                    return router.replace('/oauth-profile');
+                }
+                return router.replace('/(tabs)/home');
             } catch (error) {
                 console.error(error);
                 setLoading(false);
@@ -156,7 +159,6 @@ export default function Login() {
                     <Button
                         mode="contained"
                         disabled={loading}
-                        loading={loading}
                         onPress={handleKakao}
                         style={styles.button}
                         contentStyle={styles.buttonContent}

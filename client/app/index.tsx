@@ -72,6 +72,9 @@ export default function Index() {
       const profile = await getProfile();
       if (profile) {
         await setStorageProfile(profile);
+        if(!profile.username || !profile.studentId){
+          return router.replace('/oauth-profile');
+        }
         return router.replace('/(tabs)/home');
       }
 
