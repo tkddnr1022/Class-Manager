@@ -34,6 +34,11 @@ const LightTheme = {
   roundness: 6,
 };
 
+const DarkTheme = {
+  ...MD3DarkTheme,
+  roundess: 6,
+}
+
 export function useTheme() {
   return useContext(ThemeContext);
 }
@@ -44,7 +49,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const theme = useMemo(() => (isDark ? MD3DarkTheme : LightTheme), [isDark]);
+  const theme = useMemo(() => (isDark ? DarkTheme : LightTheme), [isDark]);
 
   const toggleTheme = () => setIsDark((prev) => !prev); // 테마 전환 함수
 
