@@ -187,7 +187,7 @@ const EntryDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 28,
+        padding: 18,
         justifyContent: 'center',
         alignItems: 'center',
     },

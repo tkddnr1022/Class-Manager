@@ -172,7 +172,7 @@ const CourseDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
+        padding: 18,
     },
     card: {
         borderRadius: 12,

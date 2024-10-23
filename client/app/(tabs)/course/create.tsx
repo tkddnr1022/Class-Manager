@@ -255,7 +255,7 @@ const CreateCourse = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        padding: 18,
         justifyContent: 'center',
         alignItems: 'center',
     },

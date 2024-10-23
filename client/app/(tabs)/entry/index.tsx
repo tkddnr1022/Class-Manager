@@ -116,7 +116,7 @@ const EntryRecord = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 18,
     },
     title: {
         fontSize: 22,

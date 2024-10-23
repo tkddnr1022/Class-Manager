@@ -165,11 +165,11 @@ const CourseList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 20,
+        padding: 18,
     },
     title: {
         fontSize: 24,
-        marginVertical: 16,
+        marginBottom: 16,
         marginHorizontal: 4,
         fontWeight: 'bold',
     },
