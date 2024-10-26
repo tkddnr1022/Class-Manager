@@ -63,7 +63,7 @@ export class AuthService {
             new URLSearchParams({
                 grant_type: 'authorization_code',
                 client_id: this.configService.get<string>('KAKAO_CLIENT_ID'),
-                redirect_uri: `${this.configService.get<string>('API_URL')}/auth/kakao`,
+                redirect_uri: `${this.configService.get<string>('API_URL')}/auth/kakao/callback`,
                 code: code,
             }),
         ).pipe(
@@ -87,7 +87,7 @@ export class AuthService {
         return response.data;
     }
 
-    async kakaoAuth(code: string): Promise<Token> {
+    async kakaoAuthCallback(code: string): Promise<Token> {
         const token = await this.getKakaoToken(code);
         const kakaoUser = await this.getKakaoUser(token);
         const query = new GetUserByOIdQuery(kakaoUser.id);
@@ -100,5 +100,14 @@ export class AuthService {
             const user = await this.commandBus.execute(command);
             return this.signIn(user);
         }
+    }
+
+    kakaoAuthURL(): string {
+        const queryParams = new URLSearchParams({
+            client_id: this.configService.get<string>('KAKAO_CLIENT_ID'),
+            redirect_uri: `${this.configService.get<string>('API_URL')}/auth/kakao/callback`,
+            response_type: 'code',
+        });
+        return `https://kauth.kakao.com/oauth/authorize?${queryParams.toString()}`;
     }
 }

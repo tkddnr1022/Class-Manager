@@ -49,11 +49,16 @@ export class AuthController {
     }
 
     @Get('kakao')
-    async kakaoAuth(@Query() kakaoAuthDto: KakaoAuthDto, @Res() res: Response) {
+    async kakaoAuth(@Res() res: Response){
+        res.redirect(this.authService.kakaoAuthURL());
+    }
+
+    @Get('kakao/callback')
+    async kakaoAuthCallback(@Query() kakaoAuthDto: KakaoAuthDto, @Res() res: Response) {
         if (!kakaoAuthDto.code) {
             throw new BadRequestException(kakaoAuthDto.error);
         }
-        const token = await this.authService.kakaoAuth(kakaoAuthDto.code);
+        const token = await this.authService.kakaoAuthCallback(kakaoAuthDto.code);
         res.redirect(`class-manager://login?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
     }
 }
