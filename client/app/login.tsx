@@ -1,6 +1,6 @@
 import { signIn, getProfile } from '@/scripts/api/auth';
 import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Card } from 'react-native-paper';
@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 import * as Linking from 'expo-linking';
 import Token from '@/interfaces/token';
 
-const KAKAO_CLIENT_ID = process.env.EXPO_PUBLIC_KAKAO_CLIENT_ID;
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export default function Login() {
@@ -62,21 +61,9 @@ export default function Login() {
     }
 
     const handleKakao = async () => {
-        try {
-            router.push({
-                pathname: 'https://kauth.kakao.com/oauth/authorize',
-                params: {
-                    client_id: KAKAO_CLIENT_ID,
-                    redirect_uri: `${API_URL}/auth/kakao`,
-                    response_type: 'code',
-                },
-            });
-        } catch (error) {
-            console.error(error);
-        }
+        router.push(`${API_URL}/auth/kakao` as Href);
     }
 
-    // Todo: 구글 로그인과 분리
     const handleRedirect = async (url: string) => {
         setLoading(true);
         const { queryParams } = Linking.parse(url);
