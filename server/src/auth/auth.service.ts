@@ -11,10 +11,11 @@ import { catchError, firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
 import { KakaoError } from './interfaces/kakao-error.interface';
-import { CreateUserCommand } from 'src/user/commands/impl/create-user.command';
 import { CreateOAuthCommand } from 'src/user/commands/impl/create-oauth.command';
 import { KakaoUser } from './interfaces/kakao-user.interface';
 import { GetUserByOIdQuery } from 'src/user/queries/impl/get-user-by-oid';
+import { GoogleError } from './interfaces/google-error.interface';
+import { GoogleUser } from './interfaces/google-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -109,5 +110,60 @@ export class AuthService {
             response_type: 'code',
         });
         return `https://kauth.kakao.com/oauth/authorize?${queryParams.toString()}`;
+    }
+
+    async getGoogleToken(code: string): Promise<string> {
+        const response = await firstValueFrom(this.httpService.post('https://oauth2.googleapis.com/token',
+            new URLSearchParams({
+                grant_type: 'authorization_code',
+                client_id: this.configService.get<string>('GOOGLE_CLIENT_ID'),
+                client_secret: this.configService.get<string>('GOOGLE_CLIENT_SECRET'),
+                redirect_uri: `${this.configService.get<string>('API_URL')}/auth/google/callback`,
+                code: code,
+            }),
+        ).pipe(
+            catchError((error: AxiosError<GoogleError, any>) => {
+                console.log(error.response.data);
+                throw new BadRequestException(error.response.data.error);
+            })
+        ));
+        return response.data.access_token;
+    }
+
+    async getGoogleUser(token: string): Promise<GoogleUser> {
+        const response = await firstValueFrom(this.httpService.get('https://www.googleapis.com/oauth2/v2/userinfo',
+            { headers: { Authorization: `Bearer ${token}` } }
+        ).pipe(
+            catchError((error: AxiosError<GoogleError, any>) => {
+                console.log(error.response.data);
+                throw new BadRequestException(error.response.data.error);
+            })
+        ));
+        return response.data;
+    }
+
+    async googleAuthCallback(code: string): Promise<Token> {
+        const token = await this.getGoogleToken(code);
+        const googleUser = await this.getGoogleUser(token);
+        const query = new GetUserByOIdQuery(googleUser.id);
+        const user = await this.queryBus.execute(query);
+        if (user) {
+            return this.signIn(user);
+        }
+        else {
+            const command = new CreateOAuthCommand(googleUser.id, googleUser.email, 'google');
+            const user = await this.commandBus.execute(command);
+            return this.signIn(user);
+        }
+    }
+
+    googleAuthURL(): string {
+        const queryParams = new URLSearchParams({
+            client_id: this.configService.get<string>('GOOGLE_CLIENT_ID'),
+            redirect_uri: `${this.configService.get<string>('API_URL')}/auth/google/callback`,
+            response_type: 'code',
+            scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+        });
+        return `https://accounts.google.com/o/oauth2/v2/auth?${queryParams.toString()}`;
     }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Request, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Request, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/sign-in.dto';
 import { JwtAuthGuard } from './guard/jwt.guard';
@@ -7,6 +7,7 @@ import { Token } from './interfaces/token.interface';
 import { User } from 'src/user/models/user.model';
 import { KakaoAuthDto } from './dtos/kakao-auth.dto';
 import { Response } from 'express';
+import { GoogleAuthDto } from './dtos/google-auth.dto';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -59,6 +60,21 @@ export class AuthController {
             throw new BadRequestException(kakaoAuthDto.error);
         }
         const token = await this.authService.kakaoAuthCallback(kakaoAuthDto.code);
+        res.redirect(`class-manager://login?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
+    }
+
+    @Get('google')
+    async googleAuth(@Res() res: Response){
+        res.redirect(this.authService.googleAuthURL());
+    }
+
+    @Get('google/callback')
+    async googleAuthCallback(@Query() googleAuthDto: GoogleAuthDto, @Res() res: Response) {
+        console.log(googleAuthDto);
+        if(!googleAuthDto.code){
+            throw new BadRequestException(googleAuthDto.error);
+        }
+        const token = await this.authService.googleAuthCallback(googleAuthDto.code);
         res.redirect(`class-manager://login?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
     }
 }
