@@ -1,101 +1,13 @@
-import { getProfile } from '@/scripts/api/auth';
-import { healthCheck } from '@/scripts/api/health';
-import { getStorageToken, setStorageProfile } from '@/scripts/utils/storage';
-import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, ActivityIndicator } from 'react-native-paper';
-import Toast from 'react-native-toast-message';
+import { Text } from 'react-native-paper';
 
 export default function Index() {
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    initClient(0);
-  }, []);
-
-  const initClient = async (tries: number) => {
-    if (tries > 3) {
-      Toast.show({
-        type: "error",
-        text1: "연결 실패",
-        text2: "서버에 연결할 수 없습니다.",
-      });
-      setError(true);
-      return;
-    }
-    if (await checkServerStatus()) {
-      await checkLoginStatus();
-    }
-    else {
-      initClient(tries + 1);
-    }
-  }
-
-  const checkServerStatus = async () => {
-    const status = await healthCheck();
-    if (!status) {
-      Toast.show({
-        type: "error",
-        text1: "서버 오류",
-        text2: "서버가 오프라인입니다.",
-      });
-      return false;
-    }
-    if (status.info.mongodb.status != "up") {
-      Toast.show({
-        type: "error",
-        text1: "서버 오류",
-        text2: "DB 서버에 연결할 수 없습니다.",
-      });
-      return false;
-    }
-    if (status.status != "ok") {
-      Toast.show({
-        type: "error",
-        text1: "서버 오류",
-        text2: status.error.toString(),
-      });
-      return false;
-    }
-    return true;
-  }
-
-  const checkLoginStatus = async () => {
-    try {
-      const token = await getStorageToken();
-      if (!token) {
-        return router.replace('/login');
-      }
-
-      // Todo: validateToken 메소드 구현
-      const profile = await getProfile();
-      if (profile) {
-        await setStorageProfile(profile);
-        if(!profile.username || !profile.studentId){
-          return router.replace('/oauth-profile');
-        }
-        return router.replace('/(tabs)/home');
-      }
-
-      return router.replace('/login');
-    } catch (error) {
-      console.error(error);
-      return router.replace('/login');
-    }
-  };
 
   return (
-    error ? (
-      <View style={styles.loadingContainer}>
-        <Text>서버에 연결할 수 없습니다.</Text>
-      </View>
-    ) : (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6200ee" />
-        <Text>연결 시도중..</Text>
-      </View>
-    )
+    <View style={styles.loadingContainer}>
+      <Text>서버에 연결할 수 없습니다.</Text>
+    </View>
   );
 };
 
