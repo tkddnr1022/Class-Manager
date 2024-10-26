@@ -64,6 +64,10 @@ export default function Login() {
         router.push(`${API_URL}/auth/kakao` as Href);
     }
 
+    const handleGoogle = async () => {
+        router.push(`${API_URL}/auth/google` as Href);
+    }
+
     const handleRedirect = async (url: string) => {
         setLoading(true);
         const { queryParams } = Linking.parse(url);
@@ -155,6 +159,15 @@ export default function Login() {
                         contentStyle={styles.buttonContent}
                     >
                         kakao_test
+                    </Button>
+                    <Button
+                        mode="contained"
+                        disabled={loading}
+                        onPress={handleGoogle}
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                    >
+                        google_test
                     </Button>
                 </Card.Content>
             </Card>
