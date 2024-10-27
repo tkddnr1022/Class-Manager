@@ -1,8 +1,14 @@
+import eventEmitter from "@/scripts/utils/eventEmitter";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 export default function Home() {
+
+    useEffect(() => {
+        eventEmitter.emit('hide_splash');
+    }, []);
 
     const goToCamera = () => {
         router.navigate('/camera');

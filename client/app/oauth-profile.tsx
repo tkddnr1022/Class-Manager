@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Card } from 'react-native-paper';
 import { router } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { getStorageProfile, removeStorageToken, setStorageProfile } from '@/scripts/utils/storage';
 import { updateUser } from '@/scripts/api/user';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 export default function OAuthProfile() {
     const [username, setUsername] = useState('');
     const [studentId, setStudentId] = useState('');
     const [submitLoading, setSubmitLoading] = useState(false);
     const [logoutLoading, setLogoutLoading] = useState(false);
+
+    useEffect(() => {
+        eventEmitter.emit('hide_splash');
+    }, []);
 
     const handleSubmit = async () => {
         setSubmitLoading(true);

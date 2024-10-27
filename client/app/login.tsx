@@ -7,6 +7,7 @@ import { TextInput, Button, Text, Card } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import * as Linking from 'expo-linking';
 import Token from '@/interfaces/token';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -16,6 +17,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        eventEmitter.emit('hide_splash');
         Linking.getInitialURL().then((url) => {
             if (url) {
                 handleRedirect(url);

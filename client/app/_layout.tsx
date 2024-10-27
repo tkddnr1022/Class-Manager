@@ -1,5 +1,5 @@
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Href, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useMemo, useState, createContext, useContext } from 'react';
 import 'react-native-reanimated';
@@ -9,13 +9,14 @@ import { getProfile } from '@/scripts/api/auth';
 import { healthCheck } from '@/scripts/api/health';
 import { getStorageToken, setStorageProfile } from '@/scripts/utils/storage';
 import { router } from 'expo-router';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const ThemeContext = createContext({
   isDark: false,
-  toggleTheme: () => {},
+  toggleTheme: () => { },
 });
 
 const LightTheme = {
@@ -51,40 +52,48 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const [sessionChecked, setSessionChecked] = useState(false);
+  const [targetPage, setTargetPage] = useState<Href>();
   const [isDark, setIsDark] = useState(false);
   const theme = useMemo(() => (isDark ? DarkTheme : LightTheme), [isDark]);
   const toggleTheme = () => setIsDark((prev) => !prev); // 테마 전환 함수
 
   useEffect(() => {
-    const checkSession = async () => {
-      const isServerOnline = await checkServerStatus();
-      if (!isServerOnline) {
-        SplashScreen.hideAsync();
-        return;
-      }
-      await checkLoginStatus();
-      setSessionChecked(true);
-    };
-
+    eventEmitter.on("hide_splash", hideSplash);
     checkSession();
+
+    return () => {
+      eventEmitter.off('hide_splash', hideSplash);
+    }
   }, []);
 
   useEffect(() => {
-    if (loaded && sessionChecked) {
-      SplashScreen.hideAsync();
+    if (loaded && targetPage) {
+      router.replace(targetPage);
     }
-  }, [loaded, sessionChecked]);
+  }, [loaded, targetPage]);
+
+  const hideSplash = () => {
+    SplashScreen.hideAsync();
+  }
+
+  const checkSession = async () => {
+    if (await checkServerStatus()) {
+      await checkLoginStatus();
+    }
+  };
 
   const checkServerStatus = async () => {
     const status = await healthCheck();
     if (!status) {
+      setTargetPage('/error');
       return false;
     }
     if (status.info.mongodb.status !== "up") {
+      setTargetPage('/error');
       return false;
     }
     if (status.status !== "ok") {
+      setTargetPage('/error');
       return false;
     }
     return true;
@@ -94,22 +103,23 @@ export default function RootLayout() {
     try {
       const token = await getStorageToken();
       if (!token) {
-        return router.replace('/login');
+        return setTargetPage('/login');
       }
 
       const profile = await getProfile();
-      if (profile) {
-        await setStorageProfile(profile);
-        if (!profile.username || !profile.studentId) {
-          return router.replace('/oauth-profile');
-        }
-        return router.replace('/(tabs)/home');
+      if (!profile) {
+        return setTargetPage('/login');
       }
 
-      return router.replace('/login');
+      await setStorageProfile(profile);
+      if (!profile.username || !profile.studentId) {
+        return setTargetPage('/oauth-profile');
+      }
+
+      setTargetPage('/(tabs)/home');
     } catch (error) {
       console.error(error);
-      return router.replace('/login');
+      setTargetPage('/login');
     }
   };
 
