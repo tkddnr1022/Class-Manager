@@ -49,11 +49,16 @@ export class AuthController {
         return req.user;
     }
 
+    @ApiOperation({ summary: '카카오 인증' })
+    @ApiResponse({ status: HttpStatus.FOUND, description: '카카오 로그인 페이지로 리다이렉트' })
     @Get('kakao')
-    async kakaoAuth(@Res() res: Response){
+    async kakaoAuth(@Res() res: Response) {
         res.redirect(this.authService.kakaoAuthURL());
     }
 
+    @ApiOperation({ summary: '카카오 인증 콜백' })
+    @ApiResponse({ status: HttpStatus.FOUND, description: '카카오 인증 성공 후 리다이렉트', type: Token })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '잘못된 요청' })
     @Get('kakao/callback')
     async kakaoAuthCallback(@Query() kakaoAuthDto: KakaoAuthDto, @Res() res: Response) {
         if (!kakaoAuthDto.code) {
@@ -63,15 +68,20 @@ export class AuthController {
         res.redirect(`class-manager://login?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
     }
 
+    @ApiOperation({ summary: '구글 인증' })
+    @ApiResponse({ status: HttpStatus.FOUND, description: '구글 로그인 페이지로 리다이렉트' })
     @Get('google')
-    async googleAuth(@Res() res: Response){
+    async googleAuth(@Res() res: Response) {
         res.redirect(this.authService.googleAuthURL());
     }
 
+    @ApiOperation({ summary: '구글 인증 콜백' })
+    @ApiResponse({ status: HttpStatus.FOUND, description: '구글 인증 성공 후 리다이렉트', type: Token })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '잘못된 요청' })
     @Get('google/callback')
     async googleAuthCallback(@Query() googleAuthDto: GoogleAuthDto, @Res() res: Response) {
         console.log(googleAuthDto);
-        if(!googleAuthDto.code){
+        if (!googleAuthDto.code) {
             throw new BadRequestException(googleAuthDto.error);
         }
         const token = await this.authService.googleAuthCallback(googleAuthDto.code);
