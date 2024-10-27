@@ -22,7 +22,7 @@ const EntryRecord = () => {
     }, []);
 
     const renderEntryItem = ({ item }: { item: Entry }) => (
-        <Card style={styles.entryCard}>
+        <Card mode="contained" style={styles.entryCard}>
             <Card.Content>
                 <Text style={styles.entryTitle}>{item.courseId ? item.courseId.title : "삭제된 수업"}</Text>
                 <Text style={{ color: colors.secondary }}>출석 시간: {new Date(item.entryTime).toLocaleString('ko-KR')}</Text>
@@ -116,7 +116,7 @@ const EntryRecord = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 18,
     },
     title: {
         fontSize: 22,
@@ -129,7 +129,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingVertical: 8,
         paddingHorizontal: 16,
-        borderRadius: 4,
         marginTop: 8,
     },
     entryListContainer: {
@@ -137,8 +136,8 @@ const styles = StyleSheet.create({
     },
     entryCard: {
         marginBottom: 12,
-        borderRadius: 12,
         marginHorizontal: 4,
+        padding: 2,
     },
     entryTitle: {
         fontSize: 16,

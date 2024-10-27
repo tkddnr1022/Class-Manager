@@ -1,17 +1,22 @@
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Href, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useMemo, useState, createContext, useContext } from 'react';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
+import { getProfile } from '@/scripts/api/auth';
+import { healthCheck } from '@/scripts/api/health';
+import { getStorageToken, setStorageProfile } from '@/scripts/utils/storage';
+import { router } from 'expo-router';
+import eventEmitter from '@/scripts/utils/eventEmitter';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const ThemeContext = createContext({
   isDark: false,
-  toggleTheme: () => {},
+  toggleTheme: () => { },
 });
 
 const LightTheme = {
@@ -31,6 +36,12 @@ const LightTheme = {
     },
     surfaceVariant: "white",
   },
+  roundness: 6,
+};
+
+const DarkTheme = {
+  ...MD3DarkTheme,
+  roundness: 6,
 };
 
 export function useTheme() {
@@ -38,20 +49,79 @@ export function useTheme() {
 }
 
 export default function RootLayout() {
-  const [isDark, setIsDark] = useState(false); // 다크모드 상태 관리
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-
-  const theme = useMemo(() => (isDark ? MD3DarkTheme : LightTheme), [isDark]);
-
+  const [targetPage, setTargetPage] = useState<Href>();
+  const [isDark, setIsDark] = useState(false);
+  const theme = useMemo(() => (isDark ? DarkTheme : LightTheme), [isDark]);
   const toggleTheme = () => setIsDark((prev) => !prev); // 테마 전환 함수
 
   useEffect(() => {
-    if (loaded) SplashScreen.hideAsync();
-  }, [loaded]);
+    eventEmitter.on("hide_splash", hideSplash);
+    checkSession();
 
-  if (!loaded) return null;
+    return () => {
+      eventEmitter.off('hide_splash', hideSplash);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loaded && targetPage) {
+      router.replace(targetPage);
+    }
+  }, [loaded, targetPage]);
+
+  const hideSplash = () => {
+    SplashScreen.hideAsync();
+  }
+
+  const checkSession = async () => {
+    if (await checkServerStatus()) {
+      await checkLoginStatus();
+    }
+  };
+
+  const checkServerStatus = async () => {
+    const status = await healthCheck();
+    if (!status) {
+      setTargetPage('/error');
+      return false;
+    }
+    if (status.info.mongodb.status !== "up") {
+      setTargetPage('/error');
+      return false;
+    }
+    if (status.status !== "ok") {
+      setTargetPage('/error');
+      return false;
+    }
+    return true;
+  };
+
+  const checkLoginStatus = async () => {
+    try {
+      const token = await getStorageToken();
+      if (!token) {
+        return setTargetPage('/login');
+      }
+
+      const profile = await getProfile();
+      if (!profile) {
+        return setTargetPage('/login');
+      }
+
+      await setStorageProfile(profile);
+      if (!profile.username || !profile.studentId) {
+        return setTargetPage('/oauth-profile');
+      }
+
+      setTargetPage('/(tabs)/home');
+    } catch (error) {
+      console.error(error);
+      setTargetPage('/login');
+    }
+  };
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>

@@ -6,10 +6,10 @@ export const getStorageProfile = async () => {
     try {
         const profile: User = {
             _id: await AsyncStorage.getItem('userId') as string,
-            username: await AsyncStorage.getItem('username') as string,
             email: await AsyncStorage.getItem('email') as string,
-            studentId: await AsyncStorage.getItem('studentId') as string,
             roles: [await AsyncStorage.getItem('userRole') as string],
+            studentId: await AsyncStorage.getItem('studentId') || undefined,
+            username: await AsyncStorage.getItem('username') || undefined,
         }
         return profile;
     } catch (error) {
@@ -20,9 +20,11 @@ export const getStorageProfile = async () => {
 export const setStorageProfile = async (profile: User) => {
     await AsyncStorage.setItem('userRole', JSON.stringify(profile.roles));
     await AsyncStorage.setItem('userId', profile._id);
-    await AsyncStorage.setItem('username', profile.username);
     await AsyncStorage.setItem('email', profile.email);
-    await AsyncStorage.setItem('studentId', profile.studentId);
+    if(profile.username && profile.studentId){
+        await AsyncStorage.setItem('username', profile.username);
+        await AsyncStorage.setItem('studentId', profile.studentId);
+    }
 }
 
 export const getStorageToken = async () => {
@@ -40,4 +42,9 @@ export const getStorageToken = async () => {
 export const setStorageToken = async (token: Token) => {
     await AsyncStorage.setItem('accessToken', token.access_token);
     await AsyncStorage.setItem('refreshToken', token.refresh_token);
+}
+
+export const removeStorageToken = async () => {
+    await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('refreshToken');
 }

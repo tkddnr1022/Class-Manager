@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Card } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
+import { Card, Text } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 
 export default function Qrcode() {
@@ -9,7 +9,7 @@ export default function Qrcode() {
 
   return (
     <View style={styles.container}>
-      <Card style={styles.card}>
+      <Card mode="contained" style={styles.card}>
         <Card.Content>
           <Text style={styles.title}>출석 QR코드</Text>
 

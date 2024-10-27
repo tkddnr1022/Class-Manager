@@ -145,7 +145,7 @@ const EditCourse = () => {
                     <Text>불러오는 중..</Text>
                 </View>
             ) : (
-                <Card style={styles.card}>
+                <Card mode="contained" style={styles.card}>
                     <Card.Content style={styles.cardContent}>
                         {result ? (
                             <>
@@ -291,7 +291,7 @@ const EditCourse = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        padding: 18,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        paddingVertical: 8,
+        padding: 8,
     },
     cardContent: {
         alignItems: 'center',

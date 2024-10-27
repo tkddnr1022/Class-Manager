@@ -117,7 +117,7 @@ const CreateCourse = () => {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Content style={styles.cardContent}>
                     <Text style={styles.title}>수업 생성하기</Text>
                     <View style={styles.row}>
@@ -255,7 +255,7 @@ const CreateCourse = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        padding: 18,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        paddingVertical: 8,
+        padding: 8,
     },
     cardContent: {
         alignItems: 'center',

@@ -9,10 +9,10 @@ import eventEmitter from '@/scripts/utils/eventEmitter';
 
 const EditProfile = () => {
     const [userId, setUserId] = useState('');
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState<string | undefined>();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [studentId, setStudentId] = useState('');
+    const [studentId, setStudentId] = useState<string | undefined>();
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
@@ -58,7 +58,7 @@ const EditProfile = () => {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Content style={styles.cardContent}>
                     <Text style={styles.title}>회원정보 수정하기</Text>
                     <View style={styles.row}>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 32,
+        padding: 18,
     },
     title: {
         fontSize: 24,
@@ -143,8 +143,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        paddingHorizontal: 4,
-        paddingVertical: 8,
+        padding: 8,
     },
     cardContent: {
         alignItems: 'center',

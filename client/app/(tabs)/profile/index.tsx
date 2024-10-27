@@ -55,7 +55,7 @@ export default function Mypage() {
                     <Text>불러오는 중..</Text>
                 </View>
             ) : (<>
-                <Card style={styles.card}>
+                <Card mode="contained" style={styles.card}>
                     <Card.Content style={styles.cardContent}>
                         {profile ? (
                             <>
@@ -80,9 +80,7 @@ export default function Mypage() {
                     </Button>
                     <Button
                         mode="contained"
-                        onPress={() => router.push({
-                            pathname: '/profile/edit',
-                        })}
+                        onPress={() => router.push('/profile/edit',)}
                         style={styles.button}
                     >
                         회원정보 수정
@@ -106,7 +104,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 32,
+        padding: 18,
     },
     avatar: {
         marginBottom: 20,
@@ -136,7 +134,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: "100%",
-        paddingVertical: 6,
+        padding: 8,
     },
     cardContent: {
         alignItems: 'center',

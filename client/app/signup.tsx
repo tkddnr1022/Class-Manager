@@ -122,7 +122,7 @@ export default function Signup() {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Content>
                     <Text style={styles.title}>회원가입</Text>
                     <TextInput
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 36,
+        padding: 18,
     },
     title: {
         fontSize: 24,
@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        paddingHorizontal: 4,
-        paddingVertical: 8,
+        padding: 8,
     },
 });

@@ -73,7 +73,7 @@ const CourseList = () => {
     };
 
     const renderUpcomingItem = ({ item }: { item: Course }) => (
-        <Card style={styles.courseCard} key={item._id}>
+        <Card mode="contained" style={styles.courseCard} key={item._id}>
             <TouchableOpacity
                 style={styles.goIcon}
                 onPress={() => goToDetails(item._id)}
@@ -93,7 +93,7 @@ const CourseList = () => {
     const renderCompletedItem = (courses: Course[]) => (
         <View>
             {courses.map(item => (
-                <Card style={styles.courseCard} key={item._id}>
+                <Card mode="contained" style={styles.courseCard} key={item._id}>
                     <TouchableOpacity
                         style={styles.goIcon}
                         onPress={() => goToDetails(item._id)}
@@ -165,11 +165,11 @@ const CourseList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 20,
+        padding: 18,
     },
     title: {
         fontSize: 24,
-        marginVertical: 16,
+        marginBottom: 16,
         marginHorizontal: 4,
         fontWeight: 'bold',
     },
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
     },
     courseCard: {
         marginBottom: 16,
-        borderRadius: 12,
         paddingTop: 12,
         marginHorizontal: 4,
     },

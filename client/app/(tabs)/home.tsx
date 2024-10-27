@@ -1,8 +1,14 @@
+import eventEmitter from "@/scripts/utils/eventEmitter";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 export default function Home() {
+
+    useEffect(() => {
+        eventEmitter.emit('hide_splash');
+    }, []);
 
     const goToCamera = () => {
         router.navigate('/camera');
@@ -10,14 +16,14 @@ export default function Home() {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Title title="변경사항" titleVariant="titleMedium"/>
                 <Card.Content>
                     <Text>- 최초 버전</Text>
                     <Text>- 출석 및 수업 관리</Text>
                 </Card.Content>
             </Card>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Title title="구현예정" titleVariant="titleMedium"/>
                 <Card.Content>
                     <Text>- 소셜 로그인</Text>
@@ -27,7 +33,7 @@ export default function Home() {
                     <Text>- UI 개선</Text>
                 </Card.Content>
             </Card>
-            <Card style={styles.card}>
+            <Card mode="contained" style={styles.card}>
                 <Card.Title title="이슈" titleVariant="titleMedium"/>
                 <Card.Content>
                     <Text>- 권한 거부 시 수동 설정 필요</Text>
@@ -43,11 +49,12 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 32,
+        padding: 18,
     },
     card: {
         width: "100%",
         marginBottom: 24,
+        padding: 8,
     },
     button: {
         paddingVertical: 4,

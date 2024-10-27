@@ -77,7 +77,7 @@ const CourseDetails = () => {
     };
 
     const renderStudentItem = ({ item }: { item: Entry }) => (
-        <Card style={styles.entryCard}>
+        <Card mode="contained" style={styles.entryCard}>
             <Card.Content>
                 <Text style={styles.entryUsername}>
                     {item.userId ? item.userId.username : "탈퇴한 유저"}
@@ -98,7 +98,7 @@ const CourseDetails = () => {
             ) : (<>
                 {course ? (
                     <>
-                        <Card style={styles.card}>
+                        <Card mode="contained" style={styles.card}>
                             <Card.Content>
                                 <View style={styles.row}>
                                     <Text style={styles.title}>{course.title}</Text>
@@ -172,13 +172,12 @@ const CourseDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
+        padding: 18,
     },
     card: {
-        borderRadius: 12,
         marginBottom: 12,
         marginHorizontal: 4,
-        paddingBottom: 4,
+        padding: 8,
     },
     title: {
         fontSize: 24,
@@ -200,8 +199,8 @@ const styles = StyleSheet.create({
     },
     entryCard: {
         marginBottom: 12,
-        borderRadius: 12,
         marginHorizontal: 4,
+        padding: 8,
     },
     entryUsername: {
         fontSize: 16,

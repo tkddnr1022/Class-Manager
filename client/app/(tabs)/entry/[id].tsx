@@ -10,6 +10,8 @@ import eventEmitter from '@/scripts/utils/eventEmitter';
 import { createEntry } from '@/scripts/api/entry';
 import { getCurrentPositionAsync, useForegroundPermissions } from 'expo-location';
 import * as Application from 'expo-application';
+import { getStorageToken } from '@/scripts/utils/storage';
+import { getProfile } from '@/scripts/api/auth';
 
 const EntryDetails = () => {
     const { id } = useLocalSearchParams();
@@ -21,9 +23,31 @@ const EntryDetails = () => {
 
     // Todo: 권한 거부 시 동작
     useEffect(() => {
+        checkLoginStatus();
         fetchCourse();
         requestLocPermission();
     }, [id]);
+
+    const checkLoginStatus = async () => {
+        try {
+            const token = await getStorageToken();
+            if (!token) {
+                return router.replace('/login');
+            }
+            const profile = await getProfile();
+            if (profile) {
+                if (!profile.username || !profile.studentId) {
+                    return router.replace('/oauth-profile');
+                }
+                return;
+            }
+
+            return router.replace('/login');
+        } catch (error) {
+            console.error(error);
+            return router.replace('/login');
+        }
+    };
 
     const fetchCourse = async () => {
         setLoading(true);
@@ -134,7 +158,7 @@ const EntryDetails = () => {
             ) : (<>
                 {course ? (
                     <>
-                        <Card style={styles.card}>
+                        <Card mode="contained" style={styles.card}>
                             <TouchableOpacity
                                 style={styles.closeIcon}
                                 onPress={() => router.replace('/(tabs)/entry')}
@@ -187,15 +211,15 @@ const EntryDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 28,
+        padding: 18,
         justifyContent: 'center',
         alignItems: 'center',
     },
     card: {
-        borderRadius: 12,
         width: '100%',
         marginBottom: 16,
-        paddingVertical: 8,
+        padding: 8,
+        paddingTop: 16,
     },
     closeIcon: {
         position: 'absolute',
