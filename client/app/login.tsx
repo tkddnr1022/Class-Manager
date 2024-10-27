@@ -2,8 +2,8 @@ import { signIn, getProfile } from '@/scripts/api/auth';
 import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
 import { Href, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text, Card } from 'react-native-paper';
+import { View, StyleSheet, Image } from 'react-native';
+import { TextInput, Button, Text, Card, TouchableRipple } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import * as Linking from 'expo-linking';
 import Token from '@/interfaces/token';
@@ -73,7 +73,7 @@ export default function Login() {
     const handleRedirect = async (url: string) => {
         setLoading(true);
         const { queryParams } = Linking.parse(url);
-        if(!queryParams || !queryParams.access_token || !queryParams.refresh_token){
+        if (!queryParams || !queryParams.access_token || !queryParams.refresh_token) {
             setLoading(false);
             return;
         }
@@ -93,7 +93,7 @@ export default function Login() {
                     type: 'success',
                     text1: '로그인 성공',
                 })
-                if(!profile.username || !profile.studentId){
+                if (!profile.username || !profile.studentId) {
                     return router.replace('/oauth-profile');
                 }
                 return router.replace('/(tabs)/home');
@@ -153,24 +153,26 @@ export default function Login() {
                     >
                         회원가입
                     </Button>
-                    <Button
-                        mode="contained"
+                    <TouchableRipple
                         disabled={loading}
                         onPress={handleKakao}
-                        style={styles.button}
-                        contentStyle={styles.buttonContent}
+                        style={styles.kakaoButton}
                     >
-                        kakao_test
-                    </Button>
-                    <Button
-                        mode="contained"
+                        <View style={styles.oauthContainer}>
+                            <Image source={require('../assets/images/kakao-logo.png')} style={styles.icon} />
+                            <Text style={styles.oauthLabel}>카카오 로그인</Text>
+                        </View>
+                    </TouchableRipple>
+                    <TouchableRipple
                         disabled={loading}
                         onPress={handleGoogle}
-                        style={styles.button}
-                        contentStyle={styles.buttonContent}
+                        style={styles.googleButton}
                     >
-                        google_test
-                    </Button>
+                        <View style={styles.oauthContainer}>
+                            <Image source={require('../assets/images/google-logo.png')} style={styles.icon} />
+                            <Text style={styles.oauthLabel}>구글 로그인</Text>
+                        </View>
+                    </TouchableRipple>
                 </Card.Content>
             </Card>
         </View>
@@ -211,5 +213,40 @@ const styles = StyleSheet.create({
     card: {
         width: '100%',
         padding: 8,
+    },
+    oauthContainer: {
+        paddingVertical: 18,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    oauthLabel: {
+        lineHeight: 18,
+    },
+    kakaoButton: {
+        marginTop: 16,
+        borderRadius: 12,
+        backgroundColor: '#FEE500',
+    },
+    googleButton: {
+        marginTop: 16,
+        borderRadius: 12,
+        backgroundColor: '#fff',
+        // iOS
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        // Android
+        elevation: 1,
+    },
+    icon: {
+        width: 16,
+        height: 16,
+        resizeMode: 'contain',
+        marginRight: 6,
     },
 });
