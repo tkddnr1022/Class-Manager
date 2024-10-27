@@ -13,6 +13,8 @@ import { UserUpdatedHandler } from './events/handlers/user-updated.handler';
 import { UserController } from './user.controller';
 import { GetUserByEmailHandler } from './queries/handlers/get-user-by-email.handler';
 import { GetUserByStudentHandler } from './queries/handlers/get-user-by-student-id.handler';
+import { CreateOAuthHandler } from './commands/handlers/create-oauth.handler';
+import { GetUserByOIdHandler } from './queries/handlers/get-user-by-oid';
 
 @Module({
     controllers: [
@@ -33,6 +35,8 @@ import { GetUserByStudentHandler } from './queries/handlers/get-user-by-student-
         ListUsersHandler,
         UserCreatedHandler,
         UserUpdatedHandler,
+        CreateOAuthHandler,
+        GetUserByOIdHandler,
     ],
 })
 export class UserModule { }

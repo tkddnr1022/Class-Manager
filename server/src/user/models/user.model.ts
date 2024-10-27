@@ -8,10 +8,6 @@ export type UserDocument = HydratedDocument<User>;
 @Schema({ timestamps: true })
 export class User {
     @ApiProperty()
-    @Prop({ required: true })
-    username: string;
-
-    @ApiProperty()
     @Prop({ required: true, unique: true })
     email: string;
 
@@ -19,13 +15,25 @@ export class User {
     @Prop({ required: true })
     password: string;
 
-    @ApiProperty()
-    @Prop({ required: true })
-    studentId: string;
+    @ApiPropertyOptional()
+    @Prop()
+    username?: string;
+
+    @ApiPropertyOptional()
+    @Prop()
+    studentId?: string;
 
     @ApiPropertyOptional()
     @Prop({ type: [String], default: [Role.Student] })
     roles?: Role[];
+
+    @ApiPropertyOptional()
+    @Prop({ default: 'native' })
+    auth?: string;
+
+    @ApiPropertyOptional()
+    @Prop()
+    oId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
