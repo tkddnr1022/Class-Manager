@@ -8,6 +8,7 @@ import { User } from 'src/user/models/user.model';
 import { KakaoAuthDto } from './dtos/kakao-auth.dto';
 import { Response } from 'express';
 import { GoogleAuthDto } from './dtos/google-auth.dto';
+import { VerifyEmailDto } from './dtos/verify-email.dto';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -90,7 +91,13 @@ export class AuthController {
 
     @Post('send-email')
     @UseGuards(JwtAuthGuard)
-    async sendEmail(@Request() req){
+    async sendEmail(@Request() req) {
         return this.authService.sendEmail(req.user);
+    }
+
+    @Post('verify-email')
+    @UseGuards(JwtAuthGuard)
+    async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto, @Request() req) {
+        return this.authService.verifyEmail(req.user._id, verifyEmailDto.code);
     }
 }

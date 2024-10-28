@@ -37,6 +37,10 @@ export class User {
     oId?: string;
 
     @ApiPropertyOptional()
+    @Prop({ default: false })
+    verified?: boolean;
+
+    @ApiPropertyOptional()
     @Prop({ type: Verification })
     verification?: Verification;
 }

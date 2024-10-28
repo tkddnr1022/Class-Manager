@@ -7,6 +7,7 @@ export class UpdateUserCommand {
         public readonly email?: string,
         public readonly password?: string,
         public readonly studentId?: string,
+        public readonly verified?: boolean,
         public readonly verification?: Verification,
     ) { }
 }

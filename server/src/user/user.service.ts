@@ -32,6 +32,7 @@ export class UserService {
             password: hashedPassword,
             oId: oId,
             auth: auth,
+            verified: true,
         });
     }
 
@@ -52,15 +53,20 @@ export class UserService {
         return this.userRepository.findUserByOId(oId);
     }
 
+    async getVerification(userId: string) {
+        const userObjectId = new Types.ObjectId(userId);
+        return this.userRepository.findVerification(userObjectId);
+    }
+
     async listUsers() {
         return this.userRepository.findAllUsers();
     }
 
     async updateUser(updateUserCommand: UpdateUserCommand) {
-        const { userId, username, email, password, studentId, verification } = updateUserCommand;
+        const { userId, username, email, password, studentId, verified, verification } = updateUserCommand;
 
         const userObjectId = new Types.ObjectId(userId);
-        return this.userRepository.updateUser(userObjectId, { username, email, password, studentId, verification });
+        return this.userRepository.updateUser(userObjectId, { username, email, password, studentId, verified, verification });
     }
 
     async deleteUser(userId: string) {

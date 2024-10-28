@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../models/user.model';
+import { Verification } from 'src/auth/interfaces/verification.interface';
 
 @Injectable()
 export class UserRepository {
@@ -28,6 +29,10 @@ export class UserRepository {
 
   async findUserByOId(oId: string): Promise<User | null> {
     return await this.userModel.findOne({ oId }, { password: 0, verification: 0 }).exec();
+  }
+
+  async findVerification(userId: Types.ObjectId): Promise<any> {
+    return await this.userModel.findById(userId, 'verification').exec();
   }
 
   async findAllUsers(): Promise<User[]> {
