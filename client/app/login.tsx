@@ -36,8 +36,12 @@ export default function Login() {
             try {
                 await setStorageToken(token);
                 const profile = await getProfile();
-                if (profile) {
-                    await setStorageProfile(profile);
+                if (!profile) {
+                    throw new Error('Failed to login');
+                }
+                await setStorageProfile(profile);
+                if (!profile.verified) {
+                    return router.replace('/verify-email');
                 }
                 Toast.show({
                     type: 'success',
@@ -95,9 +99,6 @@ export default function Login() {
                 })
                 if (!profile.username || !profile.studentId) {
                     return router.replace('/oauth-profile');
-                }
-                if (!profile.verified){
-                    return router.replace('/verify-email');
                 }
                 return router.replace('/(tabs)/home');
             } catch (error) {
