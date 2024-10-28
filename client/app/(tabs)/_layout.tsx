@@ -1,17 +1,17 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from 'react-native-paper';
+import { getStorageProfile } from '@/scripts/utils/storage';
 
 export default function TabLayout() {
   const { colors } = useTheme();
   const [userRole, setUserRole] = useState<string[]>();
 
   const getUserRole = async () => {
-    const role = await AsyncStorage.getItem('userRole');
-    if (role) {
-      setUserRole(JSON.parse(role));
+    const profile = await getStorageProfile();
+    if (profile) {
+      setUserRole(profile.roles);
     }
   }
   useEffect(() => {
