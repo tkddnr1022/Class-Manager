@@ -16,6 +16,7 @@ export default function VerifyEmailPage() {
     const [verifyLoading, setVerifyLoading] = useState<boolean>(false);
     const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
     const [remainingTime, setRemainingTime] = useState<number>(0);
+    // Todo: 만료 시간 서버와 동기화
 
     useEffect(() => {
         fetchEmail();
