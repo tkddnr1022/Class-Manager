@@ -35,3 +35,35 @@ export const getProfile = async () => {
         }
     }
 };
+
+export const sendEmail = async () => {
+    try {
+        const response = await api.post<{ isSuccess: boolean }>(`${API_URL}/auth/send-email`);
+
+        if (response.status === 201) {
+            return response.data;
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error(error.status, error.message, error.response?.data);
+        } else {
+            console.error(error);
+        }
+    }
+};
+
+export const verifyEmail = async (code: string) => {
+    try {
+        const response = await api.post<{ isSuccess: boolean }>(`${API_URL}/auth/verify-email`, { code });
+
+        if (response.status === 201) {
+            return response.data;
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error(error.status, error.message, error.response?.data);
+        } else {
+            console.error(error);
+        }
+    }
+};

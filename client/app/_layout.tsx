@@ -115,6 +115,9 @@ export default function RootLayout() {
       if (!profile.username || !profile.studentId) {
         return setTargetPage('/oauth-profile');
       }
+      if(!profile.verified){
+        return setTargetPage('/verify-email');
+      }
 
       setTargetPage('/(tabs)/home');
     } catch (error) {

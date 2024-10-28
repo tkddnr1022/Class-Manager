@@ -10,6 +10,7 @@ export const getStorageProfile = async () => {
             roles: [await AsyncStorage.getItem('userRole') as string],
             studentId: await AsyncStorage.getItem('studentId') || undefined,
             username: await AsyncStorage.getItem('username') || undefined,
+            verified: Boolean(await AsyncStorage.getItem('verified')),
         }
         return profile;
     } catch (error) {
@@ -25,6 +26,7 @@ export const setStorageProfile = async (profile: User) => {
         await AsyncStorage.setItem('username', profile.username);
         await AsyncStorage.setItem('studentId', profile.studentId);
     }
+    await AsyncStorage.setItem('verified', profile.verified.toString());
 }
 
 export const getStorageToken = async () => {

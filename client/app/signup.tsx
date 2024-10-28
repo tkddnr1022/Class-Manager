@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import debounce from 'lodash.debounce';
 import Toast from 'react-native-toast-message';
 import { checkEmail, signUp } from '@/scripts/api/user';
-import { getProfile, signIn } from '@/scripts/api/auth';
+import { getProfile, sendEmail, signIn } from '@/scripts/api/auth';
 import { setStorageProfile, setStorageToken } from '@/scripts/utils/storage';
 
 export default function Signup() {
@@ -75,11 +75,6 @@ export default function Signup() {
         try {
             const result = await signUp({ username, email, password, studentId });
             if (result == "success") {
-                Toast.show({
-                    type: 'success',
-                    text1: '가입 성공',
-                    text2: '회원가입이 완료되었습니다.'
-                });
                 const token = await signIn(email, password);
                 if (token) {
                     await setStorageToken(token);
@@ -87,8 +82,7 @@ export default function Signup() {
                 const profile = await getProfile();
                 if (profile) {
                     await setStorageProfile(profile);
-                    // Todo: 뒤로가기 시 히스토리 남아있는 문제 해결
-                    return router.replace('/(tabs)/home');
+                    return router.replace('/verify-email');
                 }
                 // 회원가입 성공했으나 로그인 실패 상황
                 return router.back();

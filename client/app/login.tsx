@@ -96,6 +96,9 @@ export default function Login() {
                 if (!profile.username || !profile.studentId) {
                     return router.replace('/oauth-profile');
                 }
+                if (!profile.verified){
+                    return router.replace('/verify-email');
+                }
                 return router.replace('/(tabs)/home');
             } catch (error) {
                 console.error(error);
