@@ -1,3 +1,5 @@
+import { Verification } from "src/auth/interfaces/verification.interface";
+
 export class UpdateUserCommand {
     constructor(
         public readonly userId: string,
@@ -5,5 +7,6 @@ export class UpdateUserCommand {
         public readonly email?: string,
         public readonly password?: string,
         public readonly studentId?: string,
+        public readonly verification?: Verification,
     ) { }
 }

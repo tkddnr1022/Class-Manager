@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { HydratedDocument } from 'mongoose';
 import { Role } from 'src/auth/enums/roles.enum';
+import { Verification } from 'src/auth/interfaces/verification.interface';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -34,6 +35,10 @@ export class User {
     @ApiPropertyOptional()
     @Prop()
     oId?: string;
+
+    @ApiPropertyOptional()
+    @Prop({ type: Verification })
+    verification?: Verification;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

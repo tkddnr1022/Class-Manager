@@ -17,6 +17,7 @@ import { GetUserByOIdQuery } from 'src/user/queries/impl/get-user-by-oid';
 import { GoogleError } from './interfaces/google-error.interface';
 import { GoogleUser } from './interfaces/google-user.interface';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UpdateUserCommand } from 'src/user/commands/impl/update-user.command';
 
 @Injectable()
 export class AuthService {
@@ -171,11 +172,17 @@ export class AuthService {
 
     async sendEmail(user: any) {
         const code = Math.floor(1000 + Math.random() * 9000).toString();
+        const expiresIn = Number(this.configService.get<string>('VERIFICATION_EXPIRES_IN'));
+        const expiresAt = new Date(Date.now() + expiresIn);
+
+        const command = new UpdateUserCommand(user._id, undefined, undefined, undefined, undefined, { code, expiresAt });
+        await this.commandBus.execute(command);
+        
         await this.mailerService.sendMail({
             to: user.email,
             subject: 'Class-Manager 이메일 인증 코드입니다.',
             template: 'email',
-            context: { code },
+            context: { code, expiresAt },
         });
     }
 }

@@ -57,10 +57,10 @@ export class UserService {
     }
 
     async updateUser(updateUserCommand: UpdateUserCommand) {
-        const { userId, username, email, password, studentId } = updateUserCommand;
+        const { userId, username, email, password, studentId, verification } = updateUserCommand;
 
         const userObjectId = new Types.ObjectId(userId);
-        return this.userRepository.updateUser(userObjectId, { username, email, password, studentId });
+        return this.userRepository.updateUser(userObjectId, { username, email, password, studentId, verification });
     }
 
     async deleteUser(userId: string) {
