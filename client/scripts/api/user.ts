@@ -9,7 +9,7 @@ export const updateUser = async (userId: string, user: { username?: string, pass
         const response = await api.put<User>(`${API_URL}/user/${userId}`, {
             username: user.username,
             studentId: user.studentId,
-            password: user.password,
+            password: user.password && user.password.length > 0 ? user.password : undefined,
         });
 
         if (response.status === 200) {
