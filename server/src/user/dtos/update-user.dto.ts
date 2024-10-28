@@ -10,11 +10,6 @@ export class UpdateUserDto {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  readonly email?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
   readonly password?: string;
 
   @ApiPropertyOptional()

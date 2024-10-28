@@ -48,8 +48,8 @@ export class UserController {
         @Param('userId') userId: string,
         @Body() updateUserDto: UpdateUserDto,
     ): Promise<User> {
-        const { username, email, password, studentId } = updateUserDto;
-        const command = new UpdateUserCommand(userId, username, email, password, studentId);
+        const { username, password, studentId } = updateUserDto;
+        const command = new UpdateUserCommand(userId, username, undefined, password, studentId);
         return await this.commandBus.execute(command);
     }
 
