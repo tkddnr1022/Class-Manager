@@ -87,4 +87,10 @@ export class AuthController {
         const token = await this.authService.googleAuthCallback(googleAuthDto.code);
         res.redirect(`class-manager://login?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
     }
+
+    @Post('send-email')
+    @UseGuards(JwtAuthGuard)
+    async sendEmail(@Request() req){
+        return this.authService.sendEmail(req.user);
+    }
 }

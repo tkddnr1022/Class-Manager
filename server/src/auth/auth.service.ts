@@ -16,6 +16,7 @@ import { KakaoUser } from './interfaces/kakao-user.interface';
 import { GetUserByOIdQuery } from 'src/user/queries/impl/get-user-by-oid';
 import { GoogleError } from './interfaces/google-error.interface';
 import { GoogleUser } from './interfaces/google-user.interface';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly httpService: HttpService,
+        private readonly mailerService: MailerService,
     ) { }
 
     // 비밀번호 검증
@@ -165,5 +167,15 @@ export class AuthService {
             scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
         });
         return `https://accounts.google.com/o/oauth2/v2/auth?${queryParams.toString()}`;
+    }
+
+    async sendEmail(user: any) {
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        await this.mailerService.sendMail({
+            to: user.email,
+            subject: 'Class-Manager 이메일 인증 코드입니다.',
+            template: 'email',
+            context: { code },
+        });
     }
 }
