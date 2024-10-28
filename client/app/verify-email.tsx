@@ -6,8 +6,10 @@ import Toast from 'react-native-toast-message';
 import { getStorageProfile, removeStorageToken, setStorageProfile } from '@/scripts/utils/storage';
 import eventEmitter from '@/scripts/utils/eventEmitter';
 import { verifyEmail, sendEmail } from '@/scripts/api/auth';
+import User from '@/interfaces/user';
 
 export default function VerifyEmailPage() {
+    const [profile, setProfile] = useState<User>();
     const [email, setEmail] = useState<string>('');
     const [code, setCode] = useState<string>('');
     const [sendLoading, setSendLoading] = useState<boolean>(true);
@@ -45,6 +47,7 @@ export default function VerifyEmailPage() {
                 throw new Error();
             }
             setEmail(profile.email);
+            setProfile(profile);
         } catch (error: any) {
             Toast.show({
                 type: 'error',
@@ -58,10 +61,6 @@ export default function VerifyEmailPage() {
     const sendVerification = async () => {
         setSendLoading(true);
         try {
-            const profile = await getStorageProfile();
-            if (!profile) {
-                throw new Error();
-            }
             const result = await sendEmail();
             if (result?.isSuccess) {
                 const expiresIn = 10 * 60 * 1000; // 10분
@@ -93,7 +92,6 @@ export default function VerifyEmailPage() {
     const handleVerify = async () => {
         setVerifyLoading(true);
         try {
-            const profile = await getStorageProfile();
             if (!profile) {
                 throw new Error();
             }
@@ -104,7 +102,6 @@ export default function VerifyEmailPage() {
                     text1: '가입 성공',
                     text2: '이메일 인증이 완료되었습니다.'
                 });
-                console.log(profile);
                 await setStorageProfile({ ...profile, verified: true });
                 return router.replace('/(tabs)/home');
             } else {
