@@ -65,7 +65,7 @@ export class UserService {
     async updateUser(updateUserCommand: UpdateUserCommand) {
         const { userId, username, email, password, studentId, verified, verification } = updateUserCommand;
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = password ? await bcrypt.hash(password, salt) : undefined;
         const userObjectId = new Types.ObjectId(userId);
         return this.userRepository.updateUser(userObjectId, { username, email, password: hashedPassword, studentId, verified, verification });
     }
