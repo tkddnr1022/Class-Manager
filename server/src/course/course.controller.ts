@@ -15,6 +15,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody, ApiParam } 
 import { GetCourseByUserQuery } from './queries/impl/get-course-by-user.query';
 import { OwnerGuard } from 'src/auth/guard/owner.guard';
 import { DeleteCourseCommand } from './commands/impl/delete-course.command';
+import { VerificationGuard } from 'src/auth/guard/verification.guard';
 
 @ApiTags('강의')
 @Controller('course')
@@ -30,7 +31,7 @@ export class CourseController {
     @ApiResponse({ status: 201, description: '강의 생성 성공', type: Course })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @Roles(Role.Admin, Role.Professor)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, VerificationGuard)
     @Post()
     async createCourse(@Request() req, @Body() createCourseDto: CreateCourseDto): Promise<Course> {
         const { title, startAt, endAt, location } = createCourseDto;
@@ -46,7 +47,7 @@ export class CourseController {
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '강의 찾을 수 없음' })
     @Roles(Role.Admin, Role.Professor)
-    @UseGuards(JwtAuthGuard, RolesGuard, OwnerGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, OwnerGuard, VerificationGuard)
     @Put(':courseId')
     async updateCourse(
         @Param('courseId') courseId: string,
@@ -63,7 +64,7 @@ export class CourseController {
     @ApiResponse({ status: 200, description: '강의 조회 성공', type: Course })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '강의 찾을 수 없음' })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, VerificationGuard)
     @Get(':courseId')
     async getCourse(@Param('courseId') courseId: string): Promise<Course> {
         const query = new GetCourseQuery(courseId);
@@ -76,7 +77,7 @@ export class CourseController {
     @ApiResponse({ status: 200, description: '강의 목록 조회 성공', type: [Course] })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @Roles(Role.Admin, Role.Professor)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, VerificationGuard)
     @Get('user/:userId')
     async getCourseByUserId(@Param('userId') userId: string): Promise<Course[]> {
         const query = new GetCourseByUserQuery(userId);
@@ -88,7 +89,7 @@ export class CourseController {
     @ApiResponse({ status: 200, description: '강의 목록 조회 성공', type: [Course] })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @Roles(Role.Admin)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, VerificationGuard)
     @Get()
     async listCourses(): Promise<Course[]> {
         const query = new ListCoursesQuery();
@@ -102,7 +103,7 @@ export class CourseController {
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '강의 찾을 수 없음' })
     @Roles(Role.Admin, Role.Professor)
-    @UseGuards(JwtAuthGuard, RolesGuard, OwnerGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, OwnerGuard, VerificationGuard)
     @Delete(':courseId')
     async deleteCourse(@Param('courseId') courseId: string): Promise<void> {
         const command = new DeleteCourseCommand(courseId);

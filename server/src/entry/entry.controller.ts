@@ -14,6 +14,7 @@ import { Role } from 'src/auth/enums/roles.enum';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { GetEntryByUserIdQuery } from './queries/impl/get-entry-by-user-id.query';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { VerificationGuard } from 'src/auth/guard/verification.guard';
 
 @ApiTags('출석 기록')
 @Controller('entry')
@@ -28,7 +29,7 @@ export class EntryController {
     @ApiBody({ type: CreateEntryDto, description: '출석 기록 데이터' })
     @ApiResponse({ status: 201, description: '출석 기록 생성 성공', type: Entry })
     @ApiResponse({ status: 401, description: '인증 실패' })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, VerificationGuard)
     @Post()
     async createEntry(@Request() req, @Body() createEntryDto: CreateEntryDto): Promise<Entry> {
         const { courseId, location, deviceId } = createEntryDto;
@@ -44,7 +45,7 @@ export class EntryController {
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '출석 기록 찾을 수 없음' })
     @Roles(Role.Admin, Role.Professor)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, VerificationGuard)
     @Put(':entryId')
     async updateEntry(
         @Param('entryId') entryId: string,
@@ -61,7 +62,7 @@ export class EntryController {
     @ApiResponse({ status: 200, description: '출석 기록 조회 성공', type: Entry })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @ApiResponse({ status: 404, description: '출석 기록 찾을 수 없음' })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, VerificationGuard)
     @Get(':entryId')
     async getEntry(@Param('entryId') entryId: string): Promise<Entry> {
         const query = new GetEntryQuery(entryId);
@@ -73,7 +74,7 @@ export class EntryController {
     @ApiParam({ name: 'courseId', description: '조회할 강의 ID' })
     @ApiResponse({ status: 200, description: '출석 기록 조회 성공', type: [Entry] })
     @ApiResponse({ status: 401, description: '인증 실패' })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, VerificationGuard)
     @Get('course/:courseId')
     async getEntryByCourseId(@Param('courseId') courseId: string): Promise<Entry[]> {
         const query = new GetEntryByCourseIdQuery(courseId);
@@ -85,7 +86,7 @@ export class EntryController {
     @ApiParam({ name: 'userId', description: '조회할 사용자 ID' })
     @ApiResponse({ status: 200, description: '출석 기록 조회 성공', type: [Entry] })
     @ApiResponse({ status: 401, description: '인증 실패' })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, VerificationGuard)
     @Get('user/:userId')
     async getEntryByUserId(@Param('userId') userId: string): Promise<Entry[]> {
         const query = new GetEntryByUserIdQuery(userId);
@@ -97,7 +98,7 @@ export class EntryController {
     @ApiResponse({ status: 200, description: '출석 기록 목록 조회 성공', type: [Entry] })
     @ApiResponse({ status: 401, description: '인증 실패' })
     @Roles(Role.Admin)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard, VerificationGuard)
     @Get()
     async listEntries(): Promise<Entry[]> {
         const query = new ListEntriesQuery();

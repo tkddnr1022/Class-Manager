@@ -16,6 +16,10 @@ import { KakaoUser } from './interfaces/kakao-user.interface';
 import { GetUserByOIdQuery } from 'src/user/queries/impl/get-user-by-oid';
 import { GoogleError } from './interfaces/google-error.interface';
 import { GoogleUser } from './interfaces/google-user.interface';
+import { MailerService } from '@nestjs-modules/mailer';
+import { UpdateUserCommand } from 'src/user/commands/impl/update-user.command';
+import { GetUserQuery } from 'src/user/queries/impl/get-user.query';
+import { GetVerificationQuery } from 'src/user/queries/impl/get-verification.query';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +29,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly httpService: HttpService,
+        private readonly mailerService: MailerService,
     ) { }
 
     // 비밀번호 검증
@@ -165,5 +170,39 @@ export class AuthService {
             scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
         });
         return `https://accounts.google.com/o/oauth2/v2/auth?${queryParams.toString()}`;
+    }
+
+    async sendEmail(user: any) {
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        const expiresIn = Number(this.configService.get<string>('VERIFICATION_EXPIRES_IN'));
+        const expiresAt = new Date(Date.now() + expiresIn);
+        const verification = {
+            code: code,
+            expiresAt: expiresAt,
+        }
+
+        const command = new UpdateUserCommand(user._id, undefined, undefined, undefined, undefined, undefined, verification);
+        await this.commandBus.execute(command);
+
+        await this.mailerService.sendMail({
+            to: user.email,
+            subject: 'Class-Manager 이메일 인증 코드입니다.',
+            template: 'email',
+            context: { code, expiresAt },
+        });
+        return { isSuccess: true };
+    }
+
+    async verifyEmail(user: any, code: string) {
+        const query = new GetVerificationQuery(user._id);
+        const result = await this.queryBus.execute(query);
+        const verification = result.verification;
+        const isSuccess = verification.code == code && verification.expiresAt > Date.now();
+
+        if (isSuccess) {
+            const command = new UpdateUserCommand(user._id, undefined, undefined, undefined, undefined, true);
+            await this.commandBus.execute(command);
+        }
+        return { isSuccess };
     }
 }

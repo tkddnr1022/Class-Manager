@@ -15,6 +15,7 @@ import { GetUserByEmailHandler } from './queries/handlers/get-user-by-email.hand
 import { GetUserByStudentHandler } from './queries/handlers/get-user-by-student-id.handler';
 import { CreateOAuthHandler } from './commands/handlers/create-oauth.handler';
 import { GetUserByOIdHandler } from './queries/handlers/get-user-by-oid';
+import { GetVerificationHandler } from './queries/handlers/get-verification.handler';
 
 @Module({
     controllers: [
@@ -37,6 +38,7 @@ import { GetUserByOIdHandler } from './queries/handlers/get-user-by-oid';
         UserUpdatedHandler,
         CreateOAuthHandler,
         GetUserByOIdHandler,
+        GetVerificationHandler,
     ],
 })
 export class UserModule { }
