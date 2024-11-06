@@ -18,7 +18,7 @@ const EditProfile = () => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const update = await updateUser(userId, { username, email, password, studentId });
+            const update = await updateUser(userId, { username, password, studentId });
             if (update) {
                 await setStorageProfile(update);
                 Toast.show({
@@ -64,18 +64,18 @@ const EditProfile = () => {
                     <View style={styles.row}>
                         <TextInput
                             style={styles.input}
-                            label="이름"
-                            value={username}
-                            onChangeText={setUsername}
-                            disabled={loading}
+                            label="이메일"
+                            value={email}
+                            onChangeText={setEmail}
+                            disabled={true}
                         />
                     </View>
                     <View style={styles.row}>
                         <TextInput
                             style={styles.input}
-                            label="이메일"
-                            value={email}
-                            onChangeText={setEmail}
+                            label="이름"
+                            value={username}
+                            onChangeText={setUsername}
                             disabled={loading}
                         />
                     </View>
@@ -106,7 +106,7 @@ const EditProfile = () => {
                         disabled={loading}
                         loading={loading}
                         style={styles.button}
-                        labelStyle={{lineHeight: 18}}
+                        labelStyle={{ lineHeight: 18 }}
                     >
                         수정
                     </Button>

@@ -1,7 +1,6 @@
 import User from "@/interfaces/user";
 import eventEmitter from "@/scripts/utils/eventEmitter";
-import { getStorageProfile } from "@/scripts/utils/storage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getStorageProfile, removeStorageToken } from "@/scripts/utils/storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
@@ -38,7 +37,7 @@ export default function Mypage() {
 
     const logoutHandler = async () => {
         setLogoutLoading(true);
-        await AsyncStorage.clear();
+        await removeStorageToken();
         Toast.show({
             type: 'success',
             text1: '로그아웃 되었습니다.'

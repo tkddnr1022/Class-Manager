@@ -1,7 +1,7 @@
 import Entry from '@/interfaces/entry';
 import { getEntryByUserId } from '@/scripts/api/entry';
 import eventEmitter from '@/scripts/utils/eventEmitter';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStorageProfile } from '@/scripts/utils/storage';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SectionList } from 'react-native';
@@ -38,8 +38,12 @@ const EntryRecord = () => {
         setGroupedEntries([]);
         setLoading(true);
         try {
-            const userId = await AsyncStorage.getItem('userId');
-            const entries = await getEntryByUserId(userId as string);
+            const profile = await getStorageProfile();
+            if(!profile){
+                return;
+            }
+            const userId = profile._id;
+            const entries = await getEntryByUserId(userId);
             if (!entries || !entries.length) {
                 setLoading(false);
                 return;

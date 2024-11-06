@@ -36,8 +36,12 @@ export default function Login() {
             try {
                 await setStorageToken(token);
                 const profile = await getProfile();
-                if (profile) {
-                    await setStorageProfile(profile);
+                if (!profile) {
+                    throw new Error('Failed to login');
+                }
+                await setStorageProfile(profile);
+                if (!profile.verified) {
+                    return router.replace('/verify-email');
                 }
                 Toast.show({
                     type: 'success',

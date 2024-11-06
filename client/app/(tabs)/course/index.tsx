@@ -3,10 +3,10 @@ import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, FAB, Card, Divider, ActivityIndicator, useTheme } from 'react-native-paper';
 import Course from '@/interfaces/course';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCourseByUserId } from '@/scripts/api/course';
 import eventEmitter from '@/scripts/utils/eventEmitter';
 import { MaterialIcons } from '@expo/vector-icons';
+import { getStorageProfile } from '@/scripts/utils/storage';
 
 const CourseList = () => {
     const [upcomingCourses, setUpcomingCourses] = useState<Course[]>([]);
@@ -29,8 +29,12 @@ const CourseList = () => {
         setCompletedCourses([]);
         setLoading(true);
         try {
-            const userId = await AsyncStorage.getItem('userId');
-            const courses = await getCourseByUserId(userId as string);
+            const profile = await getStorageProfile();
+            if (!profile) {
+                return;
+            }
+            const userId = profile._id;
+            const courses = await getCourseByUserId(userId);
             if (!courses || !courses.length) {
                 setLoading(false);
                 return;

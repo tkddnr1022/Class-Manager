@@ -4,13 +4,12 @@ import api from "../utils/interceptors";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const updateUser = async (userId: string, user: { username?: string, email?: string, password?: string, studentId?: string }) => {
+export const updateUser = async (userId: string, user: { username?: string, password?: string, studentId?: string }) => {
     try {
         const response = await api.put<User>(`${API_URL}/user/${userId}`, {
             username: user.username,
-            email: user.email,
             studentId: user.studentId,
-            password: user.password,
+            password: user.password && user.password.length > 0 ? user.password : undefined,
         });
 
         if (response.status === 200) {
