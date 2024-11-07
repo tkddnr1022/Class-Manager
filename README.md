@@ -72,7 +72,8 @@ $ npm install
     API_URL = {Backend_URL}
     ```
     - `API_URL`: 백엔드 서버의 루트 주소를 완전한 형식으로 입력합니다. 로컬 주소 사용 시 구글 OAuth 사용이 불가능합니다.
-        > ex) `https://example.com`
+        > ex) `https://example.com`<br>
+        > 에뮬레이터 사용 시 `localhost` 대신 `192.168.x.x` 형식의 내부 주소를 사용해야 합니다.
 - `/client/app.json` 수정(선택)
 
     ```
@@ -108,7 +109,8 @@ $ npm install
     VERIFICATION_EXPIRES_IN = 600000
     ```
     - `API_URL`: 백엔드 서버의 루트 주소를 완전한 형식으로 입력합니다. 로컬 주소 사용 시 구글 OAuth 사용이 불가능합니다.
-        > ex) `https://example.com`
+        > ex) `https://example.com`<br>
+        > 에뮬레이터 사용 시 `localhost` 대신 `192.168.x.x` 형식의 내부 주소를 사용해야 합니다.
     - `MONGO_URI`: MongoDB 연결 주소입니다. `mongodb+srv://` 를 제외한 URI를 작성해주세요.
     - `MONGO_USERNAME`, `MONGO_PASSWORD`: MongoDB 인증
     - `JWT_SECRET`: JWT Token 발급에 사용할 Secret Key 입니다. 안전한 값으로 입력합니다.
@@ -129,7 +131,7 @@ $ npm install
     ```
     - Web: `w` 키 입력(검증되지 않음)
     - Android: `s` 키 입력으로 expo go 진입 후 `a` 키 입력
-        > 안드로이드 실행 시 에뮬레이터가 필요합니다. [Expo 문서](https://docs.expo.dev/workflow/android-studio-emulator/)를 참고하세요.
+        > 안드로이드 에뮬레이터를 사용할 수 있습니다. [Expo 문서](https://docs.expo.dev/workflow/android-studio-emulator/)를 참고하세요.
 - 프로덕션 빌드
 
   [EAS 빌드 문서](https://docs.expo.dev/build/setup/) 참고
